@@ -17,6 +17,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('/admin',function() {
+	return view('admin_template');
+});
+
 Route::get('/home', 'HomeController@index');
 
 Route::get('/new','BranchesController@index');
