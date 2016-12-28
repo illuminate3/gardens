@@ -58,9 +58,11 @@ elixir(function(mix) {
 
     // Merge all JS  files in one file.
     mix.scripts([
+        '/libs/jquery.js',
         '/libs/bootstrap.js',
         '/libs/admin-lte.js',
         '/libs/i-check.js',
+        '/libs/vue.js'
     ], './public/js/min.js', './public/js');
 
 });
