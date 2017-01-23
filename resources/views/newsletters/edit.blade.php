@@ -1,0 +1,1 @@
+D:\xampp\htdocs\garden\app/views/newsletters/edit.blade.php

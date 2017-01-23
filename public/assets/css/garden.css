@@ -1,0 +1,253 @@
+body {
+    border-top:solid 10px #06F;
+    padding:0;
+    margin:0;
+}
+html,
+body {
+    height: 100%;
+    /* The html and body elements cannot have any padding or margin. */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto 0px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 60px;
+}
+#footer {
+
+    background-color: #000;
+    border-bottom:4px solid #090;
+    color:#04AFEF;
+}
+
+.navbar {
+    border-bottom:4px solid #090;
+}
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 900px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+.jumbotron{
+
+    height:100%;
+    background:  url('../img/pinlayer2.png'),url('../img/back.png');
+
+    background-repeat:repeat;
+}
+div.jumbotron h4{
+    color:#CCC;
+}
+#keywords {
+    margin: 0 auto;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+
+#sorttable thead {
+    cursor: pointer;
+    background-color:#04B7F9;
+    color:#fff;
+
+
+}
+#sorttable thead tr th {
+
+}
+#sorttable thead tr th span {
+
+}
+
+#sorttable thead tr th.headerSortUp, #sorttable thead tr th.headerSortDown {
+
+}
+
+#sorttable thead tr th.headerSortUp span {
+
+}
+#sorttable thead tr th.headerSortDown span {
+
+}
+.odd {
+    background: #ccc;
+}
+/** Start: to style navigation tab **/
+.nav {
+    margin-bottom: 18px;
+    margin-left: 0;
+    list-style: none;
+}
+
+.nav > li > a {
+    display: block;
+}
+
+.nav-tabs{
+    *zoom: 1;
+}
+
+.nav-tabs:before,
+.nav-tabs:after {
+    display: table;
+    content: "";
+}
+
+.nav-tabs:after {
+    clear: both;
+}
+
+.nav-tabs > li {
+    float: left;
+}
+
+.nav-tabs > li > a {
+    padding-right: 12px;
+    padding-left: 12px;
+    margin-right: 2px;
+    line-height: 14px;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-tabs > li {
+    margin-bottom: -1px;
+}
+
+.nav-tabs > li > a {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    line-height: 18px;
+    border: 1px solid transparent;
+    -webkit-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.nav-tabs > li > a:hover {
+    border-color: #eeeeee #eeeeee #dddddd;
+}
+
+.nav-tabs > .active > a,
+.nav-tabs > .active > a:hover {
+    color: #555555;
+    cursor: default;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+}
+
+li {
+    line-height: 18px;
+}
+
+.tab-content.active{
+    display: block;
+}
+
+.tab-content.hide{
+    display: none;
+}
+#logo{
+    width:160px;
+    height:80px;
+    position:relative;
+    float:left;
+    background-image:url('/assets/images/logosm.png');
+    background-repeat:no-repeat;
+    background-position: center;
+
+}
+.navbar-inverse .navbar-nav > li > a{
+	color:#ffffff;
+}
+.divlink {
+
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left: 0;
+
+    /* edit: added z-index */
+    z-index: 1;
+
+    /* edit: fixes overlap error in IE7/8,
+       make sure you have an empty gif */
+    background-image: url('empty.gif');
+}
+.error{
+	color:red;
+	font-style:italic;
+	font-size:.9em;
+}
+
+
+a.header{
+	color:#ffffff;
+	font-size:1.1em;
+	font-weight:bold;
+	padding-right:10px;
+}
+.navbar-inverse .navbar-nav>li>a:hover {
+	background-color:#090;
+	
+}
+
+
+
+
+/* set the size of the definition list &lt;dl&gt; and add the background image */
+#imap {display:block; width:500px; height:1200px; background:url(/assets/images/McNear.png) no-repeat; position:relative;}
+
+/* set up the definition list &lt;dt&gt;&lt;a&gt; to hold the background image for the hover state */
+
+/* the hack for IE pre IE6 */
+* html #imap a#title {height:240px; he\ight:0;}
+
+/* the &lt;dt&gt;&lt;a&gt; hover style to move the background image to position 0 0*/
+
+
+/* place the &lt;dd&gt;s in the correct absolute position */
+#imap dd {position:absolute; padding:0; margin:0;margin-top:-10px;border:solid red 1px;}
+#imap dd:hover {position:absolute; padding:0; margin:0;margin-top:-10px;border:solid green 1px;background-color:#CCC}
+/*style the &lt;dd&gt;&lt;a&gt; links physical size and the background image for the hover */
+#imap a {display:block; background:transparent url(assets/images/hover.gif) -100px -100px no-repeat; text-decoration:none; z-index:20;}
+
+/* style the span text so that it is not initially displayed */
+#imap a span, #imap a:visited span {display:none;}
+
+/* move the link background image to position 0 0 when hovered */
+
+
+/* define the common styling for the span text */
+#imap div.plot:hover span {position:absolute; display:block; font-family:arial; font-size:12px; background:#fff; color:#000; border:1px solid #000; padding:5px;}
+/* the hack for IE pre IE6 */
+* html #imap a:hover span {width:400px; w\idth:388px;}
+
+/* move the span text to a common position at the bottom of the image map */
+
+
+
+/* add the style for the link span text - first line */
+#imap a span:first-line {}
+
+
+
