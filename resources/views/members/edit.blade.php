@@ -2,10 +2,10 @@
 
 
     @section('content')
-<h1> Edit {{$member->firstname . ' ' . $member->lastname}} Member Details</h1>
+<h2> Edit Member Details</h2>
 
 
-{{Form::model($member, ['method'=>'PATCH','route'=>['admin.members.update', $member->id],'class'=>'form-horizontal']) }}
+{{Form::model($member, ['method'=>'PATCH','route'=>['members.update', $member->id],'class'=>'form-horizontal']) }}
 
 
 @include('members.partials.membersform')

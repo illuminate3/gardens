@@ -3,12 +3,11 @@
  *  Route model binding
  *  ------------------------------------------
  */
-Route::model('user', 'User');
+/*Route::model('user', 'User');
 Route::model('hours', 'Hours');
 Route::model('role', 'Role');
 Route::model('plots', 'Plot');
-Route::model('members', 'Member');
-
+Route::model('members', 'Member');*/
 
 
 /** ------------------------------------------
@@ -59,7 +58,8 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('hours/plot',array('as'=>'hours.plot','uses'=>'HoursController@plothours'));
 	Route::get('hours/export',array('as'=>'hours.download','uses'=>'HoursController@downloadHours'));
 	Route::get('hours/multiple', array('as'=>'hours.multiple','uses'=>'HoursController@addMultipleHours'));
-	Route::post('hours/multistore', array('as'=>'hours.multistore','uses'=>'HoursController@multistore'));	
+	Route::post('hours/multistore', array('as'=>'hours.multistore','uses'=>'HoursController@multistore'));
+	Route::get('hours/{id}/delete', ['as'=>'hours.delete','uses'=>'HoursController@destroy']);	
 	Route::resource('hours','HoursController');
 	
 	
@@ -79,15 +79,11 @@ Route::get('/home', 'HomeController@index');
 Route::get('contact_us', function()
 {
     
-    return View::make('pages.contact');
+    return view('pages.contact');
 });
 
-Route::post('contact', array('as'=>'contact', 'uses'=>'PagesController@form')); 
+Route::post('contact', array('as'=>'contact', 'uses'=>'PageController@form')); 
 
-
-
-Route::get('pages','PagesController@index');
-Route::get('pages/{slug}','PagesController@show');
 
 Route::get('api/hours',array('as'=>'api.hours','uses'=>'EmailController@testemail'));
 Route::post('api/hours',array('as'=>'api.hours','uses'=>'HoursController@receiveHoursEmail'));
@@ -97,18 +93,20 @@ Route::post('api/hours',array('as'=>'api.hours','uses'=>'HoursController@receive
 Route::get('join', function()
 {
     // Return contact us page
-    return View::make('pages.joinus');
-});
+    return view('pages.joinus');
+}); 
 
-Route::get('privacy', array('as'=>'privacy','uses'=>'PagesController@privacy'));
+Route::get('privacy',['as'=>'privacy'], function()
+	{
+		return view('pages.privacy');
+	});
 
-Route::post('join', array('as'=>'join', 'uses'=>'AdminUsersController@join'));
+//Route::post('join', array('as'=>'join', 'uses'=>'AdminUsersController@join'));
 
-Route::post('news', array('as'=>'news', 'uses'=>'NewslettersController@store'));
-
-# Pages - Second to last set, match slug
-Route::resource('pages','PagesController',array('only' => array('show')));
 
 # Index Page - Last route, no matches
-Route::get('/', array('before' => 'detectLang','uses' => 'PageController@getIndex'));
+Route::get('/', function()
+	{
+		return view('site.pages.frontpage');
+	});
 

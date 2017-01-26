@@ -5,7 +5,7 @@
 	</head>
 	<body>
 	
-    	<p> {{$result->gardener->lastname}} {{$result->gardener->lastname}} has updated their community hours.</p>
+    	<p> {{$result->gardener->lastname}} {{$result->gardener->lastname}} has recorded some community hours.</p>
 		
 			{{$result->hours}} hours  on {{date('M j<\s\up>S</\s\up>, Y',strtotime($result->servicedate) )}}  doing {{$result->description}}<br />
 			

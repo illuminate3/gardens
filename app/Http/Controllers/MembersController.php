@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 
 use App\Member;
 use App\User;
+use App\Plot;
+use App\Export;
 
 
 
@@ -46,7 +48,7 @@ class MembersController extends Controller {
 	
 
 	$fields = ['First Name'=>'firstname','Last Name'=>'lastname','Phone'=>'phone','Plots'=>'plots','Type'=>'type'];
-	if ($this->user->hasRole('admin'))
+	if ( \Auth::user()->can('manage_members'))
 		{
 			$fields['Edit'] ='action';
 			$fields['Status']='status';
@@ -113,14 +115,15 @@ class MembersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($members)
+	public function edit($id)
 	{
 		
 
 		$assigned = array();
-		$member = $this->member->where('id','=',$members->id)->with('userdetails','plots')->first();
+		$member = $this->member->where('id','=',$id)->with('userdetails','plots')->firstOrFail();
 
 		$plots = Plot::all();
+		
 		foreach($member->plots as $plot)
 		{
 			$assigned[] = $plot->id;	
@@ -167,12 +170,12 @@ class MembersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy($member)
 	{
 		
-		$member=$this->member->findOrFail($id);
+		//$member=$this->member->findOrFail($id);
 		
-		$member->destroy($id);
+		$member->destroy();
 
 		return Redirect::route('members.index');
 	}
@@ -256,17 +259,21 @@ class MembersController extends Controller {
 	
 	public function export()
 	{
-		$data = $this->member->with('plots')->get();
-		$fields = array('firstname'=>'firstname',
-		'lastname'=>'lastname',
-		'phone'=>'phone',
-		'mobile'=>'mobile',
-		'email'=>'email',
-		'status'=>'status',
-		'membersince'=>'membersince',
-		'plots'=>array('plotnumber','subplot'));
-		$results = $this->member->export($fields,$data,$name='Members');
-		return Response::make(rtrim($results['output'], "\n"), 200, $results['headers']);
+		$members = $this->member->with('userdetails','plots')->get();
+
+
+		\Excel::create('Members', function($excel)  use($members){
+
+            $excel->sheet('members', function($sheet) use($members) {
+
+                $sheet->loadView('members.export',compact('members'));
+
+            });
+
+        })->export();
+
+
+
 		
 	}
 	

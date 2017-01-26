@@ -77,9 +77,6 @@
 {{Form::submit('Update',array('class'=>'btn btn-primary'))}}
 </div></div>
 {{Form::hidden('id',$hour->id)}}
-
-{{Form::hidden("plot_id",$plot->id)}}	
-
 {{Form::close()}}
 @include('partials._scripts')
 @stop

@@ -4,14 +4,14 @@
     @section('content')
     <h1>Wait List Members</h1>
     <p><a href="{{route('members.index')}}">Show Active Members</a></p>
-     @if(auth()->user()->isAdmin())
+     @can('manage_members')
 		    <div class="pull-right">
         <a href="{{{ route('members.create') }}}" class="btn btn-small btn-info iframe">
             <span class="glyphicon glyphicon-plus-sign"></span> Add Member</a>
     </div>
         
     
-	@endif
+	@endcan
     <table id ='sorttable' class='table table-striped table-bordered table-condensed table-hover'>
     <thead>
     <th>Wait List #</th>

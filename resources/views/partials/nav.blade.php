@@ -13,7 +13,7 @@
                         <li {{ (Request::is('Calendar') ? ' class="active"' : '') }}><a href="{{{ URL::to('') }}}">Calendar</a></li>
                         <li {{ (Request::is('JoinUs') ? ' class="active"' : '') }}><a href="{{{ URL::to('') }}}">Join Us</a></li>
                         <li {{ (Request::is('Contact') ? ' class="active"' : '') }}><a href="{{{ URL::to('') }}}">Contact</a></li>
-                        <li {{ (Request::is('user*') ? ' class="active"' : '') }}><a href="{{{ URL::to('/user/login') }}}">Members</a></li>
+                        <li {{ (Request::is('user*') ? ' class="active"' : '') }}><a href="{{{ URL::to('/login') }}}">Members</a></li>
                     @if (Auth::check())
                         
                         <li {{ (Request::is('Notebook') ? ' class="active"' : '') }}><a href="{{{ URL::to('comment') }}}">Notebook</a></li>

@@ -26,4 +26,24 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+     public function member()
+     {
+          return $this->hasOne(Member::class,'user_id');
+     }
+     
+     
+    public function serviceHours()
+    {
+        return $this->hasMany(Hours::class);
+    }
+    
+    public function getUserByUsername( $username )
+    {
+        return $this->where('username', '=', $username)->first();
+    }
+    
+   
+
+    
 }

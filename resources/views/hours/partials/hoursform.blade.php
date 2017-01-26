@@ -8,7 +8,7 @@
 @foreach($members as $member )
    
         <option value="{{$member->id}}" 
-        @if( Input::old('member') == $member->id) selected="selected" @endif>{{$member->lastname}}, {{$member->firstname}}</option>
+        @if( isset($request) && $request->old('member') == $member->id) selected="selected" @endif>{{$member->lastname}}, {{$member->firstname}}</option>
     
 @endforeach
 </select>
@@ -22,7 +22,7 @@
 <div class="col-sm-8">{{Form::label('Service Date:')}}
             <div class="form-group @if ($errors->has('servicedate')) has-error @endif">
                 <div class="input-group date" id="datetimepicker">
-                    <input id='servicedate' name='servicedate' type="text" class="form-control" value="{{ Input::old('servicedate') }}" />
+                    <input id='servicedate' name='servicedate' type="text" class="form-control" value="{{ isset($request) ? $request->old('servicedate') : '' }}" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
@@ -36,7 +36,7 @@
 
             <div class="form-group @if ($errors->has('starttime')) has-error @endif">
                 <div class="input-group date" id="datetimepicker2">
-                    <input name='starttime' type="text" class="form-control" value="{{ Input::old('starttime') }}" />
+                    <input name='starttime' type="text" class="form-control" value="{{ isset($request) ? $request->old('starttime') :'' }}" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
                     </span>
                 </div>
@@ -50,7 +50,7 @@
 
            <div class="form-group @if ($errors->has('endtime')) has-error @endif">
                 <div class="input-group date" id="datetimepicker3">
-                    <input name='endtime' type="text" class="form-control" value="{{ Input::old('endtime') }}" />
+                    <input name='endtime' type="text" class="form-control" value="{{ isset($request) ? $request->old('endtime') : '' }}" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
                     </span>
                 </div>
@@ -67,7 +67,7 @@
 
 <div class="form-group @if ($errors->has('hours')) has-error @endif">
 
-{{Form::text('hours',Input::old('hours'))}}
+{{Form::text('hours',isset($request) ? $request->old('hours') : '')}}
 @if ($errors->has('hours')) <p class="help-block">{{ $errors->first('hours') }}</p> @endif
 </div>
 </div>
@@ -79,7 +79,7 @@
 
 <div class="form-group @if ($errors->has('description')) has-error @endif">
 
-{{Form::textarea('description',Input::old('description'))}}
+{{Form::textarea('description',isset($request) ? $request->old('description') : '')}}
 @if ($errors->has('description')) <p class="help-block">{{ $errors->first('description') }}</p> @endif
 </div>
 </div>
@@ -98,7 +98,7 @@
      @foreach($members->plots[0]->managedBy as $member )
        
             <option value="{{$member->user_id}}" 
-            @if( Input::old('member') == $member->user_id or $member->user_id==Auth::id()) selected="selected" 
+            @if( isset($request) && $request->old('member') == $member->user_id or $member->user_id==Auth::id()) selected="selected" 
             @endif>
             {{$member->firstname}}
             </option>

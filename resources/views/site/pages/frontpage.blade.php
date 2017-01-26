@@ -143,7 +143,9 @@
 <div id="footerwrap">
 	<div class="container">
      <p><a href="{{route('privacy')}}" >Privacy Policy</a></p>
-		<h4>Created by <a href="http://Crescent Creative">Crescent Creative</a> - Copyright 2015</h4>
+		<h4>Created by <a href="http://Crescent Creative">Crescent Creative</a>
+		 - Copyright 2015 - <?php echo date('Y');?>
+		</h4>
 	</div>
 </div>
 

@@ -44,7 +44,7 @@
 
 {{Form::label('email','Email:',array('class'=>'col-sm-2 control-label'))}}
 <div class="col-sm-10">
-{{Form::text('email',isset($member->email) ? $member->email: '',array('class'=>"form-control"))}}
+{{Form::text('email',isset($member->userdetails->email) ? $member->userdetails->email: '',array('class'=>"form-control"))}}
 
 <span class="error">{{$errors->first('email')}}</span>
 </div></div>

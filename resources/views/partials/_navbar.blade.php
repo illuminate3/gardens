@@ -20,7 +20,7 @@
                         <li {{ (Request::is('Contact') ? ' class="active"' : '') }}><a href="{{{ URL::to('/contact_us') }}}">Contact</a></li>
                          <li {{ (Request::is('Contact') ? ' class="active"' : '') }}><a href="{{{ URL::to('/join') }}}">Join Us</a></li>
                         @if(!Auth::check())
-                        <li {{ (Request::is('user*') ? ' class="active"' : '') }}><a href="{{{ URL::to('/user/login') }}}">Members</a></li>
+                        <li {{ (Request::is('user*') ? ' class="active"' : '') }}><a href="{{{ URL::to('/login') }}}">Members</a></li>
                     	@else                     
                      
                      	<li class="dropdown">
