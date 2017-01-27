@@ -4,21 +4,23 @@ namespace App;
 use Illuminate\Http\Request;
 trait PeriodTrait {
 
-	public function getShowYear(Request $request)
+	public function getShowYear(Request $request= null)
 		
 		{
-			$showyear = $request->get('year');
-			if(isset( $showyear)){
-				$request->session()->put('showyear',$showyear);
-				$this->showyear = $request->session()->get('showyear');
-				
-			}elseif ($request->session()->has('showyear')){
-			
-				$this->showyear = $request->session()->get('showyear');
-			}else{
-				$this->showyear = date('Y');
-				$request->session()->put('showyear',$this->showyear);
+			if($request) {
+				if($request->has('year')){
+					$request->session()->put('showyear',$request->get('year'));
+					$this->showyear = $request->session()->get('showyear');
+					
+				}else{
+					if(\Session::has('showyear')){
+						$this->showyear;
+					}else{
+						$this->showyear = date('Y');
+						\Session::put('showyear',$this->showyear);
+					}
 			}
-
+			
+			return $this->showyear;
 		}
 }

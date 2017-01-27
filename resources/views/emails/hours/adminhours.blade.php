@@ -4,10 +4,10 @@
 		<meta charset="utf-8">
 	</head>
 	<body>
-	
-    	<p> {{$result->gardener->lastname}} {{$result->gardener->lastname}} has updated their community hours.</p>
+
+    	<p> {{$result[0]->gardener->firstname}} {{$result[0]->gardener->lastname}} has updated their community hours.</p>
 		
-			{{$result->hours}} hours  on {{date('M j<\s\up>S</\s\up>, Y',strtotime($result->servicedate) )}}  doing {{$result->description}}<br />
+			{{$result[0]->hours}} hours  on {!! date('M j<\s\up>S</\s\up>, Y',strtotime($result[0]->servicedate) )!!}  doing {{$result[0]->description}}<br />
 			
 		
              <p> Sincerely</p>

@@ -2,7 +2,7 @@
 namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Email;
-
+use Illuminate\Http\Request;
 use App\PeriodTrait;
 
 class Email extends Model {
@@ -19,10 +19,11 @@ class Email extends Model {
 	 *
 	 * @return Response
 	 */
-	public function __construct( User $user,Hours $hours )
+	public function __construct( User $user,Hours $hours,Request $request )
 	{
 			$this->user = $user;
 			$this->hours = $hours;
+			$this->showyear = $this->getShowYear($request);
 			
 			
 	}
@@ -31,7 +32,7 @@ class Email extends Model {
 	{
 		
 		$emails = $this->findEmailToAddress($inbound);
-		$user = $this->user->isMember($emails['from']);
+		$user = $this->user->has('member')->where('email','=',$emails['from'])->first();
 			if (! $user)
 			{
 
@@ -381,21 +382,20 @@ class Email extends Model {
 
 	private function getUsersMemberId($userid)
 	 {
-		 $memberid = Member::where('user_id','=',$userid)->lists('id');
+		 $memberid = Member::where('user_id','=',$userid)->pluck('id');
 		 
 		 return $memberid;
 		 
 	 }
 
-	 private function sendEmailNotifications($data,$template=NULL)
+	 public function sendEmailNotifications($data,$template=NULL)
 	{
 		
 		switch ($template) {
 			case 'multi':
 				$emailTemplate = 'emails.hours.adminhours';
 				$toAddress = $this->getHoursNotificationEmails();
-
-				$subject = 'New Hours Added';
+				$subject = 'Multiple New Hours Added';
 			break;
 			
 			case 'confirmemail':
@@ -439,13 +439,13 @@ class Email extends Model {
 		
 			default:
 					$emailTemplate = 'emails.hours.adminhours';
-					//$toAddress ='stephen.hamilton@mail.com';
+					
 					$toAddress = $this->getHoursNotificationEmails();
 					$subject = 'New Hours Added';
 			break;
 		}
-		dd($data);
-		Mail::send($emailTemplate,$data, function($message) use ($toAddress,$subject)
+		
+		\Mail::send($emailTemplate,$data, function($message) use ($toAddress,$subject)
 		{
 			$message->to($toAddress)->subject($subject);
 			
@@ -455,9 +455,9 @@ class Email extends Model {
 	}
 	 private function getHoursNotificationEmails()
 	 {
-		 $roles = Permission::find(9)->roles()->lists('name');
+		 $roles = Permission::find(9)->roles()->pluck('name');
 		
-		if (! App::environment('local'))
+		if (! \App::environment('local'))
 		{
 		 $hoursManagers = Role::whereIn('name',$roles)->with('users')->get();
 		 $email = '';
@@ -469,7 +469,7 @@ class Email extends Model {
 		 }
 		}else{
 
-			$email = Auth::user()->email; 
+			$email = \Auth::user()->email; 
 			
 		}
 		 $email = rtrim($email, ",");
@@ -484,7 +484,7 @@ class Email extends Model {
 		{
 			$q->where('plots.id', '=', $plot_id);
 		
-		})->lists('id','email');
+		})->pluck('id','email');
 		 
 		 return $users;
 	 }

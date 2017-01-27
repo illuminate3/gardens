@@ -15,16 +15,18 @@
         <th>Gardener</th>
         </thead>
         <tbody>
+      
         @foreach ($hours as $hour)
         	<?php $total = $total + $hour->hours;?>
             <tr>
-            <td> {{date('M j<\s\up>S</\s\up>',strtotime($hour['servicedate']) )}}</td>
+            <td> {!! date('M j<\s\up>S</\s\up>',strtotime($hour['servicedate']) ) !!}</td>
             <td align="right"> {{number_format($hour->hours,2)}}</td>
             <td>{{$hour->description}}</td>
             <td>{{$hour->gardener->firstname}}</td>
             </tr>
         
         @endforeach
+        
         </tbody>
         <tfoot>
         <td>Total:</td>

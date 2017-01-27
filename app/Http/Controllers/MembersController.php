@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Notifications\HoursAdded;
 use App\Member;
 use App\User;
 use App\Plot;
@@ -12,7 +12,7 @@ use App\Export;
 
 
 class MembersController extends Controller {
-
+	
 	/**
 	 * Display a listing of members
 	 *
@@ -46,7 +46,7 @@ class MembersController extends Controller {
 			->get();
 		}
 	
-
+		$this->user->notify(new HoursAdded($this->user));
 	$fields = ['First Name'=>'firstname','Last Name'=>'lastname','Phone'=>'phone','Plots'=>'plots','Type'=>'type'];
 	if ( \Auth::user()->can('manage_members'))
 		{
@@ -170,10 +170,8 @@ class MembersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($member)
+	public function destroy(Member $member)
 	{
-		
-		//$member=$this->member->findOrFail($id);
 		
 		$member->destroy();
 

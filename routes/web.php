@@ -1,13 +1,10 @@
 <?php
+use App\Notifications\HoursAdded;
 /** ------------------------------------------
  *  Route model binding
  *  ------------------------------------------
  */
-/*Route::model('user', 'User');
-Route::model('hours', 'Hours');
-Route::model('role', 'Role');
-Route::model('plots', 'Plot');
-Route::model('members', 'Member');*/
+
 
 
 /** ------------------------------------------
@@ -44,6 +41,7 @@ Route::group(['middleware' => 'web'], function () {
 	
 	Route::get('members/waitlist',['as'=>'members.waitlist','uses'=>'MembersController@waitlist']);
 	Route::get('members/export',['as'=>'members.export','uses'=>'MembersController@export']);
+	Route::get('members/{members}/delete',['as'=>'member.delete','uses'=>'MembersController@destroy']);
 	Route::resource('members','MembersController');
 	
 
@@ -67,6 +65,10 @@ Route::group(['middleware' => 'web'], function () {
 
 	Route::get('manage-role', 'RoleController@manage');
 	Route::resource('roles','RoleController');
+
+	Route::get('testuser',function(){
+		dd(Auth::user()->getUsersPlot());
+	});
 });
 
 

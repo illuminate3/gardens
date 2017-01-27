@@ -8,22 +8,30 @@ use App\Hours;
 use App\Member;
 use App\User;
 use App\Plot;
+use App\Email;
 use App\Permission;
 use App\PeriodTrait;
 use App\Http\Requests\HoursFormRequest;
+use App\Notifications\HoursAdded;
 
 class HoursController extends Controller {
-use PeriodTrait;
+	use PeriodTrait;
 	
 	public $hour;
+	public $user;
+	public $email;
 	public $showyear;
+	public $plot;
 
 	
 	
-	public function __construct(Hours $hour, Request $request)
+	public function __construct(User $user , Plot $plot, Hours $hour, Request $request, EMail $email)
 	{
 		$this->hour = $hour;
-		
+		$this->user = $user;
+		$this->email = $email;
+		$this->plot = $plot;
+		$this->showyear = $this->getShowYear($request);
 		
 	}
 	
@@ -35,14 +43,11 @@ use PeriodTrait;
 	public function index(Request $request)
 	{
 		
-		$this->getShowYear($request);
-		$showyear = $this->showyear;
-		
-		$hours = $this->hour->where('user_id','=',Auth::id())
+		$hours = $this->hour->where('user_id','=',\Auth::id())
 		->with('gardener')
-		->where(\DB::raw('YEAR(servicedate)'),'=', $showyear)
+		->where(\DB::raw('YEAR(servicedate)'),'=', $this->showyear)
 		->get();
-
+		
 		$fields = ['Date'=>'servicedate','From'=>'starttime','To'=>'endtime','Hours'=>'hours','Details'=>'description','Edit'=>'actions'];
 		return view('hours.index', compact('hours','fields','showyear'));
 	}
@@ -89,9 +94,12 @@ use PeriodTrait;
 				
 				$data['hours']['user_id'] = $user_id;
 				$hour = $this->hour->create($data['hours']);
-				$hour = $this->hour->with('gardener','gardener.userdetails','gardener.plots');
-				$data['result'] = $hour;
-				$message = $this->sendEmailNotifications($data);
+				//$hour = 
+				
+				$data['result'] = $this->hour->with('gardener','gardener.userdetails','gardener.plots')->findOrFail([$hour->id]);
+				//$this->hour->notify(new HoursAdded($data));
+				
+				$message = $this->email->sendEmailNotifications($data);
 			}
 			
 		//}
@@ -111,7 +119,7 @@ use PeriodTrait;
 	
 	
 	$year = $request->get('y');
-	if ($request->get('m') !== null)
+	if ($request->has('m'))
 	{
 		
 		$year = strlen($request->get('m')) <2  ? $year ."-0".$request->get('m') : $year."-".$request->get('m');
@@ -154,7 +162,7 @@ use PeriodTrait;
 		$data['hours'] = $this->updateInput($data['hours']);
 		$hour->update($data['hours']);
 		$data['result'] = $hour;
-		$message = $this->sendEmailNotifications($data,'update');
+		$message = $this->email->sendEmailNotifications($data,'update');
 
 		return redirect()->route('hours.all');
 	}
@@ -174,10 +182,10 @@ use PeriodTrait;
 	}
 	
 	
-	public function allHours(Request $request)
+	public function allHours()
 	{
-		$this->getShowYear($request);
-		$hours = $this->getAllHours();
+		
+		$hours = $this->hour->getAllHours();
 		$showyear = $this->showyear;
 		
 		return view('hours.all', compact('hours','showyear'));
@@ -185,44 +193,7 @@ use PeriodTrait;
 	}
 	
 	
-	private function getAllHours()
-	{
-		
-		
-		$query ="SELECT 
-					users.id as id, 
-					firstname,lastname, 
-					YEAR(servicedate) as year,
-					MONTH(servicedate) as month, 
-					SUM(hours) as hours 
-				
-				FROM 
-					users,
-					members,
-					hours 
-					
-				WHERE 
-					hours.user_id = users.id
-					and members.user_id = users.id 
-					and YEAR(servicedate) = '".$this->showyear."' 
-				
-				GROUP BY 
-					id,
-					lastname,
-					firstname,
-					YEAR(servicedate), 
-					MONTH(servicedate) 
-				
-				ORDER BY 
-					lastname,
-					firstname,
-					month,
-					year";
-
-		$hours = \DB::select(\DB::raw($query));
-		
-		return $hours;
-	}
+	
 	
 	public function addMultipleHours() {
 		if($this->user->can('manage_hours')) {
@@ -236,7 +207,7 @@ use PeriodTrait;
 		 		
 		}else{
 			
-			$members = Member::where('user_id','=',Auth::id())->with(array( 'plots','plots.managedBy','plots.managedBy.userdetails'))->get();
+			$members = Member::where('user_id','=',\Auth::id())->with(array( 'plots','plots.managedBy','plots.managedBy.userdetails'))->get();
 		}
 		
 		return view('hours.createmultiple',compact('plot','members'));
@@ -248,7 +219,7 @@ use PeriodTrait;
 		
 		$data = $request->all();
 
-		$element['user'] = $data['user'];
+		$element['user_id'] = $data['user'][0];
 		$allData['userinfo']= User::whereId($data['user'])->with('member')->first();
 		
 		$fields = ['servicedate','hours','description'];
@@ -257,63 +228,52 @@ use PeriodTrait;
 				foreach ($fields as $field){
 					$element[$field] = $data[$field][$i];
 				}
-				$date = new DateTime($data['servicedate'][$i]);
+				$date = new \DateTime($data['servicedate'][$i]);
 				
 				$element['servicedate'] = $date->format('Y-m-d');
 				$element['startime'] = $date->format('H:i');
 				
 				
+				// replace this with a FormRequest
+				if(! $validator = \Validator::make($element , $this->hour->rules))
 				
-				$validator = Validator::make($element , $this->hour->rules);
-				
-				
-				
-				if ($validator->fails())
 				{
-					
-					return redirect()->back()->withErrors($validator)->withInput();
+					return redirect()
+					->back()
+					->withErrors($validator)
+					->withInput();
 				}
+				
+				
 				$posting = $this->calculateHours($element);
+
 				$this->hour->create($posting);
 				$allData['hours'][] = $posting;
 			}
 		}
-			$this->sendEmailNotifications($allData,'email');
-
+		$this->email->sendEmailNotifications($allData,'multi');
 		return redirect()->route('hours.all');
 		
 	}
-	public function downloadHours(Request $request)
+	public function downloadHours()
 	{
-		$this->getShowYear($request);
+		
 
 		$hours  = $this->getAllDetailHours();
-		
-		\Excel::create('Hours', function($excel)  use($hours){
-
-            $excel->sheet('hours', function($sheet) use($hours) {
-
-                $sheet->loadView('hours.export',compact('hours'));
-
-            });
-
-        })->export();
-
-
-
-		
+		$this->hours->exportHours($hours);
+			
 		
 	}
 	/**
-	 * Calculate start / edn time and hours.
+	 * Show hours by plot.
 	 *
-	 * @param  array  $inputdata
-	 * @return Response
+	 * 
+	 * @return View
 	 */
 	public function plothours()
 	{
 		
-		$hours = $this->getPlotHours();
+		$hours = $this->plot->getPlotHours();
 		$showyear = $this->showyear;
 		return view('hours.plot', compact('hours','showyear'));
 		
@@ -324,7 +284,7 @@ use PeriodTrait;
 	
 	public function matrixshow()
 	{
-		$hours = $this->getPlotHours();
+		$hours = $this->plot->getPlotHours();
 		$showyear = $this->showyear;
 		return view('hours.matrix', compact('hours','showyear'));
 		
@@ -332,56 +292,7 @@ use PeriodTrait;
 	}
 	
 	
-	private function getPlotHours($plot = NULL,$id=NULL, Request $request)
-	{
-		$this->getShowYear($request);
-		$showyear = $this->showyear;
-		$query ="SELECT 
-					plots.id as plotid, 
-					type,
-					month(servicedate) as month,
-					year(servicedate) as year,
-					sum(hours.hours) as hours,
-					plots.description as plot 
-				
-				FROM 
-					
-					members,
-					member_plot,
-					plots,
-					users
-				
-				LEFT JOIN 
-					hours on hours.user_id = users.id and (year(servicedate) IS NULL or year(servicedate) = '".$this->showyear."' )
-				
-				WHERE 
-					
-					users.id = members.user_id 
-					and members.id = member_plot.member_id 
-					and member_plot.plot_id = plots.id";
-				
-				if($plot)
-				{
-					$query.=" and plotnumber = ". $plot;
-				}
-				if($id)
-				{
-					$query.=" and plots.id = ". $id;
-					
-				}
-				
-		
-		$query.="
-				GROUP BY
-					plots.id, year, month
-				 ORDER BY 
-					plots.description,-month DESC, -year DESC";
 
-		$hours = \DB::select(\DB::raw($query));
-
-		return $hours;
-		
-	}
 	
 	public function	testemail()
 	{
@@ -403,7 +314,7 @@ use PeriodTrait;
 		
 	}
 	
-	private  function processEmail($inbound)
+	/*private  function processEmail($inbound)
 	{
 		// Make sure its a registered user
 		
@@ -419,7 +330,7 @@ use PeriodTrait;
 			{
 				case "help":
 					
-					$this->sendEmailNotifications($allData,$template='instructions');
+					$this->email->sendEmailNotifications($allData,$template='instructions');
 					
 				break;
 				
@@ -444,7 +355,7 @@ use PeriodTrait;
 		}
 		
 		
-	}
+	}*/
 	
 	
 	private function isMember($email){
@@ -453,7 +364,7 @@ use PeriodTrait;
 	}
 	
 	
-	private function parseEmailHours($inbound,$allData)
+	/*private function parseEmailHours($inbound,$allData)
 	{
 		
 		$plot = $allData['userinfo']->member->plots[0]->id;
@@ -509,19 +420,19 @@ use PeriodTrait;
 				}
 			}
 			
-			$this->sendEmailNotifications($allData,'email');
-			$this->sendEmailNotifications($allData,'confirmemail');				
+			$this->email->sendEmailNotifications($allData,'email');
+			$this->email->sendEmailNotifications($allData,'confirmemail');				
 		
 		}else{
 			// Case if we can match the user but not parse the email
 			
-			$this->sendEmailNotifications($allData,'noparse');
+			$this->email->sendEmailNotifications($allData,'noparse');
 		}
 		
 		
 		$hours->save();
 		
-	} 
+	} */
 	public function matrixadd() 
 	{
 		$inputs = $request->get('plothour');
@@ -542,7 +453,7 @@ use PeriodTrait;
 			}
 
 			// Calculate current recorded hours by plot
-			$hours = $this->getPlotHours(NULL,$key);
+			$hours = $this->plot->getPlotHours(NULL,$key);
 			$currentHours = array();
 			foreach ($hours as $hour)
 			{
@@ -587,7 +498,7 @@ use PeriodTrait;
 		 
 		 
 	 }
-	public function getHoursFromEmail($text)
+	/*public function getHoursFromEmail($text)
 	{
 		$hours=NULL;
 		$pattern = "%([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{2,4})[ ,\t]{0,}(\d+\.?\d{0,2})[ \t]{0,}(\*?)(.?[^\r\n,\;]*)%";
@@ -612,56 +523,11 @@ use PeriodTrait;
 		
 		return $hours;
 		
-	}
-	private function getAllDetailHours($plot = NULL)
-	{
-		if($plot)
-		{
-			// convert plot to users
-			
-			
-			$users = Plot::with('managedBy','managedBy.userdetails')->where('id','=',$plot)->firstOrFail();
-			
-
-			foreach ($users->managedBy as $member){
-				//dd($member->userdetails->id);
-				$user_id[]=  $member->userdetails->id;
-				
-			
-			}
-
-			// get users hours
-			$hours = Hours::whereIn('user_id',$user_id)
-				->where(\DB::raw('YEAR(servicedate)'), '=', $this->showyear)
-				->with('gardener')->orderBy('servicedate')
-				->get();
-			
-		}else{
-			//$hours = $this->hour->where(DB::raw('YEAR(servicedate)'), '=', $this->showyear)->with('gardener')->orderBy('servicedate')->get();
-			//$fields = ['servicedate','hours','description','gardener','plot'];
-			$query = "select 
-				servicedate,
-				hours ,
-				concat(members.firstname,' ',members.lastname) as gardener,
-					hours.description as description, 
-				plots.description as plot
-			FROM hours,users,members,member_plot,plots 
-			WHERE 
-				hours.user_id = users.id 
-				and users.id = members.user_id 
-				and members.id = member_plot.member_id 
-				and member_plot.plot_id = plots.id 
-				and YEAR(servicedate) = '". $this->showyear."'
-			ORDER BY plotnumber";
-			
-			$hours = \DB::select(\DB::raw($query));
-		}
-		
-		return $hours;
-	}
+	}*/
 
 
-	private function allHoursEmail($inbound,$allData)
+
+	/*private function allHoursEmail($inbound,$allData)
 	{
 
 		$plot = $allData['userinfo']->member->plots[0]->id;
@@ -671,11 +537,11 @@ use PeriodTrait;
 		$allData['year'] = $this->showyear;
 		$allData['hours'] = $hours;
 		
-		$this->sendEmailNotifications($allData,'total');
+		$this->email->sendEmailNotifications($allData,'total');
 		
-	}
+	}*/
 
-	private function calculateHours($inputdata)
+	/*private function calculateHours($inputdata)
 	{
 		$data=$inputdata;
 		
@@ -755,13 +621,13 @@ use PeriodTrait;
 				$data['user_id'] = Auth::id();
 				$data['member_id'] =$this->getUsersMemberId($data['user_id']);
 				
-			}*/
+			}
 		}
 		return $data;
 
 
 	}
-	
+	*/
 	
 	
 	private function updateInput($data)
@@ -779,7 +645,7 @@ use PeriodTrait;
 	}
 	
 	
-	
+	// move to User or Member model
 	private function  getMember($email)
 	{
 	
@@ -789,128 +655,8 @@ use PeriodTrait;
 	
 	
 	
-	private function sendEmailNotifications($data,$template=NULL)
-	{
-		switch ($template) {
-			case 'multi':
-				$emailTemplate = 'emails.hours.adminhours';
-				$toAddress = $this->getHoursNotificationEmails();
-
-				$subject = 'New Hours Added';
-			break;
-			
-			case 'confirmemail':
-				$emailTemplate = 'emails.hours.confirmemailhours';
-				$toAddress = $data->gardener->userdetails->email;
-				$subject = 'New Hours Added';
-			break;
-			
-			case 'email':
-				
-				$emailTemplate = 'emails.hours.adminemailhours';
-				$toAddress = $this->getHoursNotificationEmails();
-				$subject = 'New Hours Added';
-			break;
-			
-			case 'noparse':
-				
-				$emailTemplate = 'emails.hours.noparseemailhours';
-				$toAddress =$data['userinfo']->email;
-				$subject = "Unable to Add Hours";
-			break;
-			
-			
-			case 'total':
-				$emailTemplate = 'emails.hours.totalhours';
-				$toAddress =$data['userinfo']->email;
-				$subject = "Your Total Hours";
-			
-			
-			break;
-					
-			case 'update':
-					$emailTemplate = 'emails.hours.adminupdatehours';
-					//$toAddress ='stephen.hamilton@mail.com';
-					$toAddress = $this->getHoursNotificationEmails();
-					$subject = 'Hours Updated';
-			break;
-
-			case 'instructions':
-			
-				$toAddress =$data['userinfo']->email;
-				$emailTemplate = 'emails.hours.help';
-				$subject= 'Instructions';
-					
-			
-			break;
-		
-			default:
-					$emailTemplate = 'emails.hours.adminaddhours';
-					//$toAddress ='stephen.hamilton@mail.com';
-					$toAddress = $this->getHoursNotificationEmails();
-					$subject = 'New Hours Added';
-			break;
-		}
-		
-		\Mail::send($emailTemplate,$data, function($message) use ($toAddress,$subject)
-		{
-			$message->to($toAddress)->subject($subject);
-			
-		});
-		
-		
-	}
-	 
-	 private function getMembersUserId($memberid)
-	 {
-		 $userid = Member::where('id','=',$memberid)->pluck('user_id');
-		 
-		 return $userid;
-		 
-	 }
-	 
-	  private function getUsersMemberId($userid)
-	 {
-		 $memberid = Member::where('user_id','=',$userid)->pluck('id');
-		 
-		 return $memberid;
-		 
-	 }
 	 
 	 
-	 private function getUsersPlot($user_id)
-	 {
-		
-		 $plot = Plot::whereHas('managedBy', function($q) use($user_id)
-		{
-			$q->where('member_plot.user_id', '=', $user_id);
-		
-		})->first();
-
-		return $plot;	 
-	 }
 	 
-	 private function getHoursNotificationEmails()
-	 {
-		 $roles = Permission::find(9)->roles()->pluck('name');
-		 $email = Auth::user()->email; 
-			
-		
-		 $email = rtrim($email, ",");
-		 $emailArray = explode(",",$email);
-		 return $emailArray;
-		 
-		 
-	 }
 	 
-	 private function getPlotUsers($plot_id)
-	 {	
-	 	$users = User::whereHas('plots', function($q) use($plot_id)
-		{
-			$q->where('plots.id', '=', $plot_id);
-		
-		})->pluck('id','email');
-		 
-		 return $users;
-	 }
 }

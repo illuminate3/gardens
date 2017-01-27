@@ -20,7 +20,57 @@ class Plot extends Model {
 	
 	public function managedBy()
     {
-        return $this->belongsToMany(Member::class);
+        return $this->belongsToMany(Member::class)->with('userdetails');
     }
+	
+	public function getPlotHours($plot = NULL,$id=NULL, Request $request)
+	{
+		$this->getShowYear($request);
+		
+		$query ="SELECT 
+					plots.id as plotid, 
+					type,
+					month(servicedate) as month,
+					year(servicedate) as year,
+					sum(hours.hours) as hours,
+					plots.description as plot 
+				
+				FROM 
+					
+					members,
+					member_plot,
+					plots,
+					users
+				
+				LEFT JOIN 
+					hours on hours.user_id = users.id and (year(servicedate) IS NULL or year(servicedate) = '".$this->showyear."' )
+				
+				WHERE 
+					
+					users.id = members.user_id 
+					and members.id = member_plot.member_id 
+					and member_plot.plot_id = plots.id";
+				
+				if($plot)
+				{
+					$query.=" and plotnumber = ". $plot;
+				}
+				if($id)
+				{
+					$query.=" and plots.id = ". $id;
+					
+				}
+				
+		
+		$query.="
+				GROUP BY
+					plots.id, year, month
+				 ORDER BY 
+					plots.description,-month DESC, -year DESC";
 
+		$hours = \DB::select(\DB::raw($query));
+
+		return $hours;
+		
+	}
 }

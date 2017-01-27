@@ -10,7 +10,7 @@
 		<ul>
 		@foreach ($hours as $hour)
 		
-			<li>{{$hour['hours']}} hours  on {{date('M j<\s\up>S</\s\up>, Y',strtotime($hour['servicedate']) )}}  doing {{$hour['description']}}</li>
+			<li>{{$hour['hours']}} hours  on {!! date('M j<\s\up>S</\s\up>, Y',strtotime($hour['servicedate']) )!!}  doing {{$hour['description']}}</li>
 			
 		@endforeach
         </ul>

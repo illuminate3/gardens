@@ -1,0 +1,153 @@
+{
+  "FromName": "Stephen Hamilton",
+  "From": "stephen@crescentcreative.com",
+  "FromFull": {
+    "Email": "stephen@crescentcreative.com",
+    "Name": "Stephen Hamilton",
+    "MailboxHash": ""
+  },
+  "To": "hours@mcneargardens.com",
+  "ToFull": [
+    {
+      "Email": "hours@mcneargardens.com",
+      "Name": "",
+      "MailboxHash": ""
+    }
+  ],
+  "Cc": "",
+  "CcFull": [],
+  "Bcc": "b7b66bb23222e30c6d45cdefb99e0f81@inbound.postmarkapp.com",
+  "BccFull": [
+    {
+      "Email": "b7b66bb23222e30c6d45cdefb99e0f81@inbound.postmarkapp.com",
+      "Name": "",
+      "MailboxHash": ""
+    }
+  ],
+  "OriginalRecipient": "b7b66bb23222e30c6d45cdefb99e0f81@inbound.postmarkapp.com",
+  "Subject": "Total",
+  "MessageID": "f89d4514-cadc-43ef-a156-e2aee386f535",
+  "ReplyTo": "stephen@crescentcreative.com",
+  "MailboxHash": "",
+  "Date": "Sat, 14 Jan 2017 18:55:04 -0800",
+  "TextBody": "1\/31\/17 1 coffee grounds\r\n\r\n1\/14\/17 1 prepping accounts for AGM\r\n\r\n1\/14\/17 2 Annual general meeting\r\n\r\n \r\n\r\n",
+  "HtmlBody": "<html xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" xmlns:m=\"http:\/\/schemas.microsoft.com\/office\/2004\/12\/omml\" xmlns=\"http:\/\/www.w3.org\/TR\/REC-html40\"><head><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text\/html; charset=us-ascii\"><meta name=Generator content=\"Microsoft Word 15 (filtered medium)\"><style><!--\r\n\/* Font Definitions *\/\r\n@font-face\r\n\t{font-family:\"Cambria Math\";\r\n\tpanose-1:2 4 5 3 5 4 6 3 2 4;}\r\n@font-face\r\n\t{font-family:Calibri;\r\n\tpanose-1:2 15 5 2 2 2 4 3 2 4;}\r\n\/* Style Definitions *\/\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tmargin-bottom:.0001pt;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif;}\r\na:link, span.MsoHyperlink\r\n\t{mso-style-priority:99;\r\n\tcolor:#0563C1;\r\n\ttext-decoration:underline;}\r\na:visited, span.MsoHyperlinkFollowed\r\n\t{mso-style-priority:99;\r\n\tcolor:#954F72;\r\n\ttext-decoration:underline;}\r\nspan.EmailStyle17\r\n\t{mso-style-type:personal-compose;\r\n\tfont-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext;}\r\n.MsoChpDefault\r\n\t{mso-style-type:export-only;\r\n\tfont-family:\"Calibri\",sans-serif;}\r\n@page WordSection1\r\n\t{size:8.5in 11.0in;\r\n\tmargin:1.0in 1.0in 1.0in 1.0in;}\r\ndiv.WordSection1\r\n\t{page:WordSection1;}\r\n--><\/style><!--[if gte mso 9]><xml>\r\n<o:shapedefaults v:ext=\"edit\" spidmax=\"1026\" \/>\r\n<\/xml><![endif]--><!--[if gte mso 9]><xml>\r\n<o:shapelayout v:ext=\"edit\">\r\n<o:idmap v:ext=\"edit\" data=\"1\" \/>\r\n<\/o:shapelayout><\/xml><![endif]--><\/head><body lang=EN-US link=\"#0563C1\" vlink=\"#954F72\"><div class=WordSection1><p class=MsoNormal>1\/31\/17 1 coffee grounds<o:p><\/o:p><\/p><p class=MsoNormal>1\/14\/17 1 prepping accounts for AGM<o:p><\/o:p><\/p><p class=MsoNormal>1\/14\/17 2 Annual general meeting<o:p><\/o:p><\/p><p class=MsoNormal><o:p>&nbsp;<\/o:p><\/p><\/div><\/body><\/html>",
+  "StrippedTextReply": "",
+  "Tag": "",
+  "Headers": [
+    {
+      "Name": "Received",
+      "Value": "by inbound.postmarkapp.com (Postfix, from userid 993)id 55B65200D28; Sun, 15 Jan 2017 02:54:50 +0000 (UTC)"
+    },
+    {
+      "Name": "X-Spam-Checker-Version",
+      "Value": "SpamAssassin 3.4.0 (2014-02-07) onp-pm-inbound02-pktewr1"
+    },
+    {
+      "Name": "X-Spam-Status",
+      "Value": "No"
+    },
+    {
+      "Name": "X-Spam-Score",
+      "Value": "0.0"
+    },
+    {
+      "Name": "X-Spam-Tests",
+      "Value": "HTML_MESSAGE,RCVD_IN_DNSWL_NONE,SPF_PASS"
+    },
+    {
+      "Name": "Received-SPF",
+      "Value": "Pass (sender SPF authorized) identity=mailfrom; client-ip=97.74.135.163; helo=p3plsmtp09-02-25.prod.phx3.secureserver.net; envelope-from=srs1=kkmb=yourhostingaccount.com==okipmi=y5=crescentcreative.com=stephen@bounce.secureserver.net; receiver=b7b66bb23222e30c6d45cdefb99e0f81@inbound.postmarkapp.com"
+    },
+    {
+      "Name": "Received",
+      "Value": "from p3plsmtp09-02-25.prod.phx3.secureserver.net (p3plsmtp09-02.prod.phx3.secureserver.net [97.74.135.163])by inbound.postmarkapp.com (Postfix) with ESMTP id 66008200C9Ffor <b7b66bb23222e30c6d45cdefb99e0f81@inbound.postmarkapp.com>; Sat, 14 Jan 2017 21:54:49 -0500 (EST)"
+    },
+    {
+      "Name": "Received",
+      "Value": "(qmail 25970 invoked from network); 15 Jan 2017 02:54:48 -0000"
+    },
+    {
+      "Name": "Delivered-To",
+      "Value": "hours@mcneargardens.com"
+    },
+    {
+      "Name": "Received",
+      "Value": "(qmail 25968 invoked by uid 30297); 15 Jan 2017 02:54:48 -0000"
+    },
+    {
+      "Name": "Received",
+      "Value": "from unknown (HELO p3plibsmtp02-11.prod.phx3.secureserver.net) ([68.178.213.11])          (envelope-sender <srs0=okipmi=y5=crescentcreative.com=stephen@yourhostingaccount.com>)          by p3plsmtp09-02_25.prod.phx3.secureserver.net (qmail-1.03) with SMTP          for <hours@mcneargardens.com>; 15 Jan 2017 02:54:48 -0000"
+    },
+    {
+      "Name": "Received",
+      "Value": "from walmailout02.yourhostingaccount.com ([65.254.253.100])by p3plibsmtp02-11.prod.phx3.secureserver.net with bizsmtpid YSun1u00p2AkHax01Suocx; Sat, 14 Jan 2017 19:54:48 -0700"
+    },
+    {
+      "Name": "Received",
+      "Value": "from walmailscan15.yourhostingaccount.com ([10.1.15.15] helo=walmailscan15.yourhostingaccount.com)by walmailout02.yourhostingaccount.com with esmtp (Exim)id 1cSaxz-0000t6-Gvfor hours@mcneargardens.com; Sat, 14 Jan 2017 21:54:47 -0500"
+    },
+    {
+      "Name": "Received",
+      "Value": "from [10.114.3.33] (helo=walimpout13)by walmailscan15.yourhostingaccount.com with esmtp (Exim)id 1cSaxz-0007zX-FDfor hours@mcneargardens.com; Sat, 14 Jan 2017 21:54:47 -0500"
+    },
+    {
+      "Name": "Received",
+      "Value": "from walauthsmtp12.yourhostingaccount.com ([10.1.18.12])by walimpout13 with id YSuk1u0060FdXoS01Sun27; Sat, 14 Jan 2017 21:54:47 -0500"
+    },
+    {
+      "Name": "X-Authority-Analysis",
+      "Value": "v=2.1 cv=Q71c4uGa c=1 sm=1 tr=0 a=t1ijpx9AV50gTBtUFlM2vg==:117 a=3hXHmhPCBBW05FtTHqh4Cg==:17 a=L9H7d07YOLsA:10 a=9cW_t1CCXrUA:10 a=s5jvgZ67dGcA:10 a=IgFoBzBjUZAA:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=K1Lhvx4XUwW-qxG3VkQA:9 a=CjuIK1q_8ugA:10 a=FsS3pqLNm8MA:10 a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8 a=_p9PyNxkcYEaTZclwQkA:9 a=gKO2Hq4RSVkA:10 a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10 a=BKKCjISod1eDJeS0ORpz:22 a=zjWhRoSqWz9hl55Hdlzg:22"
+    },
+    {
+      "Name": "Received",
+      "Value": "from c-76-102-234-187.hsd1.ca.comcast.net ([76.102.234.187]:64231 helo=StephensMini)by walauthsmtp12.yourhostingaccount.com with esmtpa (Exim)id 1cSaxw-00056m-2sfor hours@mcneargardens.com; Sat, 14 Jan 2017 21:54:44 -0500"
+    },
+    {
+      "Name": "Organization",
+      "Value": "Crescent Creative"
+    },
+    {
+      "Name": "Message-ID",
+      "Value": "<03e901d26eda$c7237000$556a5000$@crescentcreative.com>"
+    },
+    {
+      "Name": "MIME-Version",
+      "Value": "1.0"
+    },
+    {
+      "Name": "X-Mailer",
+      "Value": "Microsoft Outlook 16.0"
+    },
+    {
+      "Name": "Thread-Index",
+      "Value": "AdJu2sV1LhJjSqiHTP24ut8SpbjDPA=="
+    },
+    {
+      "Name": "Content-Language",
+      "Value": "en-us"
+    },
+    {
+      "Name": "X-EN-UserInfo",
+      "Value": "0c6adb9cac256a2cee10a3ed2dac4156:931c98230c6409dcc37fa7e93b490c27"
+    },
+    {
+      "Name": "X-EN-AuthUser",
+      "Value": "stephen@crescentcreative.com"
+    },
+    {
+      "Name": "Sender",
+      "Value": "\"Stephen Hamilton\" <stephen@crescentcreative.com>"
+    },
+    {
+      "Name": "X-EN-OrigIP",
+      "Value": "76.102.234.187"
+    },
+    {
+      "Name": "X-EN-OrigHost",
+      "Value": "c-76-102-234-187.hsd1.ca.comcast.net"
+    }
+  ],
+  "Attachments": []
+}
+
