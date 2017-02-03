@@ -46,6 +46,7 @@ Route::group(['middleware' => 'web'], function () {
 	
 
 	Route::get('plotlist',array('as' => 'plotlist', 'uses' => 'PlotsController@plotlist'));
+	
 	Route::resource('plots','PlotsController');
 	
 	Route::get('hours/show/{userid}',array('as'=>'hours.show','uses'=>'HoursController@show'));

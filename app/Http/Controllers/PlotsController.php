@@ -64,8 +64,9 @@ class PlotsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($plot)
 	{
+		dd($plot);
 		$plot = $this->plot->whereId($id)->with('managedBy')->firstOrFail();
 		
 		return view('plots.show', compact('plot','diaries'));
@@ -79,6 +80,7 @@ class PlotsController extends Controller {
 	 */
 	public function edit($plots)
 	{
+		dd($plots);
 		$assigned=array();
 		$plot = $this->plot->where('id','=',$plots->id)->with('managedBy')->get();
 		foreach($plot[0]->managedBy as $gardener)
