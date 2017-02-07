@@ -3,7 +3,7 @@
 
     @section('content')
     <?php $fields = ['First Name'=>'firstname','Last Name'=>'lastname','Phone'=>'phone','Plots'=>'plots','Type'=>'type'];?>
-	@can('manage_members'))
+	@can('manage_members')
 		
 			<?php $fields['Edit'] ='action';
 			$fields['Status']='status';?>

@@ -10,6 +10,7 @@
         <a href="{{{route('hours.multiple') }}}" class="btn btn-small btn-info iframe">
         <span class="glyphicon glyphicon-plus-sign"></span> Add Multiple Hours</a>
 </div>
+
 <div>@if(Auth::user()->can('manage_hours'))</div>
 
 <a href= "{{{route('hours.download') }}}" title="Export Hours" ><i class="glyphicon glyphicon-cloud-download"></i> Export Hours</i></a>
@@ -19,6 +20,7 @@
 
 {{Form::close()}}
 <table id ='sorttable' class='table table-striped table-bordered table-condensed table-hover'>
+
 <?php $months= ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Tot'];
 
 $totalHours = "";
@@ -45,7 +47,8 @@ foreach($hours as $hour)
 		if($month !=0){
 			echo "<td style ='text-align:right' >".  $total."</td>";
 		}
-		$total = '';
+
+		$total = 0;
 		$person = $hour->id;
 		$month="1";
 	
@@ -58,7 +61,9 @@ foreach($hours as $hour)
 	echo "<td style ='text-align:right' >";
 	echo "<a href =\"". route('hours.show',array($hour->id,'y'=>$showyear,'m'=>$hour->month)). "\">";
 	echo  number_format ( $hour->hours,2 ) ."</a></td>";
+	
 	$total = $total + number_format ( $hour->hours,2);
+
 	$month = $hour->month + 1;
 }
 

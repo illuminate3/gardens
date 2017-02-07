@@ -43,6 +43,7 @@ public  $rules = [
 
 	public function getAllDetailHours($plot = NULL)
 	{
+		$this->showYear = $this->getShowYear();
 		if($plot)
 		{
 			// convert plot to users
@@ -93,7 +94,7 @@ public  $rules = [
 
 	public function getAllHours()
 	{
-		
+		$this->showYear = $this->getShowYear();
 		// I am sure we can simplify this
 		$query ="SELECT 
 					users.id as id, 

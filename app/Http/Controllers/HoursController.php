@@ -42,6 +42,7 @@ class HoursController extends Controller {
 	 */
 	public function index(Request $request)
 	{
+		$this->showyear = $this->getShowYear($request);
 		
 		$hours = $this->hour->where('user_id','=',\Auth::id())
 		->with('gardener')
@@ -101,7 +102,7 @@ class HoursController extends Controller {
 				$hour->description = $data['hours']['description'];
 				$hour->user_id = $data['hours']['user_id'];
 				$hour->save();
-				dd($hour);
+				
 				
 				$data['result'] = $this->hour->with('gardener','gardener.userdetails','gardener.plots')->findOrFail([$hour->id]);
 				//$this->hour->notify(new HoursAdded($data));
@@ -191,8 +192,10 @@ class HoursController extends Controller {
 	
 	public function allHours()
 	{
+		$this->showyear = $this->getShowYear();
 		
 		$hours = $this->hour->getAllHours();
+		
 		$showyear = $this->showyear;
 		
 		return view('hours.all', compact('hours','showyear'));

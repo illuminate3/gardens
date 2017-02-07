@@ -3,7 +3,7 @@
 namespace App;
 use Illuminate\Http\Request;
 trait PeriodTrait {
-
+	public $showyear;
 	public function getShowYear(Request $request= null)
 		
 		{
@@ -14,7 +14,7 @@ trait PeriodTrait {
 					
 			}else{
 				if(\Session::has('showyear')){
-					$this->showyear;
+					$this->showyear = \Session::get('showyear');
 				}else{
 
 						$this->showyear = date('Y');
@@ -23,7 +23,7 @@ trait PeriodTrait {
 
 				}
 			}
-			
+			//dd($this->showyear);
 			return $this->showyear;
 		}
 }
