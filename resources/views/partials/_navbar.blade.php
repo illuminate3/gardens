@@ -18,8 +18,9 @@
 						
                         <li {{ (Request::is('About') ? ' class="active"' : '') }}><a href="{{{ URL::to('/#about') }}}">About</a></li>
                         <li {{ (Request::is('Contact') ? ' class="active"' : '') }}><a href="{{{ URL::to('/contact_us') }}}">Contact</a></li>
-                         <li {{ (Request::is('Contact') ? ' class="active"' : '') }}><a href="{{{ URL::to('/join') }}}">Join Us</a></li>
                         @if(!Auth::check())
+                        <li {{ (Request::is('Contact') ? ' class="active"' : '') }}><a href="{{{ URL::to('/join') }}}">Join Us</a></li>
+                       
                         <li {{ (Request::is('user*') ? ' class="active"' : '') }}><a href="{{{ URL::to('/login') }}}">Members</a></li>
                     	@else                     
                      
@@ -57,7 +58,19 @@
                                 <li{{ (Request::is('admin/hours*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/hours/matrix') }}}"><span class="glyphicon glyphicon-time"></span> Hours</a></li>
                                     @endif
                                     <li class="divider"></li>
-                                <li><a href="{{{ URL::to('user/logout') }}}"><span class="glyphicon glyphicon-share"></span> Logout</a></li>
+                                    <li>
+                                        <a href="{{ url('/logout') }}" 
+                                            onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                                        <span class="glyphicon glyphicon-share"></span> Logout
+                                        </a>
+                                        <form id="logout-form" 
+                                            action="{{ url('/logout') }}" 
+                                            method="POST" 
+                                            style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
+                                </li>
                             </ul>
                         </li>
                         @if (App::environment() != 'production')

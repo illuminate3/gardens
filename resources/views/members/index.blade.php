@@ -2,6 +2,13 @@
 
 
     @section('content')
+    <?php $fields = ['First Name'=>'firstname','Last Name'=>'lastname','Phone'=>'phone','Plots'=>'plots','Type'=>'type'];?>
+	@can('manage_members'))
+		
+			<?php $fields['Edit'] ='action';
+			$fields['Status']='status';?>
+	@endcan	
+	
     <h1>Active Members</h1>
     <p><a href="{{route('members.waitlist')}}">Show Wait List Members</a></p>
     @can('manage_members')

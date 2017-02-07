@@ -1,9 +1,11 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\MemberFormRequest;
+use App\Http\Requests\JoinFormRequest;
 use App\Http\Controllers\Controller;
 use App\Notifications\HoursAdded;
+use Illuminate\Http\Request;
 use App\Member;
 use App\User;
 use App\Plot;
@@ -18,14 +20,18 @@ class MembersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public $user;
-	public $member;
+	protected $user;
+	protected $plot;
+	protected $member;
+	protected $hoursadded;
 	
 	
-	public function __construct(Member $member, User $user)
+	public function __construct(Member $member, User $user,HoursAdded $hoursadded, Plot $plot)
 	{
-			$this->member= $member;
-			$this->user= $user;
+			$this->hoursadded = $hoursadded;
+			$this->member = $member;
+			$this->user = $user;
+			$this->plot = $plot;
 
 	}
 	
@@ -39,20 +45,15 @@ class MembersController extends Controller {
 			->with('userdetails','plots')
 			->get();
 		}else{
-
+			//only get full members if not admin
 			$members = $this->member
 			->where('status','=','full')
 			->with('userdetails','plots')
 			->get();
 		}
 	
-		$this->user->notify(new HoursAdded($this->user));
-	$fields = ['First Name'=>'firstname','Last Name'=>'lastname','Phone'=>'phone','Plots'=>'plots','Type'=>'type'];
-	if ( \Auth::user()->can('manage_members'))
-		{
-			$fields['Edit'] ='action';
-			$fields['Status']='status';
-		}
+	// Not sure what this was going to be!
+	//$this->user->notify($this->hoursadded($this->user));
 	
 	return view('members.index', compact('members','fields'));
 	}
@@ -64,7 +65,7 @@ class MembersController extends Controller {
 	 */
 	public function create()
 	{
-		$plots = Plot::all();
+		$plots = $this->plot->all();
 		return view('members.create',compact('plots'));
 	}
 
@@ -73,20 +74,12 @@ class MembersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(MemberFormRequest $request)
 	{
-		$rules = $this->member->rules;
 		
-		$validator = Validator::make($data = Input::all(),$rules);
+		$this->member->create($request->all());
 
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
-
-		$this->member->create($data);
-
-		return Redirect::route('members.index');
+		return redirect()->route('members.index');
 	}
 
 	/**
@@ -122,7 +115,7 @@ class MembersController extends Controller {
 		$assigned = array();
 		$member = $this->member->where('id','=',$id)->with('userdetails','plots')->firstOrFail();
 
-		$plots = Plot::all();
+		$plots = $this->plot->all();
 		
 		foreach($member->plots as $plot)
 		{
@@ -138,17 +131,10 @@ class MembersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($member)
+	public function update(MemberFormRequest $request, $member)
 	{
+		dd($member);
 		
-		$rules = $this->member->rules;
-		$rules['email'] = 'required';
-		$validator = Validator::make($data = Input::all(),$rules);
-
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
 		if(isset($data['plots'])){
 			$member->plots()->sync($data['plots']);
 		}else{
@@ -161,7 +147,7 @@ class MembersController extends Controller {
 
 		$member->update($data);
 
-		return Redirect::route('members.index');
+		return redirect()->route('members.index');
 	}
 
 	/**
@@ -175,7 +161,7 @@ class MembersController extends Controller {
 		
 		$member->destroy();
 
-		return Redirect::route('members.index');
+		return redirect()->route('members.index');
 	}
 
 
@@ -195,11 +181,11 @@ class MembersController extends Controller {
 		return view('members.wait', compact('members','fields'));
 		
 	}
-	
+	//should move to NotifyClass
 	public function emailMember($id)
 	
 	{
-		$from = $this->member->where('user_id','=',Auth::id())->get();
+		$from = $this->member->where('user_id','=',check()->id())->get();
 		$to = $this->member->findOrFail($id);
 
 		return view('members.email', compact('to','from'));
@@ -219,42 +205,41 @@ class MembersController extends Controller {
 		
 	}
 	
-	public function join()
+	public function join(JoinFormRequest $request)
 	{
-		$validator = Validator::make($data = Input::all(),$this->member->rules);
+		
+		dd($request);
+		$data=$request->all();
+	    $data=$this->getUserData($data);
 
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
-
-
-    $data['username']=strtolower(substr($data['firstname'],0,1).$data['lastname']);
-   	$data['password']= rtrim(base64_encode(md5(microtime())),"=");
-	$data['password_confirmation'] = $data['password'];
-	$data['confirmed']=FALSE;
-	
-	$data['confirmation_code'] = md5(uniqid(mt_rand(), true));
-	$user = new User;
-	$user->save($data);
-
-	$data['membersince'] =date('Y:m:d h:i:s');
-	$data['status'] ='wait';
-	$member = $this->member->create($data);
-	$user = $this->user;
-	
-	
-	$user->password = rtrim(base64_encode(md5(microtime())),"=");
-	$user->save();
-	dd($user->id);
-	$member->user_id = $user->id;
-	$data['yourname'] = $data['firstname'] ." " .$data['lastname'];
-	$this->member->sendFormEmails($data);
-	return view('pages.response', compact('data'));
+		$user = new User;
+		$user->save($data);
+		$this->member = new Member;
+		
+		$member = $this->member->create($data);
+		$user = $this->user;
+		
+		$member->user_id = $user->id;
+		$data['yourname'] = $data['firstname'] ." " .$data['lastname'];
+		$this->member->sendFormEmails($data);
+		return view('pages.response', compact('data'));
 
 		
 	}
 	
+	private function getUserData($data)
+	{
+		$data['username']= strtolower(substr($data['firstname'],0,1).$data['lastname']);
+		$data['password']= rtrim(base64_encode(md5(microtime())),"=");
+		$data['password_confirmation'] = $data['password'];
+		$data['confirmed']=FALSE;
+		
+		$data['confirmation_code'] = md5(uniqid(mt_rand(), true));
+		$data['membersince'] =date('Y:m:d h:i:s');
+		$data['status'] ='wait';
+		return $data;
+	}
+
 	public function export()
 	{
 		$members = $this->member->with('userdetails','plots')->get();
@@ -278,7 +263,7 @@ class MembersController extends Controller {
 	// Duplicate function could be moved to Model
 	private function getUsersPlot($user_id)
 	{
-	 $plot = Plot::whereHas('managedBy', function($q) use($user_id)
+	 $plot = $this->plot->whereHas('managedBy', function($q) use($user_id)
 		{
 			$q->where('user_id', '=', $user_id);
 		

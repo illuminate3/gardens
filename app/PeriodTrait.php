@@ -19,6 +19,7 @@ trait PeriodTrait {
 						$this->showyear = date('Y');
 						\Session::put('showyear',$this->showyear);
 					}
+				}
 			}
 			
 			return $this->showyear;

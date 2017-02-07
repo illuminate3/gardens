@@ -98,7 +98,7 @@
 
 	    <div id="footer" >
 	      <div class="container">
-          <p><a href="{{route('privacy')}}" >Privacy Policy</a></p>
+          <p><a href="{{url('privacy')}}" >Privacy Policy</a></p>
 	        <p class="muted credit">&copy; 2015 - <?php echo date("Y");?>  Crescent Creative </a>.</p></div>
             
             	    </div>

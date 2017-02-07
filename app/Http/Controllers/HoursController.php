@@ -85,7 +85,7 @@ class HoursController extends Controller {
 	public function store(HoursFormRequest $request)
 	{
 		$data['hours'] = $request->all();
-		$data['hours'] = $this->calculateHours($data['hours']);
+		$data['hours'] = $this->hour->calculateHours($data['hours']);
 
 		// If more than one member has posted hours
 		//if(is_array($data['hours']['user'])){
@@ -93,8 +93,15 @@ class HoursController extends Controller {
 			foreach ($data['hours']['user'] as $user_id){
 				
 				$data['hours']['user_id'] = $user_id;
-				$hour = $this->hour->create($data['hours']);
-				//$hour = 
+				$hour = new Hours;
+				$hour->servicedate = $data['hours']['servicedate'];
+				$hour->starttime = $data['hours']['starttime'];
+				$hour->endtime = $data['hours']['endtime'];
+				$hour->hours = $data['hours']['hours'];
+				$hour->description = $data['hours']['description'];
+				$hour->user_id = $data['hours']['user_id'];
+				$hour->save();
+				dd($hour);
 				
 				$data['result'] = $this->hour->with('gardener','gardener.userdetails','gardener.plots')->findOrFail([$hour->id]);
 				//$this->hour->notify(new HoursAdded($data));

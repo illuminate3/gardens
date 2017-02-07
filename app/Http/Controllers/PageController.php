@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Page;
+use App\Http\Requests\ContactFormRequest;
 
 class PageController extends Controller {
 
@@ -21,7 +22,7 @@ class PageController extends Controller {
 	{
 		$pages = $this->page->all();
 
-		return View::make('pages.index', compact('pages'));
+		return view()->make('pages.index', compact('pages'));
 	}
 
 	/**
@@ -31,7 +32,7 @@ class PageController extends Controller {
 	 */
 	public function create()
 	{
-		return View::make('pages.create');
+		return view()->make('pages.create');
 	}
 
 	/**
@@ -45,12 +46,12 @@ class PageController extends Controller {
 
 		if ($validator->fails())
 		{
-			return Redirect::back()->withErrors($validator)->withInput();
+			return redirect()->back()->withErrors($validator)->withInput();
 		}
 
 		$this->page->create($data);
 
-		return Redirect::route('pages.index');
+		return redirect()->route('pages.index');
 	}
 
 	/**
@@ -59,13 +60,23 @@ class PageController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($slug)
+	public function show($slug=null)
 	{
 		
-		$page =$this->page->where('slug','=',$slug)->get();
-
-
-		return View::make('pages.show', compact('page'));
+		if(! $slug){
+			$slug = 'front';
+		}
+		if(! $page =$this->page->where('slug','=',$slug)->first())
+			{
+				$slug = 'front';
+				$page =$this->page->where('slug','=',$slug)->first();
+		}
+		if(! $page->template)
+		{
+			$page->template = 'show';
+		}
+		$view = 'pages.'.$page->template;
+		return view()->make($view, compact('page'));
 	}
 
 	/**
@@ -76,9 +87,9 @@ class PageController extends Controller {
 	 */
 	public function edit($id)
 	{
-		$page = $this->pge->find($id);
+		$page = $this->page->find($id);
 
-		return View::make('pages.edit', compact('page'));
+		return view()->make('pages.edit', compact('page'));
 	}
 
 	/**
@@ -95,12 +106,12 @@ class PageController extends Controller {
 
 		if ($validator->fails())
 		{
-			return Redirect::back()->withErrors($validator)->withInput();
+			return redirect()->back()->withErrors($validator)->withInput();
 		}
 
 		$page->update($data);
 
-		return Redirect::route('pages.index');
+		return redirect()->route('pages.index');
 	}
 
 	/**
@@ -113,24 +124,16 @@ class PageController extends Controller {
 	{
 		$this->page->destroy($id);
 
-		return Redirect::route('pages.index');
+		return redirect()->route('pages.index');
 	}
 	
-	public function form()
+	public function form(ContactFormRequest $request)
 	{
 		
-		$validator = Validator::make($data = Input::all(), $this->page->rules);
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
-		if(! $email_test = $this->checkValidEmail($data['email']))
-		{
-			return Redirect::back()->withErrors(['email'=>'Are you sure!'])->withInput();
-		}
+		dd($request);
 		
 		$this->page->sendFormEmails($data);
-		return View::make('pages.response', compact('data'));
+		return view()->make('pages.response', compact('data'));
 		
 	}
 	
@@ -182,7 +185,7 @@ class PageController extends Controller {
 	
 	public function privacy()
 	{
-		return View::make('pages.privacy');
+		return view()->make('pages.privacy');
 		
 	}
 }

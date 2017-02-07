@@ -10,33 +10,31 @@ class Hours extends Model {
 	use PeriodTrait;
 
 	public $showYear;
-
+public  $rules = [
+		'servicedate' => 'required|date',
+		'starttime' =>'required_without_all:hours,endtime',
+		'endtime'=>'required_without_all:hours,starttime',
+		'hours'=>"required_without_all:starttime,endtime",
+		'description'=>'required',
+	];
+	protected $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];	
 	public function __construct()
 	{
 		$this->showYear = $this->getShowYear();
 	}
 	// Add your validation rules here
-	public  $rules = [
-		'servicedate' => 'required|date',
-		'starttime' =>'required_without_all:hours,endtime',
-		'endtime'=>'required_without_all:hours,starttime',
-		'hours'=>"required_without_all:starttime,endtime",
-		'description'=>'required'
-	];
+	
 
 	// Don't forget to fill this array
-	protected $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];
+
 
 	public function gardener()
     {
         return $this->belongsTo(Member::class,'user_id','user_id');
     }
 	
-		
 	
-	
-	
-		private function cleanseString($string)
+	private function cleanseString($string)
 	{
 		$string = preg_replace('/[\x00-\x1F\x80-\xFF]/', '',$string);
 		$string = str_replace(","," ", $string);
