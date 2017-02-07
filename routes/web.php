@@ -59,6 +59,8 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::post('hours/multistore', array('as'=>'hours.multistore','uses'=>'HoursController@multistore'));
 	Route::get('hours/{id}/delete', ['as'=>'hours.delete','uses'=>'HoursController@destroy']);	
 	Route::resource('hours','HoursController');
+
+	Route::get('summaryemails', ['as'=>'sendsummaryemails','uses'=>'PlotsController@sendSummaryEmails']);
 	
 	Route::get('manage-role', 'RoleController@manage');
 	Route::resource('roles','RoleController');

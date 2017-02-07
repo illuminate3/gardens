@@ -166,8 +166,7 @@ class PlotsController extends Controller {
 	private function getPlotSummaryHours($id = null)
 	{
 		$showYear = '2016';
-		
-		$plots = DB::select("SELECT 
+		$query = "SELECT 
 			plots.id, plots.description as description, plots.type as type, members.firstname as firstname, users.email as email,sum(hours) as total
 				FROM `plots`,`member_plot`,`members`,`users`
                 left join hours on users.id = hours.user_id 
@@ -177,12 +176,14 @@ class PlotsController extends Controller {
 				and members.user_id = users.id
 				and members.status = \"full\"
 				group by users.id,plots.id
-                order by plots.id");
-		/*$plots = $this->plot->with('managedBy','managedBy.userdetails')
+                order by plots.id";
+                //dd($query);
+		//$plots = \DB::select($query);
+		$plots = $this->plot->with('managedBy','managedBy.userdetails')
 		->whereHas('managedBy.userdetails.serviceHours', function($query) use ($showYear) {
-        	$query->where(DB::raw('YEAR(servicedate)'),'=', $showYear);
+        	$query->where(\DB::raw('YEAR(servicedate)'),'=', $showYear);
     	})
-    	->get();*/
+    	->get();
     	return $plots;
     }
 
