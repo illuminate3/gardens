@@ -93,9 +93,9 @@ class MembersController extends Controller {
 		
 
 		$member = $this->member
-		->with('userdetails','plots')
-		->whereId($id)
-		->firstOrFail();
+			->with('userdetails','plots','userdetails.currentYearHours')
+			->whereId($id)
+			->firstOrFail();
 
 		
 		

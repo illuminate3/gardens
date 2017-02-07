@@ -65,6 +65,27 @@ class User extends Authenticatable
             }
         return $plots;    
      }
+     
+     public function currentYearHours()
+     {
+        $year = date('Y');
+    
+        return $this->hasMany(Hours::class)
+                ->where('servicedate','like',$year."%")
+                ->orderBy('servicedate');
+        ;
+     }
 
+     public function sumCurrentHours()
+     {
+        $year = date('Y');
+    
+        return $this->hasMany(Hours::class)
+                ->where('servicedate','like',$year."%")
+                ->groupBy('user_id')
+            ->sum('hours')
+        ;
+
+     }
     
 }

@@ -60,8 +60,10 @@
                         </button>
                         <ul class="dropdown-menu" role="menu">
 
-                            <li><a href="{{route('admin.plots.edit',$plot->id)}}"><i class="glyphicon glyphicon-pencil"></i> Edit </a></li>
-                            <li><a href="{{route('admin.plots.destroy',$plot->id)}}"><i class="glyphicon glyphicon-trash"></i> Delete </li>
+                            <li><a href="{{route('plots.edit',$plot->id)}}">
+                            <i class="glyphicon glyphicon-pencil"></i> Edit plot</a></li>
+                            <li><a data-href="/plots/{{$plot->id}}/delete" data-toggle="modal" data-target="#confirm-delete" data-title = " this plot" href="#">
+                            <i class="glyphicon glyphicon-trash"></i> Delete plot</a></li>
                         </ul>
                     </div>
 

@@ -13,11 +13,12 @@
 <a href= "{{{route('hours.download') }}}" title="Export Hours" ><i class="glyphicon glyphicon-cloud-download"></i> Export Hours</i></a>
 @endif
 {{Form::open(array('route'=>'hours.all', 'method' => 'get','class'=>'form', 'id'=>'selectForm'))}}
+
 @include('hours.partials._year')
 
 {{Form::close()}}
 {{Form::open(array('route'=>'hours.matrix', 'method' => 'post','class'=>'form', 'id'=>'updateHours'))}}
-
+{{csrf_field()}}
 
 <table >
 <?php $months= ['Plot','Plot Type','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Tot'];
@@ -154,7 +155,7 @@ foreach($hours as $hour)
 ?>
 </tbody>
 </table>
-<input name="_token" type="hidden" value="Qx1e9n9spzbC0B4tToLAGIpDfEt91eUroVGWlDwq">
+{{csrf_field()}}
 {{Form::submit()}}
 {{Form::close()}}
 </div>

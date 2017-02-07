@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers;
+use App\Http\Requests\PlotsFormRequest;
+use App\Mail\SummaryHoursEmail;
 use App\Plot;
 use App\Member;
 use App\User;
@@ -44,18 +46,12 @@ class PlotsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(PlotsFormRequest $request)
 	{
-		$validator = Validator::make($data = Input::all(), $this->plot->rules);
+		
+		$this->plot->create($request->all());
 
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
-
-		$this->plot->create($data);
-
-		return Redirect::route('plots.index');
+		return redirect()->route('plots.index');
 	}
 
 	/**
@@ -66,8 +62,8 @@ class PlotsController extends Controller {
 	 */
 	public function show($plot)
 	{
-		dd($plot);
-		$plot = $this->plot->whereId($id)->with('managedBy')->firstOrFail();
+		
+		$plot = $this->plot->whereId($plot)->with('managedBy')->firstOrFail();
 		
 		return view('plots.show', compact('plot','diaries'));
 	}
@@ -78,11 +74,11 @@ class PlotsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($plots)
+	public function edit($plot)
 	{
-		dd($plots);
+		
 		$assigned=array();
-		$plot = $this->plot->where('id','=',$plots->id)->with('managedBy')->get();
+		$plot = $this->plot->where('id','=',$plot)->with('managedBy')->get();
 		foreach($plot[0]->managedBy as $gardener)
 		{
 			$assigned[] = $gardener->id;	
@@ -99,28 +95,19 @@ class PlotsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($plot)
+	public function update(PlotsFormRequest $request, Plot $plot)
 	{
 		
+		$data = $request->all();
 		
-		$this->plot=$plot;
-
-		$validator = Validator::make($data = Input::all(), $this->plot->rules);
-
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
 		if(isset($data['assigned'])){
 			$plot->managedBy()->sync($data['assigned']);
 		}else{
 			$plot->managedBy()->detach();
 		}
 		$plot->update($data);
-		
-		
 
-		return Redirect::route('plotlist');
+		return redirect()->route('plotlist');
 	}
 
 	/**
@@ -133,7 +120,7 @@ class PlotsController extends Controller {
 	{
 		$this->plot->destroy($id);
 
-		return Redirect::route('plots.index');
+		return redirect()->route('plots.index');
 	}
 
 
@@ -145,67 +132,74 @@ class PlotsController extends Controller {
 		$fields=['Number'=>'plotnumber','Sub'=>'subplot',
 			'Type'=>'type',
 			'Area'=>'area','Comments'=>'description','Assigned To'=>'managedBy'];
-		if ($this->user->hasRole('admin'))
+		if (\Auth::user()->can('manage_plots'))
 		{
 
-		$fields['Edit']='action';
+			$fields['Edit']='action';
 		}
 		return view('plots.index', compact('plots','fields'));
-		
-		
 		
 	}
 	public function getPlotHours()
 	{
+		
 		$plots = $this->getPlotSummaryHours();
 		$plotsummary = $this->getPlotSummaryDetails($plots);
-		$fields = ['description','type','name','sum','address','met commitment'];
+		$fields = ['description','type','name','sum','address','meeting commitment'];
 		return view('plots.summary', compact('plotsummary','fields'));
 
 	}
 	private function getPlotSummaryHours($id = null)
 	{
-		$showYear = '2016';
+		$showYear = date('Y');
 		$query = "SELECT 
 			plots.id, plots.description as description, plots.type as type, members.firstname as firstname, users.email as email,sum(hours) as total
 				FROM `plots`,`member_plot`,`members`,`users`
                 left join hours on users.id = hours.user_id 
-                    and YEAR(servicedate) = 2016
+                    and YEAR(servicedate) = ". $showYear. "
 				WHERE plots.id = member_plot.plot_id 
 				and member_plot.member_id = members.id
 				and members.user_id = users.id
 				and members.status = \"full\"
 				group by users.id,plots.id
                 order by plots.id";
-                //dd($query);
-		//$plots = \DB::select($query);
-		$plots = $this->plot->with('managedBy','managedBy.userdetails')
-		->whereHas('managedBy.userdetails.serviceHours', function($query) use ($showYear) {
-        	$query->where(\DB::raw('YEAR(servicedate)'),'=', $showYear);
-    	})
-    	->get();
+         $plots =  \DB::select( \DB::raw($query));
+		
+		/*$plots = $this->plot->with('managedBy','managedBy.userdetails','managedBy.userdetails.sumCurrentHours')
+
+		
+    	
+    	->get();*/
+    	
     	return $plots;
     }
 
 
 
-    public function sendSummaryEmails()
+    public function checkSummaryEmails()
     {
-    		
+    	$plots = $this->getPlotSummaryHours();
+		$plotsummary = $this->getPlotSummaryDetails($plots);
+
+		$random_key = array_rand($plotsummary);
+		$plotemail =  $plotsummary[$random_key];
+		return view('emails.confirmsummary', compact('plotemail'));
+		
+    }
+
+    public function sendSummaryEmails()	
+    {
 		$plots = $this->getPlotSummaryHours();
 		$plotsummary = $this->getPlotSummaryDetails($plots);
 		$messageCount = 0;
 		foreach ($plotsummary as $plotemail)
 		{
-			Mail::send('emails.summary',$plotemail, function($message) use ($plotemail)
-				{
-				$message->to($plotemail['address'])->subject('Your 2016 service hours');
-				
-				});
+			 \Mail::to($plotemail['address'])->send(new SummaryHoursEmail($plotemail));
+
 			$messageCount++;
 		}
 		$message = "Sent " . $messageCount . " messages";
-		return Redirect::route('hourssummary')->with('success', $message);
+		return redirect()->route('hourssummary')->with('success', $message);
         
 
     }

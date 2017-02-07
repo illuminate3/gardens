@@ -63,6 +63,10 @@ return [
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
             'strict' => true,
+            'modes' => [
+                'NO_ZERO_DATE',
+                 'ONLY_FULL_GROUP_BY'=>false,
+            ],
             'engine' => null,
         ],
 

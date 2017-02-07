@@ -12,7 +12,8 @@ class RoleController extends Controller
 
     public function manage()
     {
-        return view('roles.manage');
+        $type='role';
+        return view('roles.manage','type');
     }
 
     /**
