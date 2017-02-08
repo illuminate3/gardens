@@ -194,7 +194,7 @@ class PlotsController extends Controller {
 		$messageCount = 0;
 		foreach ($plotsummary as $plotemail)
 		{
-			 \Mail::to($plotemail['address'])->send(new SummaryHoursEmail($plotemail));
+			 \Mail::to($plotemail['address'])->queue(new SummaryHoursEmail($plotemail));
 
 			$messageCount++;
 		}
