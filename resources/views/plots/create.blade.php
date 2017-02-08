@@ -2,7 +2,7 @@
 @section('content')
 <h1>Add Plot</h1>
 
-{{Form::model('', ['method'=>'POST','route'=>['admin.plots.store']]) }}
+{{Form::model('', ['method'=>'POST','route'=>['plots.store']]) }}
 
 
 @include('plots.partials.plotsform')

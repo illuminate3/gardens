@@ -2,7 +2,7 @@
 @section('content')
 <h1>Edit Plot {{$plot[0]->plotnumber . ' / ' . $plot[0]->subplot }}</h1>
 
-{{Form::model($plot, ['method'=>'PATCH','route'=>['admin.plots.update', $plot[0]->id],'class'=>'form-horizontal']) }}
+{{Form::model($plot, ['method'=>'PATCH','route'=>['plots.update', $plot[0]->id],'class'=>'form-horizontal']) }}
 
 
 @include('plots.partials.plotsform')

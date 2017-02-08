@@ -51,11 +51,11 @@
                                     
                                     <li{{ (Request::is('admin/users*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/users') }}}"><span class="glyphicon glyphicon-user"></span> Users</a></li>
     							<li{{ (Request::is('admin/roles*') ? ' class="active"' : '') }}>
-                                <a href="{{{ URL::to('admin/roles') }}}"><span class="glyphicon glyphicon-user"></span> Roles</a></li>
-                                <li{{ (Request::is('admin/hours*') ? ' class="active"' : '') }}>
+                                <a href="{{{ URL::to('manage-roles') }}}"><span class="glyphicon glyphicon-user"></span> Roles</a></li>
+                                <li{{ (Request::is('summary') ? ' class="active"' : '') }}>
                                 <a href="{{route('hourssummary') }}"><span class="glyphicon glyphicon-time"></span> Summary Hours</a></li>
                                    
-                                <li{{ (Request::is('admin/hours*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/hours/matrix') }}}"><span class="glyphicon glyphicon-time"></span> Hours</a></li>
+                                <li{{ (Request::is('hours/matrix') ? ' class="active"' : '') }}><a href="{{{ URL::to('hours/matrix') }}}"><span class="glyphicon glyphicon-time"></span> Hours</a></li>
                                     @endif
                                     <li class="divider"></li>
                                     <li>

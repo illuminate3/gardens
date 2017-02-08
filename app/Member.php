@@ -23,10 +23,7 @@ class Member extends Model {
 		return $this->belongsToMany(Plot::class);
 	}
 	
-	public function servicehours()
-    {
-        return $this->hasMany(Hours::class,'user_id');
-    }
+	
 	public function userdetails()
     {
         return $this->hasOne(User::class,'id','user_id');

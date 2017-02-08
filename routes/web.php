@@ -43,7 +43,7 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	
 
 	Route::get('plotlist',array('as' => 'plotlist', 'uses' => 'PlotsController@plotlist'));
-	
+	Route::get('plots/{id}/delete',array('as' => 'plots.delete', 'uses' => 'PlotsController@destroy'));
 	Route::resource('plots','PlotsController');
 	
 	Route::get('hours/show/{userid}',array('as'=>'hours.show','uses'=>'HoursController@show'));
@@ -60,8 +60,9 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::get('hours/{id}/delete', ['as'=>'hours.delete','uses'=>'HoursController@destroy']);	
 	Route::resource('hours','HoursController');
 
-	Route::get('summaryemails', ['as'=>'sendsummaryemails','uses'=>'PlotsController@sendSummaryEmails']);
-	
+	Route::get('summaryemails', ['as'=>'checksummaryemails','uses'=>'PlotsController@checkSummaryEmails']);
+	Route::post('summaryemails', ['as'=>'sendsummaryemails','uses'=>'PlotsController@sendSummaryEmails']);
+
 	Route::get('manage-role', 'RoleController@manage');
 	Route::resource('roles','RoleController');
 

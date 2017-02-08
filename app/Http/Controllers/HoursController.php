@@ -11,6 +11,7 @@ use App\Plot;
 use App\Email;
 use App\Permission;
 use App\PeriodTrait;
+use Carbon\Carbon;
 use App\Http\Requests\HoursFormRequest;
 use App\Notifications\HoursAdded;
 
@@ -134,7 +135,10 @@ class HoursController extends Controller {
 		
 		
 	}
-	$hours = $this->hour->where('user_id','=',$id)->where('servicedate','like',$year.'%')->with('gardener')->get();
+	$hours = $this->hour->where('user_id','=',$id)
+	->where('servicedate','like',$year.'%')
+	->with('gardener')
+	->get();
 
 	$fields = ['Date'=>'servicedate','From'=>'starttime','To'=>'endtime','Hours'=>'hours','Details'=>'description'];
 	if (\Auth::user()->hasRole('admin') or $id == Auth::id())
@@ -292,18 +296,17 @@ class HoursController extends Controller {
 	
 	
 	
-	public function matrixshow()
+	public function matrixshow(Request $request)
 	{
-		$hours = $this->plot->getPlotHours();
+		
+		$hours = $this->plot->getPlotHours('','',$request);
 		$showyear = $this->showyear;
 		return view('hours.matrix', compact('hours','showyear'));
 		
 		
 	}
 	
-	
-
-	
+		
 	public function	testemail()
 	{
 			
@@ -321,149 +324,38 @@ class HoursController extends Controller {
 
 		$this->processEmail($inbound);
 		
-		
 	}
 	
-	/*private  function processEmail($inbound)
-	{
-		// Make sure its a registered user
 		
-		$user = $this->isMember($inbound->FromEmail());
-
-		if ($user){
-			// Process based on subject
-			$allData['userinfo'] = $user;
-
-			$subject = strtolower($inbound->Subject());
-			
-			switch ($subject)
-			{
-				case "help":
-					
-					$this->email->sendEmailNotifications($allData,$template='instructions');
-					
-				break;
-				
-				case "total":
-				case "totals":
-					
-					$this->allHoursEmail($inbound,$allData);
-					
-				break;
-				
-				case "hours":
-					$this->parseEmailHours($inbound,$allData);
-
-				break;
-				
-				default:
-				
-					$this->parseEmail($inbound,$allData);
-				break;
-				
-			}
-		}
-		
-		
-	}*/
-	
-	
 	private function isMember($email){
 		$user = $this->getMember($email);
 		return $user;	
 	}
 	
 	
-	/*private function parseEmailHours($inbound,$allData)
-	{
-		
-		$plot = $allData['userinfo']->member->plots[0]->id;
-
-		$hours = new PostHour();
-		
-		$hours->from = $inbound->FromEmail();
-		
-		$data['userinfo']['email'] = $allData['userinfo']['email'];
-		
-		$hours->membername = $allData['userinfo']->member->firstname . " " . $allData['userinfo']->member->lastname;
-		$hours->user_id = $allData['userinfo']->id;
-		if(! $inbound->TextBody())
-		{
-			$hours->text = $inbound->HtmlBody();
-		}else{
-			$hours->text = $inbound->TextBody();
-		}
-		$hours->datePosted = date("Y-m-d h:i:s",strtotime($inbound->Date()));
-		
-		
-		$allData['originalText'] = $hours->text;
-		$inputdata = $this->getHoursFromEmail($hours->text);
-
-		// If we can parse the email
-		if($inputdata)
-		{
-			// for each row of data (hours) posted
-			
-			foreach ($inputdata as $input)
-			{
-				//$input['plot_id'] = $allData['userinfo']->member->plots[0]->id;
-				
-				$input = $this->calculateHours($input);
-				// If multiple flag (users) has been set reiterate for each plot user
-				if($input['multiple'] == '*') {
-					$users = $this->getPlotUsers($plot);
-					
-					while(list($email,$id) = each ($users))
-					{
-						$input['user_id'] = $id;
-						$allData['hours'][] = $input;
-						$this->hour->create($input);
-						
-					}
-					
-				}else{
-					
-					$input['user_id'] = $allData['userinfo']->id;
-					$allData['hours'][] = $input;
-					
-					$this->hour->create($input);
-				}
-			}
-			
-			$this->email->sendEmailNotifications($allData,'email');
-			$this->email->sendEmailNotifications($allData,'confirmemail');				
-		
-		}else{
-			// Case if we can match the user but not parse the email
-			
-			$this->email->sendEmailNotifications($allData,'noparse');
-		}
-		
-		
-		$hours->save();
-		
-	} */
-	public function matrixadd() 
+	public function matrixadd(Request $request) 
 	{
 		$inputs = $request->get('plothour');
 		
 		// Input is organized by plot number ($key)
-		while(list($key,$value) =each($inputs))
+		foreach ($inputs  as $key => $value)
 		{
+			
 			// Identify user id of primary plot owner
 			$gardener = Plot::with('managedBy')->find($key);
-			$primary= $gardener->managedBy[0]->id;
+			$primary= $gardener->managedBy[0]->userdetails->id;
+
 			
 			// Arrange input hours into consisten array
 			$newHours =array();
-			while(list($month, $hour) = each ($value))
+			foreach($value as $month => $hour) 
 			{
 				$newHours[$month]=floatval($hour);	
 				
 			}
 
 			// Calculate current recorded hours by plot
-			$hours = $this->plot->getPlotHours(NULL,$key);
+			$hours = $this->plot->getPlotHours(NULL,$key,$request);
 			$currentHours = array();
 			foreach ($hours as $hour)
 			{
@@ -508,136 +400,7 @@ class HoursController extends Controller {
 		 
 		 
 	 }
-	/*public function getHoursFromEmail($text)
-	{
-		$hours=NULL;
-		$pattern = "%([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{2,4})[ ,\t]{0,}(\d+\.?\d{0,2})[ \t]{0,}(\*?)(.?[^\r\n,\;]*)%";
-		preg_match_all($pattern, $text, $date);
-		$fields = ['full','servicedate','hours','multiple','description'];
-
-
-		for($n=1;$n<5;$n++){
-			$a=0;
-			foreach ($date[$n] as $event)
-			{
-			$a++;
-			if($fields[$n] =='servicedate')
-			{
-				
-				$hours[$a][$fields[$n]] = date('Y-m-d 00:00:00',strtotime($event));
-			}else{
-				$hours[$a][$fields[$n]] =  trim($event);
-			}
-			}
-		}
-		
-		return $hours;
-		
-	}*/
-
-
-
-	/*private function allHoursEmail($inbound,$allData)
-	{
-
-		$plot = $allData['userinfo']->member->plots[0]->id;
-
-		$hours  = $this->getAllDetailHours($plot);
-
-		$allData['year'] = $this->showyear;
-		$allData['hours'] = $hours;
-		
-		$this->email->sendEmailNotifications($allData,'total');
-		
-	}*/
-
-	/*private function calculateHours($inputdata)
-	{
-		$data=$inputdata;
-		
-		// Must have a service date  
-		if($inputdata['servicedate'] != '')
-		{
-			$data['servicedate'] = date('Y-m-d',strtotime($inputdata['servicedate']));
-			
-			//  Check if the hours field has been completed.
-			if($inputdata['hours'] != '' && is_numeric($inputdata['hours'] ))
-			{
-				$data['hours']=$inputdata['hours'];
-				// assume start time is 8:00 am
-				if(! isset($inputdata['starttime']) or $inputdata['starttime'] == '')
-				{
-					$data['starttime'] = date_create($data['servicedate'] . " 08:00:00");
-				}else{
-					$data['starttime'] = date_create($data['servicedate'] . " " .  $inputdata['starttime']);
-					
-				}
-				
-				$data['endtime'] = clone $data['starttime'];
-			
-				$addminutes = $inputdata['hours'] * 60;
-
-				$data['endtime'] = date_add($data['endtime'], date_interval_create_from_date_string($addminutes. ' minutes'));
 	
-				$data['starttime'] = $data['starttime']->format('Y-m-d H:i:s');
-				$data['endtime'] = $data['endtime']->format('Y-m-d H:i:s');
-				 
-			}else{
-				// Check that starttime has been completed
-				if(isset($inputdata['starttime']) && $inputdata['starttime'] != '')
-				{
-					$data['starttime'] = date_create($data['servicedate'] . " " . $inputdata['starttime']);
-					
-				}
-				// Check that starttime has been completed
-				if(isset($inputdata['endtime']) && $inputdata['endtime'] != '')
-				{
-					$data['endtime'] = date_create($data['servicedate'] . " " . $inputdata['endtime']);
-					
-				}
-
-				// Calculate hours
-				if(isset($data['starttime']) && isset($data['endtime']))
-				{
-
-					$duration = $data['starttime']->diff($data['endtime']);
-					
-					
-					$hours = round((($duration->h * 60) + $duration->i)/60,2);
-					
-					if($hours < 0)
-					{
-						$hours = 12 - $hours;
-					}
-					
-					$data['hours']= $hours;
-					$data['starttime'] = $data['starttime']->format('Y-m-d H:i:s');
-					$data['endtime'] = $data['endtime']->format('Y-m-d H:i:s');
-				}
-		
-				
-			}
-			//* not sure we really need this
-			/*if(isset($inputdata['user'])){
-				
-				// this is actually their user id
-				$data['user_id'] = $inputdata['user'][0];
-				$member =$this->getUsersMemberId($data['user_id']);
-				
-				$data['member_id'] = $member[0];
-				
-				
-			}else{
-				$data['user_id'] = Auth::id();
-				$data['member_id'] =$this->getUsersMemberId($data['user_id']);
-				
-			}
-		}
-		return $data;
-
-
-	}
-	*/
 	
 	
 	private function updateInput($data)
@@ -654,19 +417,12 @@ class HoursController extends Controller {
 		
 	}
 	
-	
-	// move to User or Member model
+
 	private function  getMember($email)
 	{
 	
 	$user = User::with(array('member','member.plots'))->where('email','=',$email)->first();	
 	return $user;	
 	}
-	
-	
-	
-	 
-	 
-	 
-	 
+ 
 }
