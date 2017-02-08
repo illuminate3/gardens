@@ -182,6 +182,8 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Cviebrock\EloquentSluggable\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Dionera\BeanstalkdUI\BeanstalkdUIServiceProvider::class,
+
 
     ],
 
