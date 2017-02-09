@@ -27,10 +27,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-     public function member()
-     {
-          return $this->hasOne(Member::class,'user_id');
-     }
+    public function member()
+    {
+        return $this->hasOne(Member::class, 'user_id');
+    }
      
      
     public function serviceHours()
@@ -38,54 +38,48 @@ class User extends Authenticatable
         return $this->hasMany(Hours::class);
     }
     
-    public function getUserByUsername( $username )
+    public function getUserByUsername($username)
     {
         return $this->where('username', '=', $username)->first();
     }
     
     public function getUsersMemberId()
-     {
-         $member = $this->member()->first();
-         return $member->id;
-         
-         
-         
-     }
+    {
+        $member = $this->member()->first();
+        return $member->id;
+    }
 
     
     public function getUsersPlot()
-     {
-        $user = $this->with('member','member.plots')->first();
+    {
+        $user = $this->with('member', 'member.plots')->first();
         $plots=array();
-        if(isset($user->member->plots))
-            {
-                foreach ($user->member->plots as $plot){
-                    $plots[]=$plot->id;
-                }
+        if (isset($user->member->plots)) {
+            foreach ($user->member->plots as $plot) {
+                $plots[]=$plot->id;
             }
-        return $plots;    
-     }
+        }
+        return $plots;
+    }
      
-     public function currentYearHours()
-     {
+    public function currentYearHours()
+    {
         $year = date('Y');
     
         return $this->hasMany(Hours::class)
-                ->where('servicedate','like',$year."%")
+                ->where('servicedate', 'like', $year."%")
                 ->orderBy('servicedate');
         ;
-     }
+    }
 
-     public function sumCurrentHours()
-     {
+    public function sumCurrentHours()
+    {
         $year = date('Y');
     
         return $this->hasMany(Hours::class)
-                ->where('servicedate','like',$year."%")
+                ->where('servicedate', 'like', $year."%")
                 ->groupBy('user_id')
             ->sum('hours')
         ;
-
-     }
-    
+    }
 }

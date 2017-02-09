@@ -9,7 +9,6 @@ use App\Permission;
 
 class PermissionController extends Controller
 {
-
     public function manage()
     {
         return view('permissions.manage');

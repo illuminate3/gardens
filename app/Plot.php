@@ -1,28 +1,31 @@
 <?php
 namespace App;
+
 use App\PeriodTrait;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
-class Plot extends Model {
-	use PeriodTrait;
 
-	// Add your validation rules here
-	
+class Plot extends Model
+{
+    use PeriodTrait;
 
-	// Don't forget to fill this array
-	protected $fillable = ['plotnumber','subplot','type','width','length','row','col','description'];
+    // Add your validation rules here
+    
 
-	
-	public function managedBy()
+    // Don't forget to fill this array
+    protected $fillable = ['plotnumber','subplot','type','width','length','row','col','description'];
+
+    
+    public function managedBy()
     {
         return $this->belongsToMany(Member::class)->with('userdetails');
     }
-	
-	public function getPlotHours($plot = NULL,$id=NULL, Request $request)
-	{
-		$this->getShowYear($request);
-		
-		$query ="SELECT 
+    
+    public function getPlotHours($plot = null, $id=null, Request $request)
+    {
+        $this->getShowYear($request);
+        
+        $query ="SELECT 
 					plots.id as plotid, 
 					type,
 					month(servicedate) as month,
@@ -45,27 +48,23 @@ class Plot extends Model {
 					users.id = members.user_id 
 					and members.id = member_plot.member_id 
 					and member_plot.plot_id = plots.id";
-				
-				if($plot)
-				{
-					$query.=" and plotnumber = ". $plot;
-				}
-				if($id)
-				{
-					$query.=" and plots.id = ". $id;
-					
-				}
-				
-		
-		$query.="
+                
+        if ($plot) {
+            $query.=" and plotnumber = ". $plot;
+        }
+        if ($id) {
+            $query.=" and plots.id = ". $id;
+        }
+                
+        
+        $query.="
 				GROUP BY
 					plots.id, year, month
 				 ORDER BY 
 					plots.description,-month DESC, -year DESC";
 
-		$hours = \DB::select(\DB::raw($query));
+        $hours = \DB::select(\DB::raw($query));
 
-		return $hours;
-		
-	}
+        return $hours;
+    }
 }

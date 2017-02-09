@@ -6,41 +6,34 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Email;
 
-
-class EmailController extends Controller {
-
-public $email;
-	/**
-	 * Display a listing of the resource.
-	 * GET /emailcontroller
-	 *
-	 * @return Response
-	 */
-public function __construct(Email $email )
+class EmailController extends Controller
 {
-
-		$this->email = $email;
+    public $email;
+    /**
+     * Display a listing of the resource.
+     * GET /emailcontroller
+     *
+     * @return Response
+     */
+public function __construct(Email $email)
+{
+    $this->email = $email;
 }
 
 
-public function	testemail()
-	{
-			
-			$inbound = new \Postmark\Inbound(file_get_contents('inbound.json'));
-			$this->email->processEmail($inbound);
+    public function testemail()
+    {
+        $inbound = new \Postmark\Inbound(file_get_contents('inbound.json'));
+        $this->email->processEmail($inbound);
 
-			echo "<h2>All done!</h2>";
-	}
-	
-	
-	public function receiveHoursEmail()
-	{
-		$inbound = new \Postmark\Inbound(file_get_contents('php://input'));
+        echo "<h2>All done!</h2>";
+    }
+    
+    
+    public function receiveHoursEmail()
+    {
+        $inbound = new \Postmark\Inbound(file_get_contents('php://input'));
 
-		$this->email->processEmail($inbound);
-		
-		
-	}
-
-	
+        $this->email->processEmail($inbound);
+    }
 }

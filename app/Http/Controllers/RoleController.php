@@ -9,11 +9,10 @@ use App\Role;
 
 class RoleController extends Controller
 {
-
     public function manage()
     {
         $type='role';
-        return view('roles.manage','type');
+        return view('roles.manage', 'type');
     }
 
     /**

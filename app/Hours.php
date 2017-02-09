@@ -1,77 +1,74 @@
 <?php
 namespace App;
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\PeriodTrait;
 
+class Hours extends Model
+{
+    use PeriodTrait;
 
-class Hours extends Model {
-	use PeriodTrait;
-
-	public $showYear;
-public  $rules = [
-		'servicedate' => 'required|date',
-		'starttime' =>'required_without_all:hours,endtime',
-		'endtime'=>'required_without_all:hours,starttime',
-		'hours'=>"required_without_all:starttime,endtime",
-		'description'=>'required',
-	];
-	protected $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];	
-	public function __construct()
-	{
-		$this->showYear = $this->getShowYear();
-	}
-	// Add your validation rules here
-	
-
-	// Don't forget to fill this array
-
-
-	public function gardener()
+    public $showYear;
+    public $rules = [
+        'servicedate' => 'required|date',
+        'starttime' =>'required_without_all:hours,endtime',
+        'endtime'=>'required_without_all:hours,starttime',
+        'hours'=>"required_without_all:starttime,endtime",
+        'description'=>'required',
+    ];
+    protected $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];
+    public function __construct()
     {
-        return $this->belongsTo(Member::class,'user_id','user_id');
+        $this->showYear = $this->getShowYear();
     }
-	
-	
-	private function cleanseString($string)
-	{
-		$string = preg_replace('/[\x00-\x1F\x80-\xFF]/', '',$string);
-		$string = str_replace(","," ", $string);
-	return $string;
-	}
+    // Add your validation rules here
+    
 
-	public function getAllDetailHours($plot = NULL)
-	{
-		$this->showYear = $this->getShowYear();
-		if($plot)
-		{
-			// convert plot to users
-			
-			
-			$users = Plot::with('managedBy','managedBy.userdetails')->where('id','=',$plot)->firstOrFail();
-			
+    // Don't forget to fill this array
 
-			foreach ($users->managedBy as $member){
-				//dd($member->userdetails->id);
-				$user_id[]=  $member->userdetails->id;
-				
-			
-			}
 
-			// get users hours
-			$hours = Hours::whereIn('user_id',$user_id)
-				->where(\DB::raw('YEAR(servicedate)'), '=', $this->showYear)
-				->with('gardener')
-				->orderBy('servicedate')
-				->get();
-			
-		}else{
+    public function gardener()
+    {
+        return $this->belongsTo(Member::class, 'user_id', 'user_id');
+    }
+    
+    
+    private function cleanseString($string)
+    {
+        $string = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $string);
+        $string = str_replace(",", " ", $string);
+        return $string;
+    }
 
-			//Cant we simplify this. Probably need join?
-			//$hours = $this->hour->where(DB::raw('YEAR(servicedate)'), '=', $this->showyear)->with('gardener')->orderBy('servicedate')->get();
-			//$fields = ['servicedate','hours','description','gardener','plot'];
-			$query = "select 
+    public function getAllDetailHours($plot = null)
+    {
+        $this->showYear = $this->getShowYear();
+        if ($plot) {
+            // convert plot to users
+            
+            
+            $users = Plot::with('managedBy', 'managedBy.userdetails')->where('id', '=', $plot)->firstOrFail();
+            
+
+            foreach ($users->managedBy as $member) {
+                //dd($member->userdetails->id);
+                $user_id[]=  $member->userdetails->id;
+            }
+
+            // get users hours
+            $hours = Hours::whereIn('user_id', $user_id)
+                ->where(\DB::raw('YEAR(servicedate)'), '=', $this->showYear)
+                ->with('gardener')
+                ->orderBy('servicedate')
+                ->get();
+        } else {
+
+            //Cant we simplify this. Probably need join?
+            //$hours = $this->hour->where(DB::raw('YEAR(servicedate)'), '=', $this->showyear)->with('gardener')->orderBy('servicedate')->get();
+            //$fields = ['servicedate','hours','description','gardener','plot'];
+            $query = "select 
 				servicedate,
 				hours ,
 				concat(members.firstname,' ',members.lastname) as gardener,
@@ -85,18 +82,18 @@ public  $rules = [
 				and member_plot.plot_id = plots.id 
 				and YEAR(servicedate) = '". $this->showYear."'
 			ORDER BY plotnumber";
-			
-			$hours = \DB::select(\DB::raw($query));
-		}
-		
-		return $hours;
-	}
+            
+            $hours = \DB::select(\DB::raw($query));
+        }
+        
+        return $hours;
+    }
 
-	public function getAllHours()
-	{
-		$this->showYear = $this->getShowYear();
-		// I am sure we can simplify this
-		$query ="SELECT 
+    public function getAllHours()
+    {
+        $this->showYear = $this->getShowYear();
+        // I am sure we can simplify this
+        $query ="SELECT 
 					users.id as id, 
 					firstname,lastname, 
 					YEAR(servicedate) as year,
@@ -126,94 +123,72 @@ public  $rules = [
 					month,
 					year";
 
-		$hours = \DB::select(\DB::raw($query));
-		
-		return $hours;
-	}
-	public function calculateHours($inputdata)
-	{
-		$data=$inputdata;
-		
-		// Must have a service date  
-		if($inputdata['servicedate'] != '')
-		{
-			$data['servicedate'] = date('Y-m-d',strtotime($inputdata['servicedate']));
-			
-			//  Check if the hours field has been completed.
-			if($inputdata['hours'] != '' && is_numeric($inputdata['hours'] ))
-			{
-				$data['hours']=$inputdata['hours'];
-				// assume start time is 8:00 am
-				if(! isset($inputdata['starttime']) or $inputdata['starttime'] == '')
-				{
-					$data['starttime'] = date_create($data['servicedate'] . " 08:00:00");
-				}else{
-					$data['starttime'] = date_create($data['servicedate'] . " " .  $inputdata['starttime']);
-					
-				}
-				
-				$data['endtime'] = clone $data['starttime'];
-			
-				$addminutes = $inputdata['hours'] * 60;
+        $hours = \DB::select(\DB::raw($query));
+        
+        return $hours;
+    }
+    public function calculateHours($inputdata)
+    {
+        $data=$inputdata;
+        
+        // Must have a service date
+        if ($inputdata['servicedate'] != '') {
+            $data['servicedate'] = date('Y-m-d', strtotime($inputdata['servicedate']));
+            
+            //  Check if the hours field has been completed.
+            if ($inputdata['hours'] != '' && is_numeric($inputdata['hours'])) {
+                $data['hours']=$inputdata['hours'];
+                // assume start time is 8:00 am
+                if (! isset($inputdata['starttime']) or $inputdata['starttime'] == '') {
+                    $data['starttime'] = date_create($data['servicedate'] . " 08:00:00");
+                } else {
+                    $data['starttime'] = date_create($data['servicedate'] . " " .  $inputdata['starttime']);
+                }
+                
+                $data['endtime'] = clone $data['starttime'];
+            
+                $addminutes = $inputdata['hours'] * 60;
 
-				$data['endtime'] = date_add($data['endtime'], date_interval_create_from_date_string($addminutes. ' minutes'));
-	
-				$data['starttime'] = $data['starttime']->format('Y-m-d H:i:s');
-				$data['endtime'] = $data['endtime']->format('Y-m-d H:i:s');
-				 
-			}else{
-				// Check that starttime has been completed
-				if(isset($inputdata['starttime']) && $inputdata['starttime'] != '')
-				{
-					$data['starttime'] = date_create($data['servicedate'] . " " . $inputdata['starttime']);
-					
-				}
-				// Check that starttime has been completed
-				if(isset($inputdata['endtime']) && $inputdata['endtime'] != '')
-				{
-					$data['endtime'] = date_create($data['servicedate'] . " " . $inputdata['endtime']);
-					
-				}
+                $data['endtime'] = date_add($data['endtime'], date_interval_create_from_date_string($addminutes. ' minutes'));
+    
+                $data['starttime'] = $data['starttime']->format('Y-m-d H:i:s');
+                $data['endtime'] = $data['endtime']->format('Y-m-d H:i:s');
+            } else {
+                // Check that starttime has been completed
+                if (isset($inputdata['starttime']) && $inputdata['starttime'] != '') {
+                    $data['starttime'] = date_create($data['servicedate'] . " " . $inputdata['starttime']);
+                }
+                // Check that starttime has been completed
+                if (isset($inputdata['endtime']) && $inputdata['endtime'] != '') {
+                    $data['endtime'] = date_create($data['servicedate'] . " " . $inputdata['endtime']);
+                }
 
-				// Calculate hours
-				if(isset($data['starttime']) && isset($data['endtime']))
-				{
+                // Calculate hours
+                if (isset($data['starttime']) && isset($data['endtime'])) {
+                    $duration = $data['starttime']->diff($data['endtime']);
+                    
+                    
+                    $hours = round((($duration->h * 60) + $duration->i)/60, 2);
+                    
+                    if ($hours < 0) {
+                        $hours = 12 - $hours;
+                    }
+                    
+                    $data['hours']= $hours;
+                    $data['starttime'] = $data['starttime']->format('Y-m-d H:i:s');
+                    $data['endtime'] = $data['endtime']->format('Y-m-d H:i:s');
+                }
+            }
+        }
+        return $data;
+    }
 
-					$duration = $data['starttime']->diff($data['endtime']);
-					
-					
-					$hours = round((($duration->h * 60) + $duration->i)/60,2);
-					
-					if($hours < 0)
-					{
-						$hours = 12 - $hours;
-					}
-					
-					$data['hours']= $hours;
-					$data['starttime'] = $data['starttime']->format('Y-m-d H:i:s');
-					$data['endtime'] = $data['endtime']->format('Y-m-d H:i:s');
-				}
-		
-				
-			}
-			
-		}
-		return $data;
-
-
-	}
-
-	public function exportHours($hours)
-	{
-
-
-		\Excel::create('Hours', function($excel)  use($hours){
-            $excel->sheet('hours', function($sheet) use($hours) {
-                $sheet->loadView('hours.export',compact('hours'));
-
+    public function exportHours($hours)
+    {
+        \Excel::create('Hours', function ($excel) use ($hours) {
+            $excel->sheet('hours', function ($sheet) use ($hours) {
+                $sheet->loadView('hours.export', compact('hours'));
             });
-
         })->export();
-
-	}
+    }
 }
