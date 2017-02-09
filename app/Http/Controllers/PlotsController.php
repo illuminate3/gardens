@@ -176,16 +176,20 @@ class PlotsController extends Controller
 
     public function sendSummaryEmails()
     {
-        $plots = $this->getPlotSummaryHours();
-        $plotsummary = $this->getPlotSummaryDetails($plots);
-        $messageCount = 0;
-        foreach ($plotsummary as $plotemail) {
-            \Mail::to($plotemail['address'])->send(new SummaryHoursEmail($plotemail));
 
-            $messageCount++;
-        }
-        $message = "Sent " . $messageCount . " messages";
-        return redirect()->route('hourssummary')->with('success', $message);
+		$plots = $this->getPlotSummaryHours();
+		$plotsummary = $this->getPlotSummaryDetails($plots);
+		$messageCount = 0;
+		foreach ($plotsummary as $plotemail)
+		{
+			 \Mail::to($plotemail['address'])->queue(new SummaryHoursEmail($plotemail));
+
+			$messageCount++;
+		}
+		$message = "Sent " . $messageCount . " messages";
+		return redirect()->route('hourssummary')->with('success', $message);
+        
+
     }
         
     private function getPlotSummaryDetails($plots)
