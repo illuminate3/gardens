@@ -30,7 +30,7 @@ class SummaryHoursEmail extends Mailable
     {
 
 
-        return $this->view('emails.summary')
+        return $this->markdown('emails.summary')
                 ->subject('Your '. date('Y').' service hours');
     }
 }
