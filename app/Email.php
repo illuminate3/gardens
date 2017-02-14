@@ -376,7 +376,7 @@ class Email extends Model
             
             case 'confirmemail':
                
-                \Mail::to($data['userinfo']->emails)->queue(new ConfirmEmailHours($data));
+                \Mail::to($data['userinfo']->email)->queue(new ConfirmEmailHours($data));
             break;
             
             case 'email':    
@@ -424,17 +424,16 @@ class Email extends Model
     {
         $roles = Permission::find(9)->roles()->pluck('name');
         
-        if (! \App::environment('local')) {
+        
             $hoursManagers = Role::whereIn('name', $roles)->with('users')->get();
             $email = '';
             foreach ($hoursManagers as $user) {
                 $email .= $user->users[0]->email . ",";
             }
-        } else {
-            $email = \Auth::user()->email;
-        }
+        
         $email = rtrim($email, ",");
         $emailArray = explode(",", $email);
+
         return $emailArray;
     }
 

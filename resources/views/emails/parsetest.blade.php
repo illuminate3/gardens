@@ -12,5 +12,14 @@
 </form>
 <hr />
 
+<form name='gettest' method='get', action = {{route('get.hours') }} >
+{{csrf_field()}}
+<div class="col-sm-8">
+<div class="form-group">
+<input type='submit' value ='Test by Get' class='btn btn-primary' />
+</div></div>
+</form>
+
+
 @include('partials._scripts')
 @endsection
