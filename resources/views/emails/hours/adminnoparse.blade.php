@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="en-US">
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
+@component('mail::message')
+## Whoops!
 
-    	<p>
-        tried submitting their hours via email however it was not in the correct format and hasn't been posted.</p>
-      
-        
-        <p>This was the text of your email:</p>
-        <blockquote>
-        <hr />
-        	{{$originalText}}
-            <hr />
-        </blockquote>
-        <p>You can either resend your email in the correct format or log into the website and correct the hours there.</p>	
-        
-        <p> Sincerely</p>
-        
-        <p>McNear Community Gardens</p>
-		</div>
-	</body>
-</html>
+Hi
+
+{{$data['userinfo']->member['firstname']}} {{$data['userinfo']->member['lastname']}} submited  hours via email. However the email was not in the correct format and hasn't been posted.
+
+This was the text of the email:
+
+@component('mail::panel')
+{{$data['originalText']}}
+@endcomponent
+
+{{$data['userinfo']->member['firstname']}} has received an email with instructions to correct this submission. 
+
+You can contact {{$data['userinfo']->member['firstname']}} at <a href="mailto:{{$data['userinfo']->email}}">{{$data['userinfo']->email}}</a>.
+
+Sincerely
+
+{{env('APP_NAME')}}
+@endcomponent

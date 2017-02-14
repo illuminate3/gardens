@@ -15,10 +15,10 @@ class EmailController extends Controller
      *
      * @return Response
      */
-public function __construct(Email $email)
-{
-    $this->email = $email;
-}
+    public function __construct(Email $email)
+    {
+        $this->email = $email;
+    }
 
 
     public function testemail()

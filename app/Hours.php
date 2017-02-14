@@ -18,7 +18,7 @@ class Hours extends Model
         'hours'=>"required_without_all:starttime,endtime",
         'description'=>'required',
     ];
-    protected $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];
+    public $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];
     public function __construct()
     {
         $this->showYear = $this->getShowYear();
@@ -48,10 +48,8 @@ class Hours extends Model
         if ($plot) {
             // convert plot to users
             
-            
             $users = Plot::with('managedBy', 'managedBy.userdetails')->where('id', '=', $plot)->firstOrFail();
             
-
             foreach ($users->managedBy as $member) {
                 //dd($member->userdetails->id);
                 $user_id[]=  $member->userdetails->id;
@@ -63,6 +61,7 @@ class Hours extends Model
                 ->with('gardener')
                 ->orderBy('servicedate')
                 ->get();
+                
         } else {
 
             //Cant we simplify this. Probably need join?

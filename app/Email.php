@@ -3,6 +3,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Email;
+use App\Plot;
+use App\Mail\ConfirmEmailHours;
+use App\Mail\NotifyHours;
+use App\Mail\TotalHours;
+use App\Mail\AdminNoParse;
+use App\Mail\NoParse;
+use App\Mail\Instructions;
+use App\Mail\AdminHours;
+use App\Mail\SummaryHoursEmail;
 use Illuminate\Http\Request;
 use App\PeriodTrait;
 
@@ -31,8 +40,13 @@ class Email extends Model
     public function processEmail($inbound)
     {
         $emails = $this->findEmailToAddress($inbound);
-        $user = $this->user->has('member')->where('email', '=', $emails['from'])->first();
+        $user = $this->user->has('member')
+        ->with('member','member.plots','member.plots.managedBy')
+        ->where('email', '=', $emails['from'])
+        ->first();
+        
         if (! $user) {
+            // think about sending a notiication to the admin
             dd('Phony');
         }
 
@@ -125,11 +139,12 @@ class Email extends Model
     private function processHoursEmail($inbound, $user)
     {
         if ($user) {
+
             // Process based on subject
             $allData['userinfo'] = $user;
 
             $subject = strtolower($inbound->Subject());
-            
+
             switch ($subject) {
                 case "help":
                     
@@ -197,35 +212,44 @@ class Email extends Model
             // for each row of data (hours) posted
             
             foreach ($inputdata as $input) {
-                //$input['plot_id'] = $allData['userinfo']->member->plots[0]->id;
-                
+
+                $plot = $allData['userinfo']->member->plots[0]->id;
+               
                 $input = $this->calculateHours($input);
+                
                 // If multiple flag (users) has been set reiterate for each plot user
                 if ($input['multiple'] == '*') {
                     $users = $this->getPlotUsers($plot);
                     
-                    while (list($email, $id) = each($users)) {
-                        $input['user_id'] = $id;
-                        $allData['hours'][] = $input;
-                        $this->hours->create($input);
+                    foreach ($users as $id=>$email) {
+                        $input['user_id']=$id;
+                        $hours = new Hours;
+                        $hours->fill($input);
+                        $hours->save();
                     }
                 } else {
                     $input['user_id'] = $allData['userinfo']->id;
                     $allData['hours'][] = $input;
-                    
-                    $this->hours->create($input);
+                    $hours = new Hours;
+                    $hours->fill($input);
+                    $hours->save();
+
                 }
+               
             }
             
             $this->sendEmailNotifications($allData, 'email');
+
             $this->sendEmailNotifications($allData, 'confirmemail');
         } else {
             // Case if we can match the user but not parse the email
             // Store to the PostHours table and send a note to the
             // admin.
-            $posthours = new PostHours;
-            $posthours->create($inputdata);
+           // $posthours = new PostHours;
+           // $posthours->create($inputdata);
             $this->sendEmailNotifications($allData, 'noparse');
+
+            $this->sendEmailNotifications($allData, 'adminnoparse');
         }
     }
 
@@ -305,7 +329,7 @@ class Email extends Model
                     $data['endtime'] = $data['endtime']->format('Y-m-d H:i:s');
                 }
             }
-            if (isset($inputdata['user'])) {
+            /*if (isset($inputdata['user'])) {
                 
                 // this is actually their user id
                 $data['user_id'] = $inputdata['user'][0];
@@ -313,9 +337,9 @@ class Email extends Model
                 
                 $data['member_id'] = $member[0];
             } else {
-                $data['user_id'] = Auth::id();
+                $data['user_id'] = \Auth::id();
                 $data['member_id'] =$this->getUsersMemberId($data['user_id']);
-            }
+            }*/
         }
         return $data;
     }
@@ -329,64 +353,61 @@ class Email extends Model
 
     public function sendEmailNotifications($data, $template=null)
     {
+        
+
         switch ($template) {
             case 'multi':
-                $emailTemplate = 'emails.hours.adminhours';
+             
                 $toAddress = $this->getHoursNotificationEmails();
-                $subject = 'Multiple New Hours Added';
+                \Mail::to($toAddress)->queue(new AdminHours($data));
             break;
             
             case 'confirmemail':
-                $emailTemplate = 'emails.hours.confirmemailhours';
-                $toAddress =$data['userinfo']->email;
-                $subject = 'New Hours Added';
+               
+                \Mail::to($data['userinfo']->emails)->queue(new ConfirmEmailHours($data));
             break;
             
-            case 'email':
-                
-                $emailTemplate = 'emails.hours.adminemailhours';
+            case 'email':    
                 $toAddress = $this->getHoursNotificationEmails();
-                $subject = 'New Hours Added';
+                \Mail::to($toAddress)->queue(new NotifyHours($data));
+            
             break;
             
             case 'noparse':
                 
-                $emailTemplate = 'emails.hours.noparseemailhours';
-                $toAddress =$data['userinfo']->email;
-                $subject = "Unable to Add Hours";
+                 \Mail::to($data['userinfo']->email)->queue(new NoParse($data));
+            break;
+
+            case 'adminnoparse':
+                  $toAddress = $this->getHoursNotificationEmails();
+                 \Mail::to($toAddress)->queue(new AdminNoParse($data));
             break;
             
             
             case 'total':
-                $emailTemplate = 'emails.hours.totalhours';
-                $toAddress =$data['userinfo']->email;
-                $subject = "Your Total Hours";
-            
-            
+                \Mail::to($data['userinfo']->email)->queue(new TotalHours($data));
+
             break;
             
             
             case 'instructions':
             
                 $toAddress =$data['userinfo']->email;
-                $emailTemplate = 'emails.hours.help';
-                $subject= 'Instructions';
+                \Mail::to($toAddress)->queue(new Instructions($data));
                     
             
             break;
         
             default:
-                    $emailTemplate = 'emails.hours.adminhours';
-                    
-                    $toAddress = $this->getHoursNotificationEmails();
-                    $subject = 'New Hours Added';
+                $toAddress = $this->getHoursNotificationEmails();
+                \Mail::to($toAddress)->queue(new AdminHours($data));
             break;
         }
+
         
-        \Mail::send($emailTemplate, $data, function ($message) use ($toAddress, $subject) {
-            $message->to($toAddress)->subject($subject);
-        });
     }
+
+
     private function getHoursNotificationEmails()
     {
         $roles = Permission::find(9)->roles()->pluck('name');
@@ -404,12 +425,16 @@ class Email extends Model
         $emailArray = explode(",", $email);
         return $emailArray;
     }
+
     private function getPlotUsers($plot_id)
     {
-        $users = User::whereHas('plots', function ($q) use ($plot_id) {
-            $q->where('plots.id', '=', $plot_id);
-        })->pluck('id', 'email');
-         
-        return $users;
+    
+       $members = Plot::with('managedBy')->where('plots.id', '=', $plot_id)->first();
+       $users = array();
+       foreach ($members->managedBy as $member)
+       {
+        $users[$member->userdetails->id]= $member->userdetails->email;
+       }
+       return $users;
     }
 }

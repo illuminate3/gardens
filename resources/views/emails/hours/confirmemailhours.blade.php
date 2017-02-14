@@ -1,28 +1,28 @@
-<!DOCTYPE html>
-<html lang="en-US">
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
+@component('mail::message')
 
-    	<p>Hi {{$userinfo->member['firstname']}}.</p>
-        <p>This is just to confirm that you posted the following hours on the McNear Community Garden website via email.</p>
-		<p>This is the text of your email:</p>
-        <blockquote>
-        {{$originalText}}
-        </blockquote>
-        <p>This was posted as: </p>
-		<ul>
-		@foreach ($hours as $hour)
-		
-			<li>{{$hour['hours']}} hours  on {{date('M j<\s\up>S</\s\up>, Y',strtotime($hour['servicedate']) )}}  doing {{$hour['description']}}</li>
-			
-		@endforeach
-        </ul>
-        <p>In case there is some problem please log into the website and correct the hours there.</p>
-        <p> Sincerely</p>
+Hi {{$data['userinfo']->member['firstname']}}.
+
+This is just to confirm that you posted the following hours on the McNear Community Garden website via email.
+
+This is the text of your email:
+@component('mail::panel')
+{{$data['originalText']}}
+@endcomponent
+
+This was posted as: 
+@component('mail::table')
+|  Hours | Date   | Description  |
+| -------| -------| -------------|
+@foreach ($data['hours'] as $hour)
+|{{$hour['hours']}} hrs |{{date('M jS, Y',strtotime($hour['servicedate']) )}}  | {{$hour['description']}}|
+@endforeach
+@endcomponent
+In case there is some problem please [log into the website]({{env('APP_URL')}}) and correct the hours there.
+
+Sincerely
+
+{{env('APP_NAME')}}
+
+@endcomponent
         
-        <p>McNear Community Gardens</p>
-		</div>
-	</body>
-</html>
+        

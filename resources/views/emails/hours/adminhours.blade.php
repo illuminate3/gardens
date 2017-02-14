@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="en-US">
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
+@component('mail::message')
+## New Hours Posted
 
-    	<p> {{$result[0]->gardener->firstname}} {{$result[0]->gardener->lastname}} has updated their community hours.</p>
+{{$data['userinfo']->member['firstname']}} {{$data['userinfo']->member['lastname']}} has added some community hours.</p>
 		
-			{{$result[0]->hours}} hours  on {!! date('M j<\s\up>S</\s\up>, Y',strtotime($result[0]->servicedate) )!!}  doing {{$result[0]->description}}<br />
-			
-		
-             <p> Sincerely</p>
-        
-        <p>McNear Community Gardens</p>
-		</div>
-	</body>
-</html>
+
+@component('mail::table')
+|  Hours | Date     | Description  |
+| -------| ---------| -------------|
+@foreach ($data['hours'] as $hour)
+|{{$hour['hours']}} hrs |{{date('M jS, Y',strtotime($hour['servicedate']) )}}  | {{$hour['description']}}|
+@endforeach
+@endcomponent
+
+
+Sincerely,<br>
+{{ config('app.name') }}
+@endcomponent

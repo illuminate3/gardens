@@ -1,44 +1,24 @@
-<!DOCTYPE html>
-<html lang="en-US">
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
-    <?php $total = '';?>
-		<p>Hi {{$userinfo->member->firstname}}:</p>
-		<p>Here are the recorded hours for your plot in {{$year}}:</p>
-        <table>
-        <thead>
-        <th>Date</th>
-        <th>Hours</th>
-        <th>Description</th>
-        <th>Gardener</th>
-        </thead>
-        <tbody>
+@component('mail::message')
+<?php $total = '';?>
+##Total Hours Year to Date
+Hi {{$data['userinfo']->member->firstname}}:
+
+Here are the recorded hours for your plot in {{date('Y')}}:
+
       
-        @foreach ($hours as $hour)
-        	<?php $total = $total + $hour->hours;?>
-            <tr>
-            <td> {!! date('M j<\s\up>S</\s\up>',strtotime($hour['servicedate']) ) !!}</td>
-            <td align="right"> {{number_format($hour->hours,2)}}</td>
-            <td>{{$hour->description}}</td>
-            <td>{{$hour->gardener->firstname}}</td>
-            </tr>
-        
-        @endforeach
-        
-        </tbody>
-        <tfoot>
-        <td>Total:</td>
-        <td align="right">{{number_format($total,2)}}</td>
-        </tfoot>
-        </table>
-        
-        
-         You can edit your hours at <a href="{{route('hours.index')}}" >this link</a></p>
-       <p> Sincerely</p>
-        
-        <p>McNear Community Gardens</p>
-		</div>
-	</body>
-</html>
+@component('mail::table')
+|  Hours | Date   | Description  | Posted by|
+| -------| -------| -------------| ---------|
+@foreach ($data['hours'] as $hour)
+|{{$hour['hours']}} hrs |{{date('M jS, Y',strtotime($hour['servicedate']) )}}  | {{$hour['description']}}|{{$hour->gardener->firstname}}|
+<?php $total = $total + $hour['hours'];?>
+@endforeach
+|{{number_format($total,1)}} hrs| |Total hours|
+@endcomponent
+      
+You can edit your hours at [this link]({{route('hours.index')}}).
+
+Sincerely
+
+{{env('APP_NAME')}}
+@endcomponent
