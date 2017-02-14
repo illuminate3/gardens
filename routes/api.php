@@ -17,4 +17,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
-Route::post('api/hours',array('as'=>'api.hours','uses'=>'HoursController@receiveHoursEmail'))->middleware('auth:api');
+Route::post('/hours',array('as'=>'api.hours','uses'=>'HoursController@receiveHoursEmail'))->middleware('api');
