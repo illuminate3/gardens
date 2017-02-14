@@ -23,12 +23,16 @@ class EmailController extends Controller
 
     public function testemail()
     {
+        return view('emails.parsetest');
+    }
+    
+    public function getEmail()
+    {
         $inbound = new \Postmark\Inbound(file_get_contents('inbound.json'));
         $this->email->processEmail($inbound);
 
         echo "<h2>All done!</h2>";
     }
-    
     
     public function receiveHoursEmail()
     {
