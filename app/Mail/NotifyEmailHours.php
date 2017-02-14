@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AdminHours extends Mailable
+class NotifyHours extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
@@ -19,7 +19,7 @@ class AdminHours extends Mailable
     public function __construct($data)
     {
         $this->data = $data;
-    
+      
     }
 
     /**
@@ -29,6 +29,7 @@ class AdminHours extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.hours.adminhours')->subject('Multiple New Hours Added');
+        
+        return $this->markdown('emails.hours.adminemailhours')->subject('New Hours Added by Email');
     }
 }

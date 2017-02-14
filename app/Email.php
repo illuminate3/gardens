@@ -6,6 +6,7 @@ use App\Email;
 use App\Plot;
 use App\Mail\ConfirmEmailHours;
 use App\Mail\NotifyHours;
+use App\Mail\NotifyEmailHours;
 use App\Mail\TotalHours;
 use App\Mail\AdminNoParse;
 use App\Mail\NoParse;
@@ -369,7 +370,7 @@ class Email extends Model
             
             case 'email':    
                 $toAddress = $this->getHoursNotificationEmails();
-                \Mail::to($toAddress)->queue(new NotifyHours($data));
+                \Mail::to($toAddress)->queue(new NotifyEmailHours($data));
             
             break;
             
@@ -408,7 +409,7 @@ class Email extends Model
     }
 
 
-    private function getHoursNotificationEmails()
+    public function getHoursNotificationEmails()
     {
         $roles = Permission::find(9)->roles()->pluck('name');
         

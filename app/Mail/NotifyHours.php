@@ -30,6 +30,6 @@ class NotifyHours extends Mailable
     public function build()
     {
         
-        return $this->markdown('emails.hours.adminemailhours')->subject('New Hours Added by Email');
+        return $this->markdown('emails.hours.adminhours')->subject('New Hours Added');
     }
 }

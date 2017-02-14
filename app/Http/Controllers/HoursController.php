@@ -11,6 +11,7 @@ use App\Plot;
 use App\Email;
 use App\Permission;
 use App\PeriodTrait;
+use App\Mail\NotifyHours;
 use Carbon\Carbon;
 use App\Http\Requests\HoursFormRequest;
 use App\Notifications\HoursAdded;
@@ -86,7 +87,7 @@ class HoursController extends Controller
 
         // If more than one member has posted hours
         //if(is_array($data['hours']['user'])){
-            
+           
             foreach ($data['hours']['user'] as $user_id) {
                 $data['hours']['user_id'] = $user_id;
                 $hour = new Hours;
@@ -97,12 +98,16 @@ class HoursController extends Controller
                 $hour->description = $data['hours']['description'];
                 $hour->user_id = $data['hours']['user_id'];
                 $hour->save();
+           
                 
+                $data['hours'] = $hour->with('gardener', 'gardener.userdetails', 'gardener.plots')
+                ->whereId($hour->id)->get();
                 
-                $data['result'] = $this->hour->with('gardener', 'gardener.userdetails', 'gardener.plots')->findOrFail([$hour->id]);
-                //$this->hour->notify(new HoursAdded($data));
+               //$this->hour->notify(new HoursAdded($data));
+                $data['userinfo'] = $this->user->find($hour->user_id);
                 
-                $message = $this->email->sendEmailNotifications($data);
+                $toAddress = $this->email->getHoursNotificationEmails();
+                \Mail::to($toAddress)->queue(new NotifyHours($data));
             }
             
         //}
@@ -238,7 +243,7 @@ class HoursController extends Controller
                 }
                 
                 
-                $posting = $this->calculateHours($element);
+                $posting = $this->hour->calculateHours($element);
 
                 $this->hour->create($posting);
                 $allData['hours'][] = $posting;
@@ -360,10 +365,10 @@ class HoursController extends Controller
     private function updateInput($data)
     {
         if ($data['hours'] != $this->hour->hours) {
-            $data = $this->calculateHours($data);
+            $data = $this->hour->calculateHours($data);
         } else {
             $data['hours']='';
-            $data = $this->calculateHours($data);
+            $data = $this->hour->calculateHours($data);
         }
 
         return $data;
