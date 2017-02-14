@@ -4,9 +4,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Email;
 use App\Plot;
+use App\Post;
 use App\Mail\ConfirmEmailHours;
 use App\Mail\NotifyHours;
 use App\Mail\NotifyEmailHours;
+use App\Mail\EmailMessage;
 use App\Mail\TotalHours;
 use App\Mail\AdminNoParse;
 use App\Mail\NoParse;
@@ -42,9 +44,9 @@ class Email extends Model
     {
         $emails = $this->findEmailToAddress($inbound);
         $user = $this->user->has('member')
-        ->with('member','member.plots','member.plots.managedBy')
-        ->where('email', '=', $emails['from'])
-        ->first();
+            ->with('member','member.plots','member.plots.managedBy')
+            ->where('email', '=', $emails['from'])
+            ->first();
         
         if (! $user) {
             // think about sending a notiication to the admin
@@ -63,6 +65,8 @@ class Email extends Model
             break;
         }
     }
+
+
     private function findEmailToAddress($inbound)
     {
         $from = $inbound->ToFull();
@@ -70,19 +74,23 @@ class Email extends Model
         $emails['from'] = $inbound->FromEmail();
         return $emails;
     }
+
+
     private function processMessageEmail($inbound, $user)
     {
         //check to see if this is a reply
         //
-    if (preg_match('/\N\[id=(?<id>\d*)\]/', $inbound->Subject(), $regs)) {
-        $id = $regs['id'];
+        if (preg_match('/\N\[id=(?<id>\d*)\]/', $inbound->Subject(), $regs)) {
+            $id = $regs['id'];
 
-        $this->createNewComment($inbound, $user, $id);
-        return;
-    } else {
-        $this->createNewPost($inbound, $user);
+            $this->createNewComment($inbound, $user, $id);
+            return;
+        } else {
+            $this->createNewPost($inbound, $user);
+        }
     }
-    }
+
+
     private function createNewComment($inbound, $user, $id)
     {
         $post = Post::with('comments')->find($id);
@@ -110,17 +118,20 @@ class Email extends Model
         $post->save();
         $content['content'] = $post->content;
         //send message to all;
-        $this->forwardMessageToMember($user, $post->toArray(), $content);
+        $this->forwardMessageToMember($user, $post, $content);
     }
 
     private function forwardMessageToMember($user, $post, $content)
     {
-        Mail::send('emails.message', $content, function ($message) use ($user, $post) {
+      
+        \Mail::to('stephen@crescentcreative.com')->queue(new EmailMessage($user,$post));
+            
+        /*Mail::send('emails.message', $content, function ($message) use ($user, $post) {
             $message->to('stephen@crescentcreative.com')
             ->from('gardeners@mcneargardens.com',
                 $user->member->firstname." ".$user->member->lastname . " <". $user->email.">")
             ->subject($post['title']. " [id=".$post['id']."]");
-        });
+        });*/
     }
 
     private function getEmailContent($inbound)

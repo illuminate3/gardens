@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NotifyHours extends Mailable
+class NotifyEmailHours extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
