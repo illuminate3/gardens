@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Email;
 use App\Plot;
 use App\Post;
+use App\Comment;
 use App\Mail\ConfirmEmailHours;
 use App\Mail\NotifyHours;
 use App\Mail\NotifyEmailHours;
@@ -93,15 +94,14 @@ class Email extends Model
 
     private function createNewComment($inbound, $user, $id)
     {
-        $post = Post::with('comments')->find($id);
+        $post = Post::with('comments','author','author.member','comments.author','comments.author.member')->find($id);
         $comment = new Comment;
         $comment->content = $this->getEmailContent($inbound);
         $comment->user_id = $user->id;
         
         $post->comments()->save($comment);
-        $content['content'] = $comment->content;
-        dd($content);
-        $this->forwardMessageToMember($user, $post->toArray(), $content);
+        
+        $this->forwardMessageToMember($user, $post, $comment);
     }
 
     private function createNewPost($inbound, $user)
@@ -116,15 +116,15 @@ class Email extends Model
         $post->content = $this->getEmailContent($inbound);
         $post->user_id = $user->id;
         $post->save();
-        $content['content'] = $post->content;
+        
         //send message to all;
-        $this->forwardMessageToMember($user, $post, $content);
+        $this->forwardMessageToMember($user, $post);
     }
 
-    private function forwardMessageToMember($user, $post, $content)
+    private function forwardMessageToMember($user, $post, $comment=null)
     {
       
-        \Mail::to('stephen@crescentcreative.com')->queue(new EmailMessage($user,$post));
+        \Mail::to('stephen@crescentcreative.com')->queue(new EmailMessage($user,$post,$comment));
             
         /*Mail::send('emails.message', $content, function ($message) use ($user, $post) {
             $message->to('stephen@crescentcreative.com')

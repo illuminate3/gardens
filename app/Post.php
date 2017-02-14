@@ -39,7 +39,7 @@ class Post extends Model {
 	 */
 	public function author()
 	{
-		return $this->belongsTo('User', 'user_id');
+		return $this->belongsTo(User::class, 'user_id');
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Post extends Model {
 	 */
 	public function comments()
 	{
-		return $this->hasMany('Comment');
+		return $this->hasMany(Comment::class);
 	}
 
     /**

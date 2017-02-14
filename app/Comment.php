@@ -1,6 +1,11 @@
 <?php
+namespace App;
+use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Eloquent {
+use Illuminate\Http\Request;
+
+
+class Comment extends Model {
 
 	/**
 	 * Get the comment's content.
@@ -19,7 +24,7 @@ class Comment extends Eloquent {
 	 */
 	public function author()
 	{
-		return $this->belongsTo('User', 'user_id');
+		return $this->belongsTo(User::class, 'user_id');
 	}
 
 	/**
@@ -29,7 +34,7 @@ class Comment extends Eloquent {
 	 */
 	public function post()
 	{
-		return $this->belongsTo('Post');
+		return $this->belongsTo(Post::class);
 	}
 
     /**
@@ -39,7 +44,7 @@ class Comment extends Eloquent {
      */
     public function user()
     {
-        return $this->belongsTo('User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
