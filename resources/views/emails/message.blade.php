@@ -20,7 +20,7 @@
 Posted: {{date('Y-m-d',strtotime($post->created_at))}}</em>
 @endcomponent
 <hr />
-
+#### Replies
 @foreach ($post->comments as $othercomment)
 @if($othercomment->id!= $comment->id)
 @component('mail::panel')
