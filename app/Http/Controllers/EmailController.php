@@ -29,6 +29,7 @@ class EmailController extends Controller
     public function getEmail()
     {
         $inbound = new \Postmark\Inbound(file_get_contents('inbound.json'));
+        dd($inbound);
         $this->email->processEmail($inbound);
 
         echo "<h2>All done!</h2>";

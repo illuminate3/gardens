@@ -263,9 +263,9 @@ class HoursController extends Controller
      * 
      * @return View
      */
-    public function plothours()
+    public function plothours(Request $request)
     {
-        $hours = $this->plot->getPlotHours();
+        $hours = $this->plot->getPlotHours('','',$request);
         $showyear = $this->showyear;
         return view('hours.plot', compact('hours', 'showyear'));
     }

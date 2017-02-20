@@ -96,7 +96,7 @@ class Email extends Model
     {
         $post = Post::with('comments','author','author.member','comments.author','comments.author.member')->find($id);
         $comment = new Comment;
-        $comment->content = $this->getEmailContent($inbound);
+        $comment->content = $this->getEmailContent($inbound,'stripped');
         $comment->user_id = $user->id;
         
         $post->comments()->save($comment);
@@ -134,12 +134,15 @@ class Email extends Model
         });*/
     }
 
-    private function getEmailContent($inbound)
+    private function getEmailContent($inbound,$type=null)
     {
-        if ($inbound->StrippedTextReply()) {
+        if($type='stripped' && $inbound->StrippedTextReply())
+        {
             $content = $inbound->StrippedTextReply();
+        
         } elseif ($inbound->TextBody()) {
             $content = $inbound->TextBody();
+        
         } else {
             $content = $inbound->HtmlBody();
         }
@@ -423,8 +426,7 @@ class Email extends Model
     public function getHoursNotificationEmails()
     {
         $roles = Permission::find(9)->roles()->pluck('name');
-        
-        
+ 
             $hoursManagers = Role::whereIn('name', $roles)->with('users')->get();
             $email = '';
             foreach ($hoursManagers as $user) {
