@@ -29,7 +29,7 @@ class EmailController extends Controller
     public function getEmail()
     {
         $inbound = new \Postmark\Inbound(file_get_contents('inbound.json'));
-        dd($inbound);
+       
         $this->email->processEmail($inbound);
 
         echo "<h2>All done!</h2>";
@@ -37,8 +37,11 @@ class EmailController extends Controller
     
     public function receiveHoursEmail()
     {
-        $inbound = new \Postmark\Inbound(file_get_contents('php://input'));
-
-        $this->email->processEmail($inbound);
+        $input = file_get_contents('php://input');
+        if($input){
+            $inbound = new \Postmark\Inbound($input);
+        
+            $this->email->processEmail($inbound);
+        }
     }
 }
