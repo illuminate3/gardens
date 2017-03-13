@@ -13,8 +13,5 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
 
 Route::post('emails/hours',array('as'=>'api.hours','uses'=>'EmailController@receiveHoursEmail'))->middleware('api');
