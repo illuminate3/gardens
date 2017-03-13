@@ -57,7 +57,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'info@mcneargardens.com'),
-        'name' => env('MAIL_FROM_NAME', 'McNEarCommunity Gardens'),
+        'name' => env('MAIL_FROM_NAME', 'McNearCommunity Gardens'),
     ],
 
     /*
