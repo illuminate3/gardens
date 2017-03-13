@@ -94,8 +94,9 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::post('contact', array('as'=>'contact', 'uses'=>'PageController@form')); 
 
 
-	Route::get('emails/hours',array('as'=>'api.hours','uses'=>'EmailController@testemail'));
+	Route::get('emails/hours',array('as'=>'test.hours','uses'=>'EmailController@testemail'));
 	Route::get('get/emails/hours',array('as'=>'get.hours','uses'=>'EmailController@getEmail'));
+	Route::post('api/emails/hours',array('as'=>'api.hours','uses'=>'EmailController@receiveHoursEmail'));
 	
 
 
