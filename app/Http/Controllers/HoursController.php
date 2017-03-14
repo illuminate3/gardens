@@ -104,8 +104,8 @@ class HoursController extends Controller
                 ->whereId($hour->id)->get();
                 
                //$this->hour->notify(new HoursAdded($data));
-                $data['userinfo'] = $this->user->find($hour->user_id);
-                
+                $data['userinfo'] = $this->user->with('member')->find($hour->user_id);
+               
                 $toAddress = $this->email->getHoursNotificationEmails();
                 \Mail::to($toAddress)->queue(new NotifyHours($data));
             }

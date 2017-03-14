@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     public function member()
     {
-        return $this->hasOne(Member::class,'id','user_id');
+        return $this->hasOne(Member::class);
     }
      
      
