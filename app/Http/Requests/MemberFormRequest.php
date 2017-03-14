@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use App\Member;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MemberFormRequest extends FormRequest
@@ -11,9 +11,9 @@ class MemberFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(Member $member)
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,10 @@ class MemberFormRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        return ['firstname'=>'required',
+        'lastname'=>'required',
+        'email'=>'required',
+        'roles'=>'required',
             //
         ];
     }

@@ -5,7 +5,7 @@
 <h1> Create A New Member</h1>
 
 
-{{Form::open( ['method'=>'POST','route'=>['admin.members.store'],'class'=>'form-horizontal']) }}
+{{Form::open( ['method'=>'POST','route'=>['members.store'],'class'=>'form-horizontal']) }}
 
 
 @include('members.partials.membersform')

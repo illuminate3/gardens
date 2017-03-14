@@ -32,6 +32,8 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('role', \App\Role::class);
         Route::model('plots', \App\Plot::class);
         Route::model('members', \App\Member::class);
+        Route::model('users', \App\User::class);
+        Route::model('plots', \App\Plot::class);
     }
 
     /**

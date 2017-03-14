@@ -24,6 +24,6 @@ class Member extends Model
     
     public function userdetails()
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class,'user_id','id');
     }
 }

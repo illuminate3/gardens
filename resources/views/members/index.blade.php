@@ -2,7 +2,7 @@
 
 
     @section('content')
-    <?php $fields = ['First Name'=>'firstname','Last Name'=>'lastname','Phone'=>'phone','Plots'=>'plots','Type'=>'type'];?>
+    <?php $fields = ['First Name'=>'firstname','Last Name'=>'lastname','Phone'=>'phone','Plots'=>'plots','Type'=>'type','Roles'=>'role'];?>
 	@can('manage_members')
 		
 			<?php $fields['Edit'] ='action';
@@ -58,7 +58,16 @@
 						}
 					
 					break;
+					case 'Roles':
+						
+						if(isset($member->userdetails->roles) && count($member->userdetails->roles)>0){
+							
+							foreach ($member->userdetails->roles as $role){
+								echo $role->name ."<br />";
+							}	
+						}
 
+					break;
 					case 'Type':
 						if(isset($member->plots)) {
 							foreach ($member->plots as $plot)

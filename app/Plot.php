@@ -67,4 +67,9 @@ class Plot extends Model
 
         return $hours;
     }
+
+    public function scopePlotList(){
+    	return $this->select(\DB::raw("CONCAT(description, ' ' ,plotnumber,'/ ',subplot) AS plot"),'id')->orderBy('plot')->pluck('plot', 'id');
+
+    }
 }

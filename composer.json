@@ -15,7 +15,8 @@
         "cviebrock/eloquent-sluggable": "^4.1",
         "maatwebsite/excel": "~2.1.0",
         "jjaffeux/postmark-inbound-php": ">=3.0",
-        "dionera/laravel-beanstalkd-ui": "^0.3.3"
+        "dionera/laravel-beanstalkd-ui": "^0.3.3",
+        "laravel/tinker": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

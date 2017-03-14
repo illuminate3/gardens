@@ -6,8 +6,10 @@ use App\Http\Requests\JoinFormRequest;
 use App\Http\Controllers\Controller;
 use App\Notifications\HoursAdded;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Member;
 use App\User;
+use App\Role;
 use App\Plot;
 use App\Export;
 
@@ -42,20 +44,17 @@ class MembersController extends Controller {
 		if ($this->user->hasRole('admin'))
 		{
 			$members = $this->member
-			->with('userdetails','plots')
+			->with('userdetails','userdetails.roles','plots')
 			->get();
 		}else{
 			//only get full members if not admin
 			$members = $this->member
 			->where('status','=','full')
-			->with('userdetails','plots')
+			->with('userdetails','userdetails.roles','plots')
 			->get();
 		}
 	
-	// Not sure what this was going to be!
-	//$this->user->notify($this->hoursadded($this->user));
-	
-	return view('members.index', compact('members','fields'));
+		return view('members.index', compact('members','fields'));
 	}
 
 	/**
@@ -65,8 +64,9 @@ class MembersController extends Controller {
 	 */
 	public function create()
 	{
-		$plots = $this->plot->all();
-		return view('members.create',compact('plots'));
+		$plots = $this->plot->plotList();
+		$roles= Role::pluck('name','id');
+		return view('members.create',compact('plots','roles'));
 	}
 
 	/**
@@ -76,8 +76,26 @@ class MembersController extends Controller {
 	 */
 	public function store(MemberFormRequest $request)
 	{
-		
-		$this->member->create($request->all());
+		$userData =[
+		'email'=> $request->get('email'),
+		'password'=>\Hash::make($request->get('password')),
+		'username' => strtolower(substr($request->get('firstname'),0,1) .
+				str_replace(" ","",$request->get('lastname')))
+
+		];
+
+
+		$user = new User($userData);;
+		$user->save();
+		$member = new Member($request->all());
+		if($request->has('membersince'))
+		{
+			$member->membersince = Carbon::parse($request->get('membersince'));
+		}
+		// have to add the plots and the roles
+		$member->user_id = $user->id;
+		$user->member()->save($member);
+		$user->roles()->sync($request->get('roles'));
 
 		return redirect()->route('members.index');
 	}
@@ -96,8 +114,6 @@ class MembersController extends Controller {
 			->with('userdetails','plots','userdetails.currentYearHours')
 			->whereId($id)
 			->firstOrFail();
-
-		
 		
 		return view('members.show', compact('member'));
 	}
@@ -110,19 +126,15 @@ class MembersController extends Controller {
 	 */
 	public function edit($id)
 	{
-		
-
-		$assigned = array();
-		$member = $this->member->where('id','=',$id)->with('userdetails','plots')->firstOrFail();
-
-		$plots = $this->plot->all();
-		
-		foreach($member->plots as $plot)
-		{
-			$assigned[] = $plot->id;	
-		}
-
-		return view('members.edit', compact('member','plots','assigned'));
+		$member = $this->member
+			->where('id','=',$id)
+			->with('userdetails','userdetails.roles','plots')
+			->firstOrFail();
+			
+		$plots = $this->plot->plotList();
+		$roles= Role::pluck('name','id');
+	
+		return view('members.edit', compact('member','plots','roles'));
 	}
 
 	/**
@@ -131,21 +143,25 @@ class MembersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update(MemberFormRequest $request, $member)
+	public function update(MemberFormRequest $request, $id)
 	{
-		dd($member);
-		
-		if(isset($data['plots'])){
-			$member->plots()->sync($data['plots']);
+
+		$member = $this->member->with('userdetails','userdetails.roles','plots')->findOrFail($id);
+		if($request->has('plots')){
+			$member->plots()->sync($request->get('plots'));
 		}else{
 			$member->plots()->detach();
 		}
-		if(isset ($data['membersince']))
+
+
+		$member->userdetails->roles()->sync($request->get('roles'));
+		
+		if($request->has('membersince'))
 		{
-			$data['membersince'] = date('Y:m:d 00:00:00',strtotime($data['membersince']));
+			$member->membersince = Carbon::parse($request->get('membersince'));
 		}
 
-		$member->update($data);
+		$member->update();
 
 		return redirect()->route('members.index');
 	}
@@ -156,10 +172,10 @@ class MembersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy(Member $member)
+	public function destroy($member)
 	{
 		
-		$member->destroy();
+		$member->delete();
 
 		return redirect()->route('members.index');
 	}

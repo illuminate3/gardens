@@ -80,36 +80,50 @@ isset($member->status) ? $member->status : '' ,array('class'=>"form-control"))}}
 <span class="error">{{$errors->first('status')}}</span>
 </div></div>
 
+<!-- Roles -->
 
-
-<!-- Plots -->
-@if(isset($member->status ) && $member->status != 'wait')
 <div class="form-group">
-{{Form::label('plots','Assigned Plots:',array('class'=>'col-sm-2 control-label'))}}
+{{Form::label('roles','Roles:',array('class'=>'col-sm-2 control-label'))}}
 <div class="col-sm-10">
-<select multiple="multiple" name="plots[]" id="plots">
-<option>Not Assigned</option>
-    @foreach($plots as $plot)
+<select multiple="multiple" name="roles[]" id="roles">
+@foreach($roles as $key=>$role)
     
-           	 <?php
-             if(in_array($plot->id,$assigned)){
-				 
-            	echo "<option selected value=\"".$plot->id."\">".$plot->plotnumber." | " . $plot->subplot."</option>";
-			 }else{
-            	echo "<option value=\"".$plot->id."\">".$plot->plotnumber." | " . $plot->subplot."</option>";
-			 }?>
+<option value="{{$key}}"
+{{isset($member->userdetails->roles) && $member->userdetails->roles->contains('id',$key) ? 'selected' : ''}}
+>
+    {{$role}}
+</option>
+
          
 
     @endforeach
 </select>
+  
+<span class='error'>{{$errors->first('roles')}}</span>
+</div></div>
 
 
 
+<!-- Plots -->
+<div class="form-group">
+{{Form::label('plots','Assigned Plots:',array('class'=>'col-sm-2 control-label'))}}
+<div class="col-sm-10">
+<select multiple="multiple" name="plots[]" id="plots">
+@foreach($plots as $key=>$plot)
     
-    
+<option value="{{$key}}"
+{{isset($member->plots) && $member->plots->contains('id',$key) ? 'selected' : ''}}
+>
+    {{$plot}}
+</option>
+
+         
+
+    @endforeach
+</select>
+  
 <span class='error'>{{$errors->first('plots')}}</span>
 </div></div>
-@endif
 
 
 

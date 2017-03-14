@@ -181,6 +181,9 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Dionera\BeanstalkdUI\BeanstalkdUIServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
+
+
 
 
     ],
