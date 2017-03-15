@@ -87,7 +87,7 @@ class HoursController extends Controller
 
         // If more than one member has posted hours
         //if(is_array($data['hours']['user'])){
-           
+        
             foreach ($data['hours']['user'] as $user_id) {
                 $data['hours']['user_id'] = $user_id;
                 $hour = new Hours;
@@ -104,8 +104,10 @@ class HoursController extends Controller
                 ->whereId($hour->id)->get();
                 
                //$this->hour->notify(new HoursAdded($data));
-                $data['userinfo'] = $this->user->with('member')->find($hour->user_id);
-               
+
+                $data['userinfo'] = $this->user->with('member')->find($user_id);
+                
+
                 $toAddress = $this->email->getHoursNotificationEmails();
                 \Mail::to($toAddress)->queue(new NotifyHours($data));
             }

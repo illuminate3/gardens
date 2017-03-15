@@ -48,7 +48,7 @@ class Email extends Model
             ->with('member','member.plots','member.plots.managedBy')
             ->where('email', '=', $emails['from'])
             ->first();
-        
+       
         if (! $user) {
             // think about sending a notiication to the admin
             dd('Phony');
