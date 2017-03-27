@@ -28,9 +28,9 @@ class Kernel extends HttpKernel
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Session\Middleware\StartSession::class,
+
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,   
+ 
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         ],
 
