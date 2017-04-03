@@ -48,11 +48,11 @@ class Hours extends Model
         if ($plot) {
             // convert plot to users
             
-            $users = Plot::with('managedBy', 'managedBy.userdetails')->where('id', '=', $plot)->firstOrFail();
+            $users = Plot::with('managedBy', 'managedBy.user')->where('id', '=', $plot)->firstOrFail();
             
             foreach ($users->managedBy as $member) {
-                //dd($member->userdetails->id);
-                $user_id[]=  $member->userdetails->id;
+                //dd($member->user->id);
+                $user_id[]=  $member->user->id;
             }
 
             // get users hours

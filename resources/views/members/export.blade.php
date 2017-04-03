@@ -16,8 +16,8 @@
 		<td>{{$member->phone}}</td>
 		<td>{{$member->mobile}}</td>
 		<td>
-		@if(isset($member->userdetails->email))
-		{{$member->userdetails->email}}
+		@if(isset($member->user->email))
+		{{$member->user->email}}
 		@endif
 		</td>
 		<td>{{$member->status}}</td>

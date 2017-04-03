@@ -60,9 +60,9 @@
 					break;
 					case 'Roles':
 						
-						if(isset($member->userdetails->roles) && count($member->userdetails->roles)>0){
+						if(isset($member->user->roles) && count($member->user->roles)>0){
 							
-							foreach ($member->userdetails->roles as $role){
+							foreach ($member->user->roles as $role){
 								echo $role->name ."<br />";
 							}	
 						}

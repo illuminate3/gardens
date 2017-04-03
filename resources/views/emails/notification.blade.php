@@ -1,7 +1,12 @@
-<p>{{$yourname}} completed the {{$form}} on the website. This is their message:</p>
-<blockquote>
-<p>{{$yourmessage}}</p>
-</blockquote>
-<p>{{$yourname}} can be reached at <a href = "mailto:{{$email}}">{{$email}}</a> </p>
+@component('mail::message')
 
-<p>Webmaster : McNear Gardens</p>
+## {{$data['form']}} Form Completed
+
+{{ucwords(strtolower($data['name']))}} completed the {{strtolower($data['form'])}} form on the website. This is {{ucwords(strtolower($data['name']))}}'s' message:
+
+>{{$data['comments']}}
+
+{{ucwords(strtolower($data['name']))}} can be reached at <a href = "mailto:{{$data['email']}}">{{$data['email']}}</a> 
+
+
+@endcomponent

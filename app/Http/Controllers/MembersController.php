@@ -3,11 +3,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberFormRequest;
 use App\Http\Requests\JoinFormRequest;
+use App\Mail\SendWaitListConfirmation;
+
+use App\Mail\SendWaitListConfirmed;
+use App\Mail\SendWaitListConfirmedNotify;
+
+
+use App\Mail\SendWaitListNotify;
 use App\Http\Controllers\Controller;
 use App\Notifications\HoursAdded;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Member;
+use App\Form;
 use App\User;
 use App\Role;
 use App\Plot;
@@ -44,13 +52,13 @@ class MembersController extends Controller {
 		if ($this->user->hasRole('admin'))
 		{
 			$members = $this->member
-			->with('userdetails','userdetails.roles','plots')
+			->with('user','user.roles','plots')
 			->get();
 		}else{
 			//only get full members if not admin
 			$members = $this->member
 			->where('status','=','full')
-			->with('userdetails','userdetails.roles','plots')
+			->with('user','user.roles','plots')
 			->get();
 		}
 	
@@ -111,7 +119,7 @@ class MembersController extends Controller {
 		
 
 		$member = $this->member
-			->with('userdetails','plots','userdetails.currentYearHours')
+			->with('user','plots','user.currentYearHours')
 			->whereId($id)
 			->firstOrFail();
 		
@@ -128,7 +136,7 @@ class MembersController extends Controller {
 	{
 		$member = $this->member
 			->where('id','=',$id)
-			->with('userdetails','userdetails.roles','plots')
+			->with('user','user.roles','plots')
 			->firstOrFail();
 			
 		$plots = $this->plot->plotList();
@@ -146,7 +154,7 @@ class MembersController extends Controller {
 	public function update(MemberFormRequest $request, $id)
 	{
 
-		$member = $this->member->with('userdetails','userdetails.roles','plots')->findOrFail($id);
+		$member = $this->member->with('user','user.roles','plots')->findOrFail($id);
 		if($request->has('plots')){
 			$member->plots()->sync($request->get('plots'));
 		}else{
@@ -154,7 +162,7 @@ class MembersController extends Controller {
 		}
 
 
-		$member->userdetails->roles()->sync($request->get('roles'));
+		$member->user->roles()->sync($request->get('roles'));
 		
 		if($request->has('membersince'))
 		{
@@ -223,28 +231,38 @@ class MembersController extends Controller {
 	
 	public function join(JoinFormRequest $request)
 	{
-		
-		dd($request);
-		$data=$request->all();
-	    $data=$this->getUserData($data);
 
-		$user = new User;
-		$user->save($data);
-		$this->member = new Member;
+	    $data=$this->getUserData($request->all());
+
+		$user = new User($data);
+		$user->save();
+
+		$member = new Member($data);
 		
-		$member = $this->member->create($data);
-		$user = $this->user;
-		
-		$member->user_id = $user->id;
-		$data['yourname'] = $data['firstname'] ." " .$data['lastname'];
-		$this->member->sendFormEmails($data);
+		$user->member()->save($member);
+		$data['waitlist'] = count($member->getWaitList());
+		$data['name'] = $data['firstname'] ." " .$data['lastname'];
+				
+ 		$this->member->sendWaitListEmails($data);
+ 		Form::create($data);
 		return view('pages.response', compact('data'));
 
 		
 	}
-	
+	public function confirm($key){
+
+		$user = $this->user->with('member')->where('confirmation_code','=',$key)->firstOrFail();
+		$user->confirmed=true;
+		$user->save();
+		\Mail::to($user->email)->send(new SendWaitListConfirmed($user));
+        \Mail::to('info@mcneargardens.com')->send(new SendWaitListConfirmedNotify($user));
+        return view('members.joinconfirm', compact('user'));
+
+
+	}
 	private function getUserData($data)
 	{
+		
 		$data['username']= strtolower(substr($data['firstname'],0,1).$data['lastname']);
 		$data['password']= rtrim(base64_encode(md5(microtime())),"=");
 		$data['password_confirmation'] = $data['password'];
@@ -258,7 +276,7 @@ class MembersController extends Controller {
 
 	public function export()
 	{
-		$members = $this->member->with('userdetails','plots')->get();
+		$members = $this->member->with('user','plots')->get();
 
 
 		\Excel::create('Members', function($excel)  use($members){

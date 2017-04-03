@@ -5,10 +5,10 @@
 {{form::('contact',route('page.contact')}}
 <!-- Your Name -->
 <div class="form-group">
-{{Form::label('yourname','Your Name:',array('class'=>'col-sm-2 control-label'))}}
+{{Form::label('name','Your Name:',array('class'=>'col-sm-2 control-label'))}}
 <div class="col-sm-10">
-{{Form::text('yourname',,array('class'=>"form-control"))}}
-<span class='error'>{{$errors->first('yourname')}}</span>
+{{Form::text('name',,array('class'=>"form-control"))}}
+<span class='error'>{{$errors->first('name')}}</span>
 </div></div>
 <!-- Your EMail -->
 <div class="form-group">

@@ -18,7 +18,7 @@ class Plot extends Model
     
     public function managedBy()
     {
-        return $this->belongsToMany(Member::class)->with('userdetails');
+        return $this->belongsToMany(Member::class)->with('user');
     }
     
     public function getPlotHours($plot = null, $id=null, Request $request)

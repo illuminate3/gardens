@@ -11,7 +11,7 @@
     
 		<p>{{$key}}:Thats an array</p>
 	@else
-    <p>{{$key}}: {{$userdetails[0]->$field}} </p>
+    <p>{{$key}}: {{$user[0]->$field}} </p>
     @endif
      @endwhile
 

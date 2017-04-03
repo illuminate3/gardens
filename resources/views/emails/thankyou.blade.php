@@ -1,5 +1,9 @@
-<p>Thank you for completing the {{$form}} on the McNearCommunity  Gardens website.</p>
+@component('mail::message')
 
-<p>If neccessary someone will contact you shortly about your message. </p>
+## Thank You {{ucwords(strtolower($data['name']))}}
 
-<p>Webmaster : McNear Gardens</p>
+Thank you for completing the {{strtolower($data['form'])}} form on the McNearCommunity Gardens website.
+
+If neccessary someone will contact you shortly about your message. 
+
+@endcomponent

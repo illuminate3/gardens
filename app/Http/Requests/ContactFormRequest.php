@@ -23,7 +23,7 @@ class ContactFormRequest extends FormRequest
      */
     public function rules()
     {
-        return ['email'=>'required',
+        return ['email'=>'required','name'=>'required'
             //
         ];
     }

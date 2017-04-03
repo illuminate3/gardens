@@ -44,7 +44,7 @@
 
 {{Form::label('email','Email:',array('class'=>'col-sm-2 control-label'))}}
 <div class="col-sm-10">
-{{Form::text('email',isset($member->userdetails->email) ? $member->userdetails->email: '',array('class'=>"form-control"))}}
+{{Form::text('email',isset($member->user->email) ? $member->user->email: '',array('class'=>"form-control"))}}
 
 <span class="error">{{$errors->first('email')}}</span>
 </div></div>
@@ -89,7 +89,7 @@ isset($member->status) ? $member->status : '' ,array('class'=>"form-control"))}}
 @foreach($roles as $key=>$role)
     
 <option value="{{$key}}"
-{{isset($member->userdetails->roles) && $member->userdetails->roles->contains('id',$key) ? 'selected' : ''}}
+{{isset($member->user->roles) && $member->user->roles->contains('id',$key) ? 'selected' : ''}}
 >
     {{$role}}
 </option>

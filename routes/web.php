@@ -66,7 +66,9 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::get('manage-role', 'RoleController@manage');
 	Route::resource('roles','RoleController');
 
-	
+	Route::resource('users','UsersController');
+
+	Route::resource('forms','FormsController');
 
 
 	
@@ -79,6 +81,8 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	}); 
 
 	Route::post('join', ['as'=>'join.create','uses'=>'MembersController@join']);
+
+	Route::get('confirmation/{key}',['as'=>'join.confirmation','uses'=>'MembersController@confirm']);
 	Route::get('/home', 'HomeController@index');
 	/** ------------------------------------------
 	 *  Frontend Routes

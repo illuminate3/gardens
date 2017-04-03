@@ -1,10 +1,10 @@
 <!-- First Name -->
 
-<div class="form-group  {{$errors->first('yourname') ?  'has-error' :  ''}}">
-{{Form::label('yourname','Your Name:',array('class'=>'col-sm-2 control-label'))}}
+<div class="form-group  {{$errors->first('name') ?  'has-error' :  ''}}">
+{{Form::label('name','Your Name:',array('class'=>'col-sm-2 control-label'))}}
 <div class="col-sm-10">
-{{Form::text('yourname','',array('class'=>"form-control"))}}
-<span class='error'>{{$errors->first('yourname')}}</span>
+{{Form::text('name','',array('class'=>"form-control"))}}
+<span class='error'>{{$errors->first('name')}}</span>
 </div></div>
 
 <!-- Email -->
@@ -20,11 +20,11 @@
 <!-- Email -->
 <div class="form-group  {{$errors->first('email') ?  'has-error' :  ''}}">
 
-{{Form::label('yourmessage','Your Message:',array('class'=>'col-sm-2 control-label'))}}
+{{Form::label('comments','Your Message:',array('class'=>'col-sm-2 control-label'))}}
 <div class="col-sm-10">
-{{Form::textarea('yourmessage','',array('class'=>"form-control"))}}
+{{Form::textarea('comments','',array('class'=>"form-control"))}}
 
-<span class="error">{{$errors->first('yourmessage')}}</span>
+<span class="error">{{$errors->first('comments')}}</span>
 </div></div>
 {{Form::hidden('form','Contact')}}
 

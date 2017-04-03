@@ -6,20 +6,12 @@
 
      
 
- <h1>  
+ <h1> {{$member->fullname()}}</h1>  
 
-    @if (Auth::user()->hasRole('admin'))
-		
-        
-     @else
-     
-     {{$member->firstname ." " . $member->lastname}}
-	@endif
-    </h1>  
     <fieldset><legend>Contact Details</legend>
-   
+
     <p><strong>Phone:</strong><blockquote>{{$member->phone}}</blockquote></p>
-    <p><strong>Email:</strong><blockquote><a href="mailto:{{$member->email}}" title="Email {{$member->firstname ." " . $member->lastname}}">{{$member->userdetails->email}}</a></blockquote></p>
+    <p><strong>Email:</strong><blockquote><a href="mailto:{{$member->email}}" title="Email {{$member->firstname ." " . $member->lastname}}">{{$member->user->email}}</a></blockquote></p>
      @if (Auth::user()->hasRole('board'))
      <p><strong>Address:</strong><blockquote>{{$member->address}}</blockquote></p>
      
@@ -60,7 +52,7 @@
     </thead>
     <tbody>
     <?php $total =null;?>
-        @foreach ($member->userdetails->currentYearHours as $hours)
+        @foreach ($member->user->currentYearHours as $hours)
         <tr>
         <td>{{date('d M Y',strtotime($hours->servicedate))}}</td>
         <td align="center">{{number_format($hours->hours,1)}}</td>

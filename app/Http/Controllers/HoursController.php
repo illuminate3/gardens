@@ -69,7 +69,7 @@ class HoursController extends Controller
                 ->orderBy('members.lastname', 'asc')
                 ->get();
         } else {
-            $members = Member::where('user_id', '=', Auth::id())->with(array( 'plots','plots.managedBy','plots.managedBy.userdetails'))->first();
+            $members = Member::where('user_id', '=', Auth::id())->with(array( 'plots','plots.managedBy','plots.managedBy.user'))->first();
         }
 
         return view('hours.create', compact('members'));
@@ -100,7 +100,7 @@ class HoursController extends Controller
                 $hour->save();
            
                 
-                $data['hours'] = $hour->with('gardener', 'gardener.userdetails', 'gardener.plots')
+                $data['hours'] = $hour->with('gardener', 'gardener.user', 'gardener.plots')
                 ->whereId($hour->id)->get();
                 
                //$this->hour->notify(new HoursAdded($data));
@@ -149,7 +149,7 @@ class HoursController extends Controller
      */
     public function edit($id)
     {
-        $hour = $this->hour->with('gardener', 'gardener.userdetails', 'gardener.plots')->findOrFail($id);
+        $hour = $this->hour->with('gardener', 'gardener.user', 'gardener.plots')->findOrFail($id);
         return view('hours.edit', compact('hour'));
     }
 
@@ -161,7 +161,7 @@ class HoursController extends Controller
      */
     public function update($id, HoursFormRequest $request)
     {
-        $hour = $this->hour->with('gardener', 'gardener.userdetails', 'gardener.plots')->findOrFail($id);
+        $hour = $this->hour->with('gardener', 'gardener.user', 'gardener.plots')->findOrFail($id);
 
         $data['hours']=$request->all();
         $data['hours'] = $this->updateInput($data['hours']);
@@ -210,7 +210,7 @@ class HoursController extends Controller
             ->orderBy('members.lastname', 'asc')
             ->get();
         } else {
-            $members = Member::where('user_id', '=', \Auth::id())->with(array( 'plots','plots.managedBy','plots.managedBy.userdetails'))->get();
+            $members = Member::where('user_id', '=', \Auth::id())->with(array( 'plots','plots.managedBy','plots.managedBy.user'))->get();
         }
         
         return view('hours.createmultiple', compact('plot', 'members'));
@@ -316,7 +316,7 @@ class HoursController extends Controller
             
             // Identify user id of primary plot owner
             $gardener = Plot::with('managedBy')->find($key);
-            $primary= $gardener->managedBy[0]->userdetails->id;
+            $primary= $gardener->managedBy[0]->user->id;
 
             
             // Arrange input hours into consisten array

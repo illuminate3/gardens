@@ -129,9 +129,8 @@ class PageController extends Controller {
 	
 	public function form(ContactFormRequest $request)
 	{
-		
-		
-		
+		$data = $request->all();
+	
 		$this->page->sendFormEmails($data);
 		return view()->make('pages.response', compact('data'));
 		

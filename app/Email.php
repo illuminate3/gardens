@@ -446,7 +446,7 @@ class Email extends Model
        $users = array();
        foreach ($members->managedBy as $member)
        {
-        $users[$member->userdetails->id]= $member->userdetails->email;
+        $users[$member->user->id]= $member->user->email;
        }
        return $users;
     }

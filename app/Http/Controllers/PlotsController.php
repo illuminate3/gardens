@@ -153,7 +153,7 @@ class PlotsController extends Controller
                 order by plots.id";
         $plots =  \DB::select(\DB::raw($query));
         
-        /*$plots = $this->plot->with('managedBy','managedBy.userdetails','managedBy.userdetails.sumCurrentHours')
+        /*$plots = $this->plot->with('managedBy','managedBy.user','managedBy.user.sumCurrentHours')
 
         
         
