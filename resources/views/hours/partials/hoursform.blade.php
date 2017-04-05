@@ -19,7 +19,7 @@
 @endif
 
 
-<div class="col-sm-8"><label for 'servicedate'>Service Date:</label>
+<div class="col-sm-8"><label for 'servicedate'>Service Date:<em> (in format m/d/y or click on calendar icon)</em></label>
             <div class="form-group @if ($errors->has('servicedate')) has-error @endif">
                 <div class="input-group date" id="datetimepicker">
                     <input id='servicedate' required 
