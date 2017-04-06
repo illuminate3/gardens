@@ -1,28 +1,35 @@
 @if (Auth::user()->can('manage_hours'))
 <div class="col-sm-8">
 
-{{Form::label('Member:')}}
+    <label for 'user'>Choose Member</label>
 
-<div class="form-group @if ($errors->has('members')) has-error @endif">
-<select multiple="multiple" name="user[]" id="user">
-@foreach($members as $member )
-   
-        <option value="{{$member->id}}" 
-        @if( isset($request) && $request->old('member') == $member->id) selected="selected" @endif>{{$member->lastname}}, {{$member->firstname}}</option>
-    
-@endforeach
-</select>
+    <div class="form-group @if ($errors->has('members')) has-error @endif">
+        <div class="input-group input-group-lg col-xs-4">
+            <select multiple="multiple" name="user[]" id="user" class="form-control"
+          >
+            @foreach($members as $member )
 
-@if ($errors->has('user')) <p class="help-block">{{ $errors->first('user') }}</p> @endif
-   </div>
+                <option value="{{$member->id}}" 
+                @if( isset($request) && $request->old('member') == $member->id) selected="selected" @endif>{{$member->lastname}}, {{$member->firstname}}</option>
+
+            @endforeach
+            </select>
+
+            @if ($errors->has('user')) <p class="help-block">{{ $errors->first('user') }}</p> @endif
         </div>
+    </div>
+</div>
 @endif
 
 
-<div class="col-sm-8">{{Form::label('Service Date:')}}
+<div class="col-sm-8">
+    <label for 'servicedate'>Service Date:<em> (in format m/d/y or click on calendar icon)</em></label>
             <div class="form-group @if ($errors->has('servicedate')) has-error @endif">
-                <div class="input-group date" id="datetimepicker">
-                    <input id='servicedate' name='servicedate' type="text" class="form-control" value="{{ isset($request) ? $request->old('servicedate') : '' }}" />
+                <div class="input-group input-group-lg  col-xs-4 date" id="datetimepicker">
+                    <input id='servicedate' required 
+                    placeholder ="{{date('m/d/Y')}}" 
+                    name='servicedate' type="text" class="form-control" 
+                    value="{{ isset($request) ? $request->old('servicedate') : '' }}" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
@@ -32,10 +39,10 @@
 <frameset>
 <legend>Enter start and end time</legend>
 <div class="col-sm-3">
-{{Form::label('Start Time:') }}
+<label for 'starttime'>Start Time:</label>
 
             <div class="form-group @if ($errors->has('starttime')) has-error @endif">
-                <div class="input-group date" id="datetimepicker2">
+                <div class="input-group input-group-lg date" id="datetimepicker2">
                     <input name='starttime' type="text" class="form-control" value="{{ isset($request) ? $request->old('starttime') :'' }}" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
                     </span>
@@ -46,10 +53,10 @@
         
        
   <div class="col-sm-3">  
-{{Form::label('End Time:')}}
+<label for 'endtime'>End Time:</label>
 
            <div class="form-group @if ($errors->has('endtime')) has-error @endif">
-                <div class="input-group date" id="datetimepicker3">
+                <div class="input-group input-group-lg date" id="datetimepicker3">
                     <input name='endtime' type="text" class="form-control" value="{{ isset($request) ? $request->old('endtime') : '' }}" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
                     </span>
@@ -62,24 +69,35 @@
 </frameset>
 <frameset>
 <legend> or Enter Hours worked</legend>
-<div class="col-sm-8">
-{{Form::label('Hours:')}}
+<div class="col-sm-8">  
+    <label for 'hours'>Hours Worked:</label>
 
-<div class="form-group @if ($errors->has('hours')) has-error @endif">
+           <div class="form-group @if ($errors->has('hours')) has-error @endif">
+                <div class="input-group input-group-lg col-xs-4 " >
+                    <input name='hours' type="text"  placeholder = "2.5"
+                    class="form-control" value="{{ isset($request) ? $request->old('hours') : '' }}" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                    </span>
+                </div>
+                @if ($errors->has('hours')) <p class="help-block">{{ $errors->first('hours') }}</p> @endif
+            </div>
+        </div>
 
-{{Form::text('hours',isset($request) ? $request->old('hours') : '')}}
-@if ($errors->has('hours')) <p class="help-block">{{ $errors->first('hours') }}</p> @endif
-</div>
-</div>
+
+
+
+
+
 
 
 </frameset>
 <div class="col-sm-8">
-{{Form::label('Description:')}}
+<label for 'description'>Description:</label>
 
 <div class="form-group @if ($errors->has('description')) has-error @endif">
-
-{{Form::textarea('description',isset($request) ? $request->old('description') : '')}}
+<textarea class="form-control" name='description' required >
+{{isset($request) ? $request->old('description') : ''}}
+</textarea>
 @if ($errors->has('description')) <p class="help-block">{{ $errors->first('description') }}</p> @endif
 </div>
 </div>
