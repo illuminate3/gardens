@@ -45,7 +45,8 @@
 
 
 
-
+<link rel="stylesheet" href="/assets/css/bootstrap-multiselect.css" type="text/css">
+<script type="text/javascript" src="/assets/js/bootstrap-multiselect.js"></script>
 
 
 
