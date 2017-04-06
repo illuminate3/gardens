@@ -17,7 +17,7 @@
         "dionera/laravel-beanstalkd-ui": "^0.3.3",
         "laravel/tinker": "^1.0",
         "bugsnag/bugsnag-laravel": "^2.4",
-         "viacreative/sudo-su": "^1.1"
+        "viacreative/sudo-su": "^1.1"
         
     },
     "require-dev": {
