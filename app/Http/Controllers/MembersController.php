@@ -232,6 +232,7 @@ class MembersController extends Controller {
 	public function join(JoinFormRequest $request)
 	{
 
+
 	    $data=$this->getUserData($request->all());
 
 		$user = new User($data);

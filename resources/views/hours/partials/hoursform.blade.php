@@ -30,7 +30,7 @@
                     placeholder ="{{date('m/d/Y')}}" 
                     name='servicedate' type="text" class="form-control" 
                     value="{{ isset($request) ? $request->old('servicedate') : '' }}" />
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                    <span class="input-group-addon"><span title="Click to set date from calendar" class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
                 @if ($errors->has('servicedate')) <p class="help-block">{{ $errors->first('servicedate') }}</p> @endif
@@ -44,7 +44,7 @@
             <div class="form-group @if ($errors->has('starttime')) has-error @endif">
                 <div class="input-group input-group-lg date" id="datetimepicker2">
                     <input name='starttime' type="text" class="form-control" value="{{ isset($request) ? $request->old('starttime') :'' }}" />
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                    <span class="input-group-addon"><span title="Click to set start time from clock" class="glyphicon glyphicon-time"></span>
                     </span>
                 </div>
                  @if ($errors->has('starttime')) <p class="help-block">{{ $errors->first('starttime') }}</p> @endif
@@ -58,7 +58,9 @@
            <div class="form-group @if ($errors->has('endtime')) has-error @endif">
                 <div class="input-group input-group-lg date" id="datetimepicker3">
                     <input name='endtime' type="text" class="form-control" value="{{ isset($request) ? $request->old('endtime') : '' }}" />
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                    <span class="input-group-addon"><span 
+                    title="Click to set end time from clock" 
+                    class="glyphicon glyphicon-time"></span>
                     </span>
                 </div>
                 @if ($errors->has('endtime')) <p class="help-block">{{ $errors->first('endtime') }}</p> @endif
@@ -101,36 +103,35 @@
 @if ($errors->has('description')) <p class="help-block">{{ $errors->first('description') }}</p> @endif
 </div>
 </div>
-@if (!Auth::user()->can('manage_hours')) 
-	@if (count ($members->plots[0]->managedBy) > 1)
+@if (! Auth::user()->can('manage_hours') && count ($members->plots[0]->managedBy) > 1)
 
-        <div class="col-sm-8">
-    {{Form::label('Worked By:')}}
-    
+<div class="col-sm-8">
+    <label for "member">Worked by: <em>(you can check multiple)</em></label>
+
     <div class="form-group @if ($errors->has('user')) has-error @endif">
-    
-   
+        <div class="input-group input-group-lg col-xs-4">
+            <select multiple="multiple" 
+            size='3'
+            name="user[]" 
+            id="user" class="form-control">
+                @foreach($members->plots[0]->managedBy as $member )
 
+                <option value="{{$member->user_id}}" 
+                    @if( isset($request) && $request->old('member') == $member->user_id or $member->user_id==Auth::id()) selected="selected" 
+                    @endif>
+                    {{$member->firstname}}
+                </option>
 
-    <select multiple="multiple" name="user[]" id="user">
-     @foreach($members->plots[0]->managedBy as $member )
-       
-            <option value="{{$member->user_id}}" 
-            @if( isset($request) && $request->old('member') == $member->user_id or $member->user_id==Auth::id()) selected="selected" 
-            @endif>
-            {{$member->firstname}}
-            </option>
-       
-    @endforeach
-    </select>
-    
-    
-    @if ($errors->has('user')) <p class="help-block">{{ $errors->first('user') }}</p> @endif
+                @endforeach
+            </select>
+
+        </div>
+        @if ($errors->has('user')) <p class="help-block">{{ $errors->first('user') }}</p> @endif
     </div>
-    </div>
-    @else
-    <input type='hidden' name='user[]' value ='{{Auth::id()}}' />
+</div>
+@else
+<input type='hidden' name='user[]' value ='{{Auth::id()}}' />
 
-	@endif
 @endif
+
 

@@ -18,7 +18,10 @@ $(document).ready(function()
 	
 	$('#sorttable4').DataTable();
 	
-	
+
+	$('#user').multiselect();
+
+
 
 	
 
