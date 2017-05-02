@@ -197,7 +197,7 @@ class MembersController extends Controller {
 		->orderBy('membersince')
 		->get();
 
-		$fields = ['Name'=>'firstname','Phone'=>'phone','Date Added'=>'membersince'];
+		$fields = ['Name'=>'firstname','Phone'=>'phone','Date Added'=>'membersince','Edit'=>'action'];
 		if ($this->user->hasRole('admin'))
 			{
 				$fields['Edit'] ='action';
