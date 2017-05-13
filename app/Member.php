@@ -13,7 +13,7 @@ class Member extends Model
         'lastname'=>'required',
         'address'=>'required'
     ];
-
+    protected $dates = ['membersince'];
     // Don't forget to fill this array
     public $fillable = ['firstname','middlename','lastname','address','phone','mobile','status','membersince','carrier'];
     

@@ -154,7 +154,11 @@ class MembersController extends Controller {
 	public function update(MemberFormRequest $request, $id)
 	{
 
+		$data = $request->except('membersince');
 		$member = $this->member->with('user','user.roles','plots')->findOrFail($id);
+
+
+		
 		if($request->has('plots')){
 			$member->plots()->sync($request->get('plots'));
 		}else{
@@ -166,10 +170,12 @@ class MembersController extends Controller {
 		
 		if($request->has('membersince'))
 		{
-			$member->membersince = Carbon::parse($request->get('membersince'));
-		}
+			
+			$data['membersince'] = Carbon::createFromFormat('m/d/Y', $request->get('membersince'));
 
-		$member->update();
+		}
+		$member->update($data);
+		
 
 		return redirect()->route('members.index');
 	}

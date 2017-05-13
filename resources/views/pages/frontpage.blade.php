@@ -47,7 +47,7 @@
 	<header class="clearfix">
 
 		<p>McNear Community Garden</p>
-		<p>Petaluma, California</p>
+		<p>Petaluma, California!!!</p>
 	</header>
 </div>
 
