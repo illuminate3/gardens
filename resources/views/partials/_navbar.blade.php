@@ -45,7 +45,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="{{{ URL::to('user/settings') }}}"><span class="glyphicon glyphicon-camera"></span> Profile</a></li>
-                            
+                            <li><a href="{{route('about')}}">About</a></li>
                                 
                                 @if (Auth::user()->hasRole('admin'))
                                     
@@ -73,9 +73,7 @@
                                 </li>
                             </ul>
                         </li>
-                        @if (App::environment() != 'production')
-                            <li><a href=''>{{App::environment()}}</a>
-                        @endif
+                       
                     @endif
 
                 </ul>

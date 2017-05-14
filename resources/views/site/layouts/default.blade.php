@@ -91,7 +91,7 @@
 		</div>
 		<!-- ./ container -->
 </div>
-@if (config('app.debug'))
+@if (config('app.debug') && config('app.environment')!= 'production')
     @include('sudosu::user-selector')
 @endif
 		<!-- the following div is needed to make a sticky footer -->
