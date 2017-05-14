@@ -1,11 +1,14 @@
 @extends ('site.layouts.default')
 @section('content')
-
-<h1>{{$hours[0]->gardener->firstname}} {{$hours[0]->gardener->lastname}}'s {{$year}}  Hours</h1>
-
 @if(strpos($year,"-"))
+<?php
+$dateObj   = \DateTime::createFromFormat('Y-m', $year);
 
+?>
+<h1>{{$hours[0]->gardener->firstname}} {{$hours[0]->gardener->lastname}}'s {{$dateObj->format('F Y')}}  Hours</h1>
 <p><a href="{{route('hours.show',$id)."?y=".substr($year,0,4)}}">See all {{$hours[0]->gardener->firstname}} {{$hours[0]->gardener->lastname}}'s {{substr($year,0,4)}} hours</a></p>
+@else
+<h1>{{$hours[0]->gardener->firstname}} {{$hours[0]->gardener->lastname}}'s {{$year}}  Hours</h1>
 @endif
 
 @if($hours[0]->user_id == Auth::id()  or Auth::user()->hasRole('admin'))
