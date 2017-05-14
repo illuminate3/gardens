@@ -82,6 +82,8 @@ class HoursController extends Controller
      */
     public function store(HoursFormRequest $request)
     {
+        
+
         $data['hours'] = $request->all();
         $data['hours'] = $this->hour->calculateHours($data['hours']);
 

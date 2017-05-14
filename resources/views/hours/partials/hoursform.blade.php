@@ -129,7 +129,7 @@
         @if ($errors->has('user')) <p class="help-block">{{ $errors->first('user') }}</p> @endif
     </div>
 </div>
-@else
+@elseif(! Auth::user()->can('manage_hours'))
 <input type='hidden' name='user[]' value ='{{Auth::id()}}' />
 
 @endif
