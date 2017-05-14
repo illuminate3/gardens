@@ -130,6 +130,7 @@ class HoursController extends Controller
         $year = $request->get('y');
         if ($request->has('m')) {
             $year = strlen($request->get('m')) <2  ? $year ."-0".$request->get('m') : $year."-".$request->get('m');
+
         }
         $hours = $this->hour->where('user_id', '=', $id)
     ->where('servicedate', 'like', $year.'%')
@@ -140,7 +141,7 @@ class HoursController extends Controller
         if (\Auth::user()->hasRole('admin') or $id == Auth::id()) {
             $fields['Edit'] = 'edit';
         }
-        return view('hours.show', compact('hours', 'fields', 'year'));
+        return view('hours.show', compact('hours', 'fields', 'year','id'));
     }
 
     /**
