@@ -71,6 +71,7 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::resource('forms','FormsController');
 
 	Route::get('about', function() {
+		
 		return response()->view('about');
 	})->name('about');
 

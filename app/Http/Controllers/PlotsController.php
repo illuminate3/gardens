@@ -93,8 +93,8 @@ class PlotsController extends Controller
     public function update(PlotsFormRequest $request, Plot $plot)
     {
         $data = $request->all();
-        
-        if (isset($data['assigned'])) {
+        //dd($data['assigned'][0]);
+        if (isset($data['assigned']) && $data['assigned'][0] != 'Not Assigned') {
             $plot->managedBy()->sync($data['assigned']);
         } else {
             $plot->managedBy()->detach();

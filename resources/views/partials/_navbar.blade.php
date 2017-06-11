@@ -45,7 +45,8 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="{{{ URL::to('user/settings') }}}"><span class="glyphicon glyphicon-camera"></span> Profile</a></li>
-                            <li><a href="{{route('about')}}">About</a></li>
+                            <li><a href="{{route('about')}}">
+                            <span class="glyphicon glyphicon-info-sign"></span> About</a></li>
                                 
                                 @if (Auth::user()->hasRole('admin'))
                                     
