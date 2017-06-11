@@ -237,10 +237,10 @@ class MembersController extends Controller {
 	
 	public function join(JoinFormRequest $request)
 	{
-
+		
 
 	    $data=$this->getUserData($request->all());
-
+	
 		$user = new User($data);
 		$user->save();
 
@@ -276,7 +276,7 @@ class MembersController extends Controller {
 		$data['confirmed']=FALSE;
 		
 		$data['confirmation_code'] = md5(uniqid(mt_rand(), true));
-		$data['membersince'] =date('Y:m:d h:i:s');
+		$data['membersince'] =date('Y-m-d h:i:s');
 		$data['status'] ='wait';
 		return $data;
 	}
