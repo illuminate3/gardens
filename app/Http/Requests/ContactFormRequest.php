@@ -23,7 +23,9 @@ class ContactFormRequest extends FormRequest
      */
     public function rules()
     {
-        return ['email'=>'required','name'=>'required'
+        return ['email'=>'required|email',
+        'name'=>'required',
+        'interest' => 'regex:/^$/i',
             //
         ];
     }

@@ -3,7 +3,7 @@
 @section('content')
 <h1>Contact McNear Gardens</h1>
 {{Form::open( ['method'=>'POST','url'=>['contact'],'class'=>'form-horizontal']) }}
-
+<input class="interest"'" type="text" name='interest'>
 
 @include('pages.partials.contactform')
 

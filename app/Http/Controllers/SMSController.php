@@ -11,7 +11,7 @@ class SMSController extends Controller
     {
        
 
-        $incoming = \SMS::receive();
+        $incoming = SMS::receive();
         //Get the sender's number.
 
         $incoming->from();
