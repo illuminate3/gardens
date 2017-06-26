@@ -52,7 +52,7 @@ class EmailController extends Controller
 
         $incoming = \SMS::receive();
         //Get the sender's number.
-        dd($incoming);
+
         $incoming->from();
         //Get the message sent.
         //validate that it is a recognized number
