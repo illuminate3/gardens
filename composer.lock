@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1a5a0ab4ec4871bbfcb3101abb15f5f2",
-    "content-hash": "caa21df76e169abadc6635df59dce265",
+    "hash": "e4cc5cb292ce43a75f1909f5498839d8",
+    "content-hash": "fdea8889bfbe4793e6b5c5afff5e6a41",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -2568,16 +2568,16 @@
         },
         {
             "name": "simplesoftwareio/simple-sms",
-            "version": "3.0.1",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SimpleSoftwareIO/simple-sms.git",
-                "reference": "c98ac8662ad98bfc05460b7cbca205d67d0e320a"
+                "reference": "93e7feb7a1f76634b49247bb5849f06a879a3fb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SimpleSoftwareIO/simple-sms/zipball/c98ac8662ad98bfc05460b7cbca205d67d0e320a",
-                "reference": "c98ac8662ad98bfc05460b7cbca205d67d0e320a",
+                "url": "https://api.github.com/repos/SimpleSoftwareIO/simple-sms/zipball/93e7feb7a1f76634b49247bb5849f06a879a3fb4",
+                "reference": "93e7feb7a1f76634b49247bb5849f06a879a3fb4",
                 "shasum": ""
             },
             "require": {
@@ -2587,7 +2587,7 @@
                 "illuminate/queue": ">=5.0.0",
                 "illuminate/support": ">=5.0.0",
                 "illuminate/view": ">=5.0.0",
-                "php": ">=5.5.0",
+                "php": ">=7.0.0",
                 "plivo/plivo-php": "^1.0",
                 "twilio/sdk": "~4"
             },
@@ -2630,7 +2630,7 @@
                 "twilio",
                 "zenvia"
             ],
-            "time": "2016-07-04 14:52:38"
+            "time": "2017-03-19 22:12:45"
         },
         {
             "name": "swiftmailer/swiftmailer",
