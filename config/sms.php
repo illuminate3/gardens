@@ -97,8 +97,9 @@ return [
         'api_secret' => 'Your Nexmo api secret'
     ],
     'twilio' => [
-        'account_sid' => 'ACfedff1618834a68e1461fcba8e85225d',
-        'auth_token' => '7d3c6334f8ecc6939e9d548abbec8394',
+     env('TWILIO_SID'),
+        'account_sid' =>  env('TWILIO_SID'),'ACfedff1618834a68e1461fcba8e85225d',
+        'auth_token' => env('TWILIO_PWD'),
         'verify' => true,
     ],
     'zenvia' => [
