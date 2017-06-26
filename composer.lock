@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3858f9ee0af4091e35ff1b9db3fc7e88",
-    "content-hash": "5c3a97eef8afd375103eef96ffbd89d7",
+    "hash": "1a5a0ab4ec4871bbfcb3101abb15f5f2",
+    "content-hash": "caa21df76e169abadc6635df59dce265",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -2267,6 +2267,54 @@
             "time": "2015-05-01 07:00:55"
         },
         {
+            "name": "plivo/plivo-php",
+            "version": "v1.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/plivo/plivo-php.git",
+                "reference": "5d3417f654d8b59b64707661f2c202f32a554783"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/plivo/plivo-php/zipball/5d3417f654d8b59b64707661f2c202f32a554783",
+                "reference": "5d3417f654d8b59b64707661f2c202f32a554783",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "plivo.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Radu Topala",
+                    "email": "radu.topala@trisoft.ro"
+                },
+                {
+                    "name": "Adam Homsi",
+                    "email": "adam.homsi@gmail.com"
+                },
+                {
+                    "name": "Plivo Team",
+                    "email": "hello@plivo.com"
+                },
+                {
+                    "name": "Ben McInturff",
+                    "email": "benmcinturff@gmail.com"
+                }
+            ],
+            "description": "Plivo PHP helper library to access PlivoCloud API and generate Plivo XML",
+            "time": "2017-04-25 07:35:31"
+        },
+        {
             "name": "psr/http-message",
             "version": "1.0.1",
             "source": {
@@ -2520,16 +2568,16 @@
         },
         {
             "name": "simplesoftwareio/simple-sms",
-            "version": "2.1.2",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SimpleSoftwareIO/simple-sms.git",
-                "reference": "0e370319d83cdc692eef7238e6a8ad922f744d95"
+                "reference": "c98ac8662ad98bfc05460b7cbca205d67d0e320a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SimpleSoftwareIO/simple-sms/zipball/0e370319d83cdc692eef7238e6a8ad922f744d95",
-                "reference": "0e370319d83cdc692eef7238e6a8ad922f744d95",
+                "url": "https://api.github.com/repos/SimpleSoftwareIO/simple-sms/zipball/c98ac8662ad98bfc05460b7cbca205d67d0e320a",
+                "reference": "c98ac8662ad98bfc05460b7cbca205d67d0e320a",
                 "shasum": ""
             },
             "require": {
@@ -2540,15 +2588,16 @@
                 "illuminate/support": ">=5.0.0",
                 "illuminate/view": ">=5.0.0",
                 "php": ">=5.5.0",
+                "plivo/plivo-php": "^1.0",
                 "twilio/sdk": "~4"
             },
             "require-dev": {
                 "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "4.7.*"
+                "phpunit/phpunit": "~5"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "SimpleSoftwareIO\\SMS\\": "src/"
                 }
             },
@@ -2562,23 +2611,26 @@
                     "email": "support@simplesoftware.io"
                 }
             ],
-            "description": "Simple-SMS is a package made for Laravel to send/receive (polling/pushing) text messages.  Currently supports CallFire, EZTexting, Email Gateways, Mozeo, and Twilio.",
+            "description": "Simple-SMS is a package made for Laravel to send/receive (polling/pushing) text messages.  Currently supports CalLFire, EZTexting, Email Gateways, FlowRoute, LabsMobile, Mozeo, Nexmo, Plivo, Twilio, and Zenvia",
             "homepage": "http://www.simplesoftware.io",
             "keywords": [
-                "Simple",
+                "FlowRoute",
+                "SMS Email Gateways",
                 "callfire",
                 "eztexting",
                 "labsmobile",
                 "laravel",
                 "mozeo",
                 "nexmo",
+                "plivo",
                 "receive",
                 "send",
                 "sms",
                 "text messages",
-                "twilio"
+                "twilio",
+                "zenvia"
             ],
-            "time": "2016-04-24 01:45:21"
+            "time": "2016-07-04 14:52:38"
         },
         {
             "name": "swiftmailer/swiftmailer",

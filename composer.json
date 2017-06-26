@@ -18,7 +18,7 @@
         "laravel/tinker": "^1.0",
         "bugsnag/bugsnag-laravel": "^2.4",
         "viacreative/sudo-su": "^1.1",
-        "simplesoftwareio/simple-sms": "~2"
+        "simplesoftwareio/simple-sms": "3.0.*"
         
     },
     "require-dev": {
