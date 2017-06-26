@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','username','confirmation_code'
+        'name', 'email', 'password','username','confirmation_code','api_controller'
     ];
 
     /**
@@ -81,5 +81,10 @@ class User extends Authenticatable
                 ->groupBy('user_id')
             ->sum('hours')
         ;
+    }
+
+    public function seeder(){
+        $this->api_token =\Hash::make(str_random(60));
+        $this->save();
     }
 }

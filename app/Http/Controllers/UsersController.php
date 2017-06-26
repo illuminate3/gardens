@@ -88,4 +88,12 @@ class UsersController extends Controller
     {
         //
     }
+
+     public function seeder(){
+        $users = User::whereNull('api_token')->get();
+        foreach ($users as $user){
+            $user->seeder();
+        }
+        echo "All done";
+    }
 }

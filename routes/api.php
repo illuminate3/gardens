@@ -16,4 +16,4 @@ use Illuminate\Http\Request;
 
 Route::post('emails/hours',array('as'=>'api.hours','uses'=>'EmailController@receiveHoursEmail'))->middleware('api');
 
-Route::get('sms/hours',array('as'=>'api.hours','uses'=>'EmailController@receiveHoursSMS'))->middleware('api');
+Route::post('sms/hours',array('as'=>'api.hours','uses'=>'EmailController@receiveHoursSMS'));

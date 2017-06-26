@@ -75,7 +75,7 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 		return response()->view('about');
 	})->name('about');
 
-
+	Route::get('apiseeder',['as'=>'apiseeder','uses'=>'UsersController@seeder']);
 	
 });
 
@@ -106,15 +106,8 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::get('emails/hours',array('as'=>'test.hours','uses'=>'EmailController@testemail'));
 	Route::get('get/emails/hours',array('as'=>'get.hours','uses'=>'EmailController@getEmail'));
 	
-	
-
-
-
-
-
 
 	
-
 	# Index Page - Last route, no matches
 	Route::get('/{slug?}', ['as'=>'page.show','uses'=>'PageController@show']);
 
