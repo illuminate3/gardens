@@ -49,7 +49,7 @@
                             <span class="glyphicon glyphicon-info-sign"></span> About</a></li>
                                 
                                 @if (Auth::user()->hasRole('admin'))
-                                    
+                                    <li><a href="{{route('forms.index')}}">Forms</a></li>
                                     <li{{ (Request::is('admin/users*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/users') }}}"><span class="glyphicon glyphicon-user"></span> Users</a></li>
     							<li{{ (Request::is('admin/roles*') ? ' class="active"' : '') }}>
                                 <a href="{{{ URL::to('manage-roles') }}}"><span class="glyphicon glyphicon-user"></span> Roles</a></li>

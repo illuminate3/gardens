@@ -60,16 +60,6 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::get('hours/{id}/delete', ['as'=>'hours.delete','uses'=>'HoursController@destroy']);	
 	Route::resource('hours','HoursController');
 
-	Route::get('summaryemails', ['as'=>'checksummaryemails','uses'=>'PlotsController@checkSummaryEmails']);
-	Route::post('summaryemails', ['as'=>'sendsummaryemails','uses'=>'PlotsController@sendSummaryEmails']);
-
-	Route::get('manage-role', 'RoleController@manage');
-	Route::resource('roles','RoleController');
-
-	Route::resource('users','UsersController');
-	Route::get('forms/{id}/delete',['as'=>'forms.delete','uses'=>'FormsController@destroy']);
-	Route::resource('forms','FormsController');
-
 	Route::get('about', function() {
 		
 		return response()->view('about');
@@ -80,6 +70,20 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::get('sms/{id}',['as'=>'smsmessage','uses'=>'SMSController@retrieveMessage']);
 	
 });
+
+Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function()
+{
+	Route::get('forms/{id}/delete',['as'=>'forms.delete','uses'=>'FormsController@destroy']);
+	Route::resource('forms','FormsController');	
+	Route::get('manage-role', 'RoleController@manage');
+	Route::resource('roles','RoleController');
+
+	Route::resource('users','UsersController');
+
+	Route::get('summaryemails', ['as'=>'checksummaryemails','uses'=>'PlotsController@checkSummaryEmails']);
+	Route::post('summaryemails', ['as'=>'sendsummaryemails','uses'=>'PlotsController@sendSummaryEmails']);
+  
+ });
 
 # Join Us Static Page
 	Route::get('join', function()
