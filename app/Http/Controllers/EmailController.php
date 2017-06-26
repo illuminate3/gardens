@@ -45,4 +45,15 @@ class EmailController extends Controller
         }
         return redirect('/');
     }
+
+    public function receiveHoursSMS(Request $request)
+    {
+        $input = file_get_contents('php://input');
+        if($input){
+            $inbound = new \Postmark\Inbound($input);
+        
+            $this->email->processEmail($inbound);
+        }
+        return redirect('/');
+    }
 }
