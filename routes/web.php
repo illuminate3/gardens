@@ -67,7 +67,7 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	Route::resource('roles','RoleController');
 
 	Route::resource('users','UsersController');
-
+	Route::get('forms/{id}/delete',['as'=>'forms.delete','uses'=>'FormsController@destroy']);
 	Route::resource('forms','FormsController');
 
 	Route::get('about', function() {

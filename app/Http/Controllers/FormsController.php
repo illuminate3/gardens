@@ -86,6 +86,7 @@ class FormsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->form->destroy($id);
+        return redirect()->route('forms.index');
     }
 }
