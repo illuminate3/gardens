@@ -76,6 +76,8 @@ Route::group(['middlewareGroups' => ['auth']], function () {
 	})->name('about');
 
 	Route::get('apiseeder',['as'=>'apiseeder','uses'=>'UsersController@seeder']);
+
+	Route::get('sms/{id}',['as'=>'smsmessage','uses'=>'SMSController@retrieveMessage']);
 	
 });
 

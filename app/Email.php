@@ -292,6 +292,8 @@ class Email extends Model
         
         return $hours;
     }
+    
+
     private function calculateHours($inputdata)
     {
         $data=$inputdata;
