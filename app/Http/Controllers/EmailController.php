@@ -48,6 +48,6 @@ class EmailController extends Controller
 
     public function receiveHoursSMS(Request $request)
     {
-        return response(200,'All good');
+        return response(200,'All good'. $request->all());
     }
 }
