@@ -48,7 +48,7 @@ class EmailController extends Controller
 
     public function receiveHoursSMS(Request $request)
     {
-        
+        dd($request->all());
         $incoming = SMS::receive();
         //Get the sender's number.
         
