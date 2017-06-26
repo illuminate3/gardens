@@ -2,8 +2,7 @@
 
 
     @section('content')
-    <?php $fields = ['Submitted by'=>'submitter','Date'=>'date','Form'=>'form','Comments'=>'comments','Actions'=>'actions'];?>
-	
+   	
 	
     <h1>Form Responses</h1>
 
@@ -12,19 +11,18 @@
     
     <table id ='sorttable' class='table table-striped table-bordered table-condensed table-hover'>
     <thead>
-     @while(list($key,$field)=each($fields))
-     
-    <th>
-    {{$key}}
-    </th>
-    @endwhile
+     <th>Submitted </th>
+     <th>Date </th>
+     <th>Form </th>
+     <th>Comments </th>
+     <th>Actions</th>
        
     </thead>
     <tbody>
     @foreach($forms as $form)
         <tr>
         <td>
-        	{{$form->name}}
+        	<a href="{{route('forms.show',$form->id)}}">{{$form->name}}</a>
 
         </td>
         <td>

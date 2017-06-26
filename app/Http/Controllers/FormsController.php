@@ -52,7 +52,8 @@ class FormsController extends Controller
      */
     public function show($id)
     {
-        //
+        $form = $this->form->findOrFail($id);
+        return response()->view('forms.show',compact('form'));
     }
 
     /**
