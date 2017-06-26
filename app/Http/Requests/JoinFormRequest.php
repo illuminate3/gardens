@@ -28,6 +28,7 @@ class JoinFormRequest extends FormRequest
         'email'=>'required|email|unique:users,email',
         'phone'=>'required',
         'address'=>'required',
+        'interest' => 'regex:/^$/i',
             //
         ];
     }
