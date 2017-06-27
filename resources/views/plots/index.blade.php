@@ -62,7 +62,7 @@
 
                             <li><a href="{{route('plots.edit',$plot->id)}}">
                             <i class="glyphicon glyphicon-pencil"></i> Edit plot</a></li>
-                            <li><a data-href="/plots/{{$plot->id}}/delete" data-toggle="modal" data-target="#confirm-delete" data-title = " this plot" href="#">
+                            <li><a data-href="{{route('plots.destroy',$plot->id)}}" data-toggle="modal" data-target="#confirm-delete" data-title = " this plot" href="#">
                             <i class="glyphicon glyphicon-trash"></i> Delete plot</a></li>
                         </ul>
                     </div>

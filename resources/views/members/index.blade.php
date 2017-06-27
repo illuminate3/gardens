@@ -119,7 +119,10 @@
                         <ul class="dropdown-menu" role="menu">
 
                             <li><a href="{{route('members.edit',$member->id)}}"><i class="glyphicon glyphicon-pencil"></i> Edit {{$member->firstname}}'s details</a></li>
-                                 <li><a data-href="/members/{{$member->id}}/delete" data-toggle="modal" data-target="#confirm-delete" data-title = " {{$member->firstname}}" href="#"><i class="glyphicon glyphicon-trash"></i> Delete {{$member->firstname}}</a></li>
+                                 <li><a data-href="{{route('members.destroy',$member->id)}}" data-toggle="modal" data-target="#confirm-delete" 
+                                 data-title = " {{$member->firstname}}" 
+                                 href="#">
+                                 <i class="glyphicon glyphicon-trash"></i> Delete {{$member->firstname}}</a></li>
                         </ul>
                     </div>
 

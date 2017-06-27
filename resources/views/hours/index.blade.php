@@ -56,7 +56,7 @@
                         <ul class="dropdown-menu" role="menu">
 
                             <li><a href="{{route('hours.edit',$hour->id)}}"><i class="glyphicon glyphicon-pencil"></i> Edit </a></li>
-                            <li><a data-href="/hours/{{$hour->id}}/delete" data-toggle="modal" data-target="#confirm-delete" data-title = " these hours" href="#"><i class="glyphicon glyphicon-trash"></i> Delete </a></li>
+                            <li><a data-href="{{route('hours.destroy',$hour->id)}}" data-toggle="modal" data-target="#confirm-delete" data-title = " these hours" href="#"><i class="glyphicon glyphicon-trash"></i> Delete </a></li>
                         </ul>
                     </div>
 

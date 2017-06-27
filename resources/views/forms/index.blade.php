@@ -46,7 +46,7 @@
                 <ul class="dropdown-menu" role="menu">
 
             
-                         <li><a data-href="/forms/{{$form->id}}/delete" data-toggle="modal" data-target="#confirm-delete" data-title = " this response" href="#"><i class="glyphicon glyphicon-trash"></i> Delete this response</a></li>
+                         <li><a data-href="{{route('forms.destroy',$form->id)}}" data-toggle="modal" data-target="#confirm-delete" data-title = " this response" href="#"><i class="glyphicon glyphicon-trash"></i> Delete this response</a></li>
                 </ul>
             
 </td>

@@ -38,12 +38,12 @@ Route::group(['middleware'=>'auth'], function () {
 	
 	Route::get('members/waitlist',['as'=>'members.waitlist','uses'=>'MembersController@waitlist']);
 	Route::get('members/export',['as'=>'members.export','uses'=>'MembersController@export']);
-	Route::get('members/{members}/delete',['as'=>'member.delete','uses'=>'MembersController@destroy']);
+	
 	Route::resource('members','MembersController');
 	
 
 	Route::get('plotlist',array('as' => 'plotlist', 'uses' => 'PlotsController@plotlist'));
-	Route::get('plots/{id}/delete',array('as' => 'plots.delete', 'uses' => 'PlotsController@destroy'));
+	
 	Route::resource('plots','PlotsController');
 	
 	Route::get('hours/show/{userid}',array('as'=>'hours.show','uses'=>'HoursController@show'));
@@ -56,8 +56,7 @@ Route::group(['middleware'=>'auth'], function () {
 	Route::get('hours/plot',array('as'=>'hours.plot','uses'=>'HoursController@plothours'));
 	Route::get('hours/export',array('as'=>'hours.download','uses'=>'HoursController@downloadHours'));
 	Route::get('hours/multiple', array('as'=>'hours.multiple','uses'=>'HoursController@addMultipleHours'));
-	Route::post('hours/multistore', array('as'=>'hours.multistore','uses'=>'HoursController@multistore'));
-	Route::get('hours/{id}/delete', ['as'=>'hours.delete','uses'=>'HoursController@destroy']);	
+	Route::post('hours/multistore', array('as'=>'hours.multistore','uses'=>'HoursController@multistore'));	
 	Route::resource('hours','HoursController');
 
 	Route::get('about', function() {
@@ -73,7 +72,7 @@ Route::group(['middleware'=>'auth'], function () {
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function()
 {
-	Route::get('forms/{id}/delete',['as'=>'forms.delete','uses'=>'FormsController@destroy']);
+	
 	Route::resource('forms','FormsController');	
 	Route::get('manage-role', 'RoleController@manage');
 	Route::resource('roles','RoleController');
