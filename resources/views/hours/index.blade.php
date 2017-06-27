@@ -1,6 +1,7 @@
 @extends ('site.layouts.default')
 @section('content')
 <h1>Your Hours</h1>
+
 <div class="pull-right">
     <a href="{{{ URL::to('hours/create') }}}" class="btn btn-small btn-info iframe">
         <span class="glyphicon glyphicon-plus-sign"></span> Add Hours</a>

@@ -25,10 +25,7 @@
         @include('layouts.nav')
 
         @yield('content')
-        ok we are here
-        @if (config('app.debug'))
-    @include('sudosu::user-selector')
-@endif
+       
     </div>
 
     <!-- Scripts -->

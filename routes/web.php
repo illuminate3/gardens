@@ -33,7 +33,7 @@ Route::pattern('hours', '[0-9]+');
 
 
 Route::auth();
-Route::group(['middlewareGroups' => ['auth']], function () {
+Route::group(['middleware'=>'auth'], function () {
 //    Route::auth();
 	
 	Route::get('members/waitlist',['as'=>'members.waitlist','uses'=>'MembersController@waitlist']);
