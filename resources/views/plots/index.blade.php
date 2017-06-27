@@ -51,7 +51,7 @@
                     case 'Edit':
 
                     ?>
-                    @include('partials/_modal')
+                    
 
                     <div class="btn-group">
                         <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
@@ -89,5 +89,6 @@
     </tbody>
     </table>
 {{-- Scripts --}}
+@include('partials/_modal')
 @include('partials._scripts')
 @stop

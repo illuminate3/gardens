@@ -1,11 +1,7 @@
 @extends('site.layouts.default')
 
     @section('content')
-    <?php $fields = ['Username'=>'username','Member Name'=>'fullname','Roles'=>'role','Actions'=>'actions'];?>
-	@can('manage_members')
-		
-			
-	@endcan	
+    
 	
     <h1>Users</h1>
     @can('manage_members')
@@ -17,9 +13,15 @@
     <table id ='sorttable' class='table table-striped table-bordered table-condensed table-hover'>
         <thead>
             <tr>
-                @foreach ($fields as $key=>$field)
-                <th>{{$key}}</th>
-                @endforeach
+               
+                <th>Username</th>
+                <th>Member Name</th>
+                <th>Roles</th>
+                @can('manage_members')
+                <th>Actions</th>
+                @endcan
+</th>
+              
             </tr>
         </thead>
         <tbody>
@@ -32,8 +34,9 @@
                     {{$role->name}}<br />
                     @endforeach
                 </td>
+                @can('manage_members')
                 <td>
-                @include('partials/_modal')
+                
 
                     <div class="btn-group">
                         <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
@@ -47,10 +50,13 @@
                         </ul>
                     </div>
                     </td>
+                    @endcan
             </tr>
 
             @endforeach
         </tbody>
     </table>
-    @include('partials._scripts')
+@include('partials/_modal')
+@include('partials._scripts')
+
 @endsection

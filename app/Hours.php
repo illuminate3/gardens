@@ -11,13 +11,7 @@ class Hours extends Model
     use PeriodTrait;
 
     public $showYear;
-    public $rules = [
-        'servicedate' => 'required|date',
-        'starttime' =>'required_without_all:hours,endtime',
-        'endtime'=>'required_without_all:hours,starttime',
-        'hours'=>"required_without_all:starttime,endtime",
-        'description'=>'required',
-    ];
+       public $dates =['created_at','updated_at','servicedate'];
     public $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];
     public function __construct()
     {

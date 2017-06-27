@@ -51,8 +51,8 @@ class HoursController extends Controller
         ->where(\DB::raw('YEAR(servicedate)'), '=', $this->showyear)
         ->get();
         
-        $fields = ['Date'=>'servicedate','From'=>'starttime','To'=>'endtime','Hours'=>'hours','Details'=>'description','Edit'=>'actions'];
-        return view('hours.index', compact('hours', 'fields', 'showyear'));
+        
+        return view('hours.index', compact('hours',  'showyear'));
     }
 
     /**
@@ -137,11 +137,8 @@ class HoursController extends Controller
     ->with('gardener')
     ->get();
 
-        $fields = ['Date'=>'servicedate','From'=>'starttime','To'=>'endtime','Hours'=>'hours','Details'=>'description'];
-        if (\Auth::user()->hasRole('admin') or $id == Auth::id()) {
-            $fields['Edit'] = 'edit';
-        }
-        return view('hours.show', compact('hours', 'fields', 'year','id'));
+
+        return view('hours.show', compact('hours',  'year','id'));
     }
 
     /**

@@ -11,77 +11,51 @@
 {{Form::close()}}
 <?php $totalHours = 0;?>
 
-    <table id ='sorttable' class='table table-striped table-bordered table-condensed table-hover'>
+<table id ='sorttable' class='table table-striped table-bordered table-condensed table-hover'>
     <thead>
-     @while(list($key,$field)=each($fields))
-    <th>
-    {{$key}}
-    </th>
-    @endwhile
-       
+        <th>Date</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Hours</th>
+        <th>Details</th>
+        <th>Edit</th>
     </thead>
+    
     <tbody>
-    @foreach($hours as $hour)
-        <tr>
-            <?php reset($fields);?>
-            @while(list($key,$field)=each($fields))
-                <td><?php
+        @foreach($hours as $hour)
+            <tr>
 
-
-                    switch ($key) {
-                    case 'Date':
-                        echo date('d M Y',strtotime($hour->$field));
-                        //echo date('d M Y',$hour->$field);
-                    break;
-                    case 'Hours':
-
-                        echo $hour->$field;
-                    break;
-					
-					
-					
-					case 'Details':
-					 	echo $hour->$field;
-					break;
-                    case 'Edit':
-
-                    ?>
-                    @include('partials/_modal')
+                <td>{{$hour->$servicedate->format('d M Y')}}</td>
+                <td>{{date('h:i a',strtotime($hour->starttime))}} </td>
+                <td>{{date('h:i a',strtotime($hour->$hour->endtime))}}</td>
+                <td>{{$hour->hours}}</td>
+                <td>{{$hour->description}}</td>     
+                <td>
 
                     <div class="btn-group">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
 
-                            <li><a href="{{route('hours.edit',$hour->id)}}"><i class="glyphicon glyphicon-pencil"></i> Edit </a></li>
-                            <li><a data-href="{{route('hours.destroy',$hour->id)}}" data-toggle="modal" data-target="#confirm-delete" data-title = " these hours" href="#"><i class="glyphicon glyphicon-trash"></i> Delete </a></li>
-                        </ul>
+                    <li><a href="{{route('hours.edit',$hour->id)}}"><i class="glyphicon glyphicon-pencil"></i> Edit </a></li>
+                    <li><a data-href="{{route('hours.destroy',$hour->id)}}" data-toggle="modal" data-target="#confirm-delete" data-title = " these hours" href="#"><i class="glyphicon glyphicon-trash"></i> Delete </a></li>
+                    </ul>
                     </div>
-
-                    <?php
-
-
-                    break;
-
-                    default:
-                       echo date('h:i a',strtotime($hour->$field));
-                        break;
-
-                    };?>
-
                 </td>
-            @endwhile
-
-	<?php $totalHours = $totalHours + $hour->hours;?>
-
-        </tr>
-    @endforeach
-	<tfoot><td colspan="3">Total Hours</td>
-    <td>{{$totalHours}}</td></tfoot>
+            <?php $totalHours = $totalHours + $hour->hours;?>
+            </tr>
+        @endforeach
     </tbody>
+
+    <tfoot>
+        <td colspan="3">Total Hours</td>
+        <td>{{$totalHours}}</td>
+    </tfoot>
+    
 </table>
 {{-- Scripts --}}
+@include('partials/_modal')
 @include('partials._scripts')
 @stop
