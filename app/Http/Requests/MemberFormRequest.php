@@ -25,7 +25,7 @@ class MemberFormRequest extends FormRequest
     {
         return ['firstname'=>'required',
         'lastname'=>'required',
-        'email'=>'required',
+        'email'=>'required|email',
         'roles'=>'required',
             //
         ];

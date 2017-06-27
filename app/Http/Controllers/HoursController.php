@@ -180,10 +180,9 @@ class HoursController extends Controller
      */
     public function destroy($id)
     {
-        $hour = $this->hour->findOrFail($id);
-        $hour->destroy($id);
-
-        return redirect()->route('hours.index');
+        $this->hour->destroy($id);
+        
+        return redirect()->route('hours.index')->with('message','Hours deleted');
     }
     
     

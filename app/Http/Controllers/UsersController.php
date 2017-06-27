@@ -86,7 +86,8 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+       $this->user->delete($id);
+       return redirect()->route('users.index')->with('message','User deleted');
     }
 
      public function seeder(){

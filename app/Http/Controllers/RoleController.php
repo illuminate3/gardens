@@ -84,7 +84,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        Item::find($id)->delete();
+        Item::delete($id);
         return response()->json(['done']);
     }
 }

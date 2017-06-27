@@ -114,7 +114,7 @@ class PlotsController extends Controller
     {
         $this->plot->destroy($id);
 
-        return redirect()->route('plots.index');
+        return redirect()->route('plots.index')->with('message','Plot deleted');
     }
 
 

@@ -191,7 +191,7 @@ class MembersController extends Controller {
 		
 		$member->delete();
 
-		return redirect()->route('members.index');
+		return redirect()->route('members.index')->with('message','Member deleted');
 	}
 
 

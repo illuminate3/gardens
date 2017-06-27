@@ -124,7 +124,7 @@ class PageController extends Controller {
 	{
 		$this->page->destroy($id);
 
-		return redirect()->route('pages.index');
+		return redirect()->route('pages.index')->with('message','Page deleted');
 	}
 	
 	public function form(ContactFormRequest $request)
