@@ -3,7 +3,7 @@
 <h1>Your Hours</h1>
 
 <div class="pull-right">
-    <a href="{{{ URL::to('hours/create') }}}" class="btn btn-small btn-info iframe">
+    <a href="{{{ route('hours.create') }}}" class="btn btn-small btn-info iframe">
         <span class="glyphicon glyphicon-plus-sign"></span> Add Hours</a>
 </div>
 {{Form::open(array('route'=>'hours.index', 'method' => 'get','class'=>'form', 'id'=>'selectForm'))}}
@@ -23,11 +23,12 @@
     
     <tbody>
         @foreach($hours as $hour)
+        
             <tr>
 
-                <td>{{$hour->$servicedate->format('d M Y')}}</td>
+                <td>{{$hour->servicedate->format('d M Y')}}</td>
                 <td>{{date('h:i a',strtotime($hour->starttime))}} </td>
-                <td>{{date('h:i a',strtotime($hour->$hour->endtime))}}</td>
+                <td>{{date('h:i a',strtotime($hour->endtime))}}</td>
                 <td>{{$hour->hours}}</td>
                 <td>{{$hour->description}}</td>     
                 <td>

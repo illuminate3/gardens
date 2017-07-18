@@ -44,15 +44,15 @@ class HoursController extends Controller
      */
     public function index(Request $request)
     {
-        $this->showyear = $this->getShowYear($request);
-        
-        $hours = $this->hour->where('user_id', '=', \Auth::id())
+       
+        $servicedate = $this->getShowYear($request);
+        $hours = $this->hour->where('user_id', '=', auth()->id())
         ->with('gardener')
-        ->where(\DB::raw('YEAR(servicedate)'), '=', $this->showyear)
+        ->where(\DB::raw('YEAR(servicedate)'), '=', $servicedate)
         ->get();
         
         
-        return view('hours.index', compact('hours',  'showyear'));
+        return view('hours.index', compact('hours',  'showyear','servicedate'));
     }
 
     /**
