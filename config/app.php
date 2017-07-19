@@ -239,6 +239,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'SMS' => SimpleSoftwareIO\SMS\Facades\SMS::class,
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
 
     ],
 

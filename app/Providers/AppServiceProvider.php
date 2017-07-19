@@ -22,11 +22,12 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-{
-   if ($this->app->environment() == 'local') {
-        $this->app->register('Laracasts\Generators\GeneratorsServiceProvider');
-        $this->app->register('VIACreative\SudoSu\ServiceProvider');
+    {
+       if ($this->app->environment() == 'local') {
+            $this->app->register('Laracasts\Generators\GeneratorsServiceProvider');
+            $this->app->register('VIACreative\SudoSu\ServiceProvider');
+        }
+        $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
+        $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
     }
-    
-}
 }
