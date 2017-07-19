@@ -25,8 +25,8 @@ class HoursFormRequest extends FormRequest
     {
         return [
         'servicedate' => 'required|date',
-        'starttime' =>'required_without_all:hours,endtime',
-        'endtime'=>'required_without_all:hours,starttime',
+        'starttime' =>'required_without_all:hours,endtime|date_format:g:i A',
+        'endtime'=>'required_without_all:hours,starttime|date_format:g:i A|after:starttime',
         'hours'=>"required_without_all:starttime,endtime",
         'description'=>'required'
         ];

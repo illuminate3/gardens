@@ -1,18 +1,27 @@
 @component('mail::message')
 ## New Hours Posted
 
-{{$data['userinfo']->member['firstname']}} {{$data['userinfo']->member['lastname']}} has added some community hours.</p>
+@foreach($data['gardener'] as $gardener)
+{{$gardener->fullname()}} @if(! $loop->last) and @endif
+@endforeach
+@if(count($data['gardener'])>1)
+	have 
+@else
+	has 
+@endif
+added some community hours.</p>
 		
 
 @component('mail::table')
 |  Hours | Date     | Description  |
 | -------| ---------| -------------|
-@foreach ($data['hours'] as $hour)
-|{{$hour['hours']}} hrs |{{date('M jS, Y',strtotime($hour['servicedate']) )}}  | {{$hour['description']}}|
-@endforeach
+| {{$data['service']->hours}} hrs | {{$data['service']->starttime->format('M jS, Y')}}  | {{$data['service']->description}} |
+
 @endcomponent
 
 
-Sincerely,<br>
+Sincerely
+
 {{ config('app.name') }}
+
 @endcomponent

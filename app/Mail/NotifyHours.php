@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class NotifyHours extends Mailable
 {
     use Queueable, SerializesModels;
+    
     public $data;
     /**
      * Create a new message instance.
@@ -19,7 +20,8 @@ class NotifyHours extends Mailable
     public function __construct($data)
     {
         $this->data = $data;
-      
+
+
     }
 
     /**

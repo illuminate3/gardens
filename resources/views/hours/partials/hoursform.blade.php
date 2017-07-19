@@ -1,4 +1,4 @@
-@if (Auth::user()->can('manage_hours'))
+@if (auth()->user()->can('manage_hours'))
 <div class="col-sm-8">
 
     <label for 'user'>Choose Member</label>
@@ -10,7 +10,7 @@
             @foreach($members as $member )
 
                 <option value="{{$member->id}}" 
-                @if( isset($request) && $request->old('member') == $member->id) selected="selected" @endif>{{$member->lastname}}, {{$member->firstname}}</option>
+                @if( isset($request) && $request->old('member') == $member->id) selected="selected" @endif>{{$member->fullname()}}</option>
 
             @endforeach
             </select>
@@ -29,7 +29,7 @@
                     <input id='servicedate' required 
                     placeholder ="{{date('m/d/Y')}}" 
                     name='servicedate' type="text" class="form-control" 
-                    value="{{ isset($request) ? $request->old('servicedate') : '' }}" />
+                    value="{{ old('servicedate', isset($hour) ? $hour->starttime->format('m/d/Y') : '' )}}" />
                     <span class="input-group-addon"><span title="Click to set date from calendar" class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
@@ -43,7 +43,8 @@
 
             <div class="form-group @if ($errors->has('starttime')) has-error @endif">
                 <div class="input-group input-group-lg date" id="datetimepicker2">
-                    <input name='starttime' type="text" class="form-control" value="{{ isset($request) ? $request->old('starttime') :'' }}" />
+                    <input name='starttime' type="text" class="form-control" 
+                    value="{{old('starttime', isset($hour) ? $hour->starttime->format('H:i') :'' )}}" />
                     <span class="input-group-addon"><span title="Click to set start time from clock" class="glyphicon glyphicon-time"></span>
                     </span>
                 </div>
@@ -57,7 +58,8 @@
 
            <div class="form-group @if ($errors->has('endtime')) has-error @endif">
                 <div class="input-group input-group-lg date" id="datetimepicker3">
-                    <input name='endtime' type="text" class="form-control" value="{{ isset($request) ? $request->old('endtime') : '' }}" />
+                    <input name='endtime' type="text" class="form-control" 
+                    value="{{old('endtime', isset($hour) ? $hour->endtime->format('H:i') :'' )}}" />
                     <span class="input-group-addon"><span 
                     title="Click to set end time from clock" 
                     class="glyphicon glyphicon-time"></span>
@@ -77,7 +79,8 @@
            <div class="form-group @if ($errors->has('hours')) has-error @endif">
                 <div class="input-group input-group-lg col-xs-4 " >
                     <input name='hours' type="text"  placeholder = "2.5"
-                    class="form-control" value="{{ isset($request) ? $request->old('hours') : '' }}" />
+                    class="form-control" 
+                    value="{{ old('hours', isset($hour) ? $hour->hours : '')  }}" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
                     </span>
                 </div>
@@ -87,50 +90,41 @@
 
 
 
-
-
-
-
-
 </frameset>
 <div class="col-sm-8">
 <label for 'description'>Description:</label>
 
 <div class="form-group @if ($errors->has('description')) has-error @endif">
 <textarea class="form-control" name='description' required >
-{{isset($request) ? $request->old('description') : ''}}
+{{old('description', isset($hour) ? $hour->description : '') }}
 </textarea>
 @if ($errors->has('description')) <p class="help-block">{{ $errors->first('description') }}</p> @endif
 </div>
 </div>
-@if (! Auth::user()->can('manage_hours') && count ($members->plots[0]->managedBy) > 1)
+
+
+@if (! auth()->user()->can('manage_hours') && (! isset($hour)) && count ($members->plots[0]->managedBy) > 1) 
 
 <div class="col-sm-8">
     <label for "member">Worked by: <em>(you can check multiple)</em></label>
 
     <div class="form-group @if ($errors->has('user')) has-error @endif">
         <div class="input-group input-group-lg col-xs-4">
-            <select multiple="multiple" 
-            size='3'
-            name="user[]" 
-            id="user" class="form-control">
-                @foreach($members->plots[0]->managedBy as $member )
+        
+            
+@foreach($members->plots[0]->managedBy as $member )
 
-                <option value="{{$member->user_id}}" 
-                    @if( isset($request) && $request->old('member') == $member->user_id or $member->user_id==Auth::id()) selected="selected" 
-                    @endif>
-                    {{$member->firstname}}
-                </option>
-
-                @endforeach
-            </select>
+<li><input type="checkbox" name="user[]" 
+@if($member->user_id == auth()->user()->id) checked @endif 
+value="{{$member->id}}" > {{$member->firstname}}</li>   
+@endforeach
 
         </div>
         @if ($errors->has('user')) <p class="help-block">{{ $errors->first('user') }}</p> @endif
     </div>
 </div>
-@elseif(! Auth::user()->can('manage_hours'))
-<input type='hidden' name='user[]' value ='{{Auth::id()}}' />
+@elseif(! auth()->user()->can('manage_hours'))
+<input type='hidden' name='user[]' value ='{{auth()->user()->id}}' />
 
 @endif
 

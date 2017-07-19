@@ -62,14 +62,15 @@ class HoursController extends Controller
      */
     public function create()
     {
-        if (\Auth::user()->can('manage_hours')) {
+     
+        if (auth()->user()->can('manage_hours')) {
             $members = User::join('members', 'members.user_id', '=', 'users.id')
                 ->select('users.id', 'members.firstname', 'members.lastname')
                 ->where('members.status', '=', 'full')
                 ->orderBy('members.lastname', 'asc')
                 ->get();
         } else {
-            $members = Member::where('user_id', '=', Auth::id())->with(array( 'plots','plots.managedBy','plots.managedBy.user'))->first();
+            $members = Member::where('user_id', '=', auth()->user()->id)->with( 'plots','plots.managedBy','plots.managedBy.user')->first();
         }
 
         return view('hours.create', compact('members'));
@@ -82,41 +83,25 @@ class HoursController extends Controller
      */
     public function store(HoursFormRequest $request)
     {
-        
-
-        $data['hours'] = $request->all();
-        $data['hours'] = $this->hour->calculateHours($data['hours']);
-
+       $data['hours'] = $request->all();
+       $data['hours'] = $this->hour->calculateHours($data['hours']);
+       $data['hours']['trans_id'] = date('U').rand();
+     
         // If more than one member has posted hours
         //if(is_array($data['hours']['user'])){
         
             foreach ($data['hours']['user'] as $user_id) {
-                $data['hours']['user_id'] = $user_id;
-                $hour = new Hours;
-                $hour->servicedate = $data['hours']['servicedate'];
-                $hour->starttime = $data['hours']['starttime'];
-                $hour->endtime = $data['hours']['endtime'];
-                $hour->hours = $data['hours']['hours'];
-                $hour->description = $data['hours']['description'];
-                $hour->user_id = $data['hours']['user_id'];
-                $hour->save();
-           
+                $data['gardener'][] = Member::where('user_id','=',$user_id)->first();
+                $data['hours']['user_id']= $user_id;
+                $hour->create($data['hours']);
+                $data['service']=$hour;
                 
-                $data['hours'] = $hour->with('gardener', 'gardener.user', 'gardener.plots')
-                ->whereId($hour->id)->get();
-                
-               //$this->hour->notify(new HoursAdded($data));
-
-                $data['userinfo'] = $this->user->with('member')->find($user_id);
-                
-
-                $toAddress = $this->email->getHoursNotificationEmails();
-                \Mail::to($toAddress)->queue(new NotifyHours($data));
             }
-            
-        //}
+            $toAddress = $this->email->getHoursNotificationEmails();
+           \Mail::to($toAddress)->queue(new NotifyHours($data));
 
-        return redirect()->route('hours.all');
+
+        return redirect()->route('hours.index');
     }
 
     /**
@@ -127,17 +112,18 @@ class HoursController extends Controller
      */
     public function show($id, Request $request)
     {
-        $year = $request->get('y');
+        if($request->has('y')){
+            $year = $request->get('y');
+        }else{
+            $year=date('Y');  
+        }   
         if ($request->has('m')) {
-            $year = strlen($request->get('m')) <2  ? $year ."-0".$request->get('m') : $year."-".$request->get('m');
-
+             $year = strlen($request->get('m')) <2  ? $year ."-0".$request->get('m') : $year."-".$request->get('m');
         }
         $hours = $this->hour->where('user_id', '=', $id)
-    ->where('servicedate', 'like', $year.'%')
-    ->with('gardener')
-    ->get();
-
-
+            ->where('servicedate', 'like', $year.'%')
+            ->with('gardener')
+            ->get();
         return view('hours.show', compact('hours',  'year','id'));
     }
 
@@ -150,6 +136,7 @@ class HoursController extends Controller
     public function edit($id)
     {
         $hour = $this->hour->with('gardener', 'gardener.user', 'gardener.plots')->findOrFail($id);
+        
         return view('hours.edit', compact('hour'));
     }
 
@@ -161,15 +148,11 @@ class HoursController extends Controller
      */
     public function update($id, HoursFormRequest $request)
     {
-        $hour = $this->hour->with('gardener', 'gardener.user', 'gardener.plots')->findOrFail($id);
-
-        $data['hours']=$request->all();
-        $data['hours'] = $this->updateInput($data['hours']);
-        $hour->update($data['hours']);
-        $data['result'] = $hour;
-        $message = $this->email->sendEmailNotifications($data, 'update');
-
-        return redirect()->route('hours.all');
+       $hour = $this->hour->findOrFail($id);
+       $data['hours']=$request->all();
+       $data['hours'] = $this->hour->calculateHours($data['hours']);
+       $hour->update($data['hours']) ;
+      return redirect()->route('hours.index');
     }
 
     /**

@@ -11,8 +11,8 @@ class Hours extends Model
     use PeriodTrait;
 
     public $showYear;
-       public $dates =['created_at','updated_at','servicedate'];
-    public $fillable = ['servicedate','starttime','endtime','description','hours','user_id'];
+       public $dates =['created_at','updated_at','servicedate','starttime','endtime'];
+    public $fillable = ['starttime','endtime','description','hours','user_id','transid'];
     public function __construct()
     {
         $this->showYear = $this->getShowYear();
