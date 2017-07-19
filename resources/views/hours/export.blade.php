@@ -11,7 +11,7 @@
 		
 		<tr>
 		<td>{{$hour->gardener}}</td>
-		<td>{{date("Y-m-d",strtotime($hour->servicedate))}}</td>
+		<td>{{$hour->starttime->format("Y-m-d")}}</td>
 		<td>{{$hour->hours}}</td>
 		<td>{{$hour->description}}</td>
 		</tr>

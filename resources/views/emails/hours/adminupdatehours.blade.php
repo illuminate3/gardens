@@ -5,9 +5,9 @@
 	</head>
 	<body>
 	
-    	<p> {{$result->gardener->firstname}} {{$result->gardener->lastname}} has updated their community hours.</p>
+    	<p> {{$result->gardener->fullname()}} has updated their community hours.</p>
 		
-			{{$result->hours}} hours  on {!! date('M j<\s\up>S</\s\up>, Y',strtotime($result->servicedate) )!!}  doing {{$result->description}}<br />
+			{{$result->hours}} hours  on {!! $result->starttime->format('M j<\s\up>S</\s\up>, Y')) )!!}  doing {{$result->description}}<br />
 			
 		
              <p> Sincerely</p>

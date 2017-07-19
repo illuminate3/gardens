@@ -18,7 +18,7 @@
                
 </tr>
 @endfor
-    <input type='hidden' name='user[]' value ='{{ \Auth::id()}}' />
+    <input type='hidden' name='user[]' value ='{{ auth()->user()->id}}' />
     </tbody>
     </table>
 

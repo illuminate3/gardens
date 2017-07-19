@@ -10,7 +10,7 @@ Here are the recorded hours for your plot in {{date('Y')}}:
 |  Hours | Date   | Description  | Posted by|
 | -------| -------| -------------| ---------|
 @foreach ($data['hours'] as $hour)
-|{{$hour['hours']}} hrs |{{date('M jS, Y',strtotime($hour['servicedate']) )}}  | {{$hour['description']}}|{{$hour->gardener->firstname}}|
+|{{$hour['hours']}} hrs |{{$hour['starttime']->format('M jS, Y')}}  | {{$hour['description']}}|{{$hour->gardener->firstname}}|
 <?php $total = $total + $hour['hours'];?>
 @endforeach
 |{{number_format($total,1)}} hrs| |Total hours|

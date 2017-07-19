@@ -2,6 +2,7 @@
 @section('content')
 <h1>Your Hours</h1>
 
+<p><a href="{{route('hours.all')}}">See all gardeners' hours</a></p>
 <div class="pull-right">
     <a href="{{{ route('hours.create') }}}" class="btn btn-small btn-info iframe">
         <span class="glyphicon glyphicon-plus-sign"></span> Add Hours</a>
@@ -26,9 +27,9 @@
         
             <tr>
 
-                <td>{{$hour->servicedate->format('d M Y')}}</td>
-                <td>{{date('h:i a',strtotime($hour->starttime))}} </td>
-                <td>{{date('h:i a',strtotime($hour->endtime))}}</td>
+                <td>{{$hour->starttime->format('d M Y')}}</td>
+                <td>{{$hour->starttime->format('h:i a')}} </td>
+                <td>{{$hour->endtime->format('h:i a')}} </td>
                 <td>{{$hour->hours}}</td>
                 <td>{{$hour->description}}</td>     
                 <td>

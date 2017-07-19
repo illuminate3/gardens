@@ -18,6 +18,7 @@ use App\Notifications\HoursAdded;
 
 class HoursController extends Controller
 {
+   
     use PeriodTrait;
     
     public $hour;
@@ -48,11 +49,14 @@ class HoursController extends Controller
         $servicedate = $this->getShowYear($request);
         $hours = $this->hour->where('user_id', '=', auth()->id())
         ->with('gardener')
-        ->where(\DB::raw('YEAR(servicedate)'), '=', $servicedate)
+        ->where(\DB::raw('YEAR(starttime)'), '=', $servicedate)
         ->get();
-        
-        
-        return view('hours.index', compact('hours',  'showyear','servicedate'));
+        $members = Member::where('user_id', '=', auth()->user()->id)->with('plots.managedBy')->first();
+        foreach ($members->plots as $plot){
+            $partners[] = $plot->managedBy->pluck('id')->toArray();
+        }
+
+        return view('hours.index', compact('hours',  'showyear','servicedate','partners'));
     }
 
     /**
@@ -83,25 +87,24 @@ class HoursController extends Controller
      */
     public function store(HoursFormRequest $request)
     {
-       $data['hours'] = $request->all();
+       $data['hours'] = $request->only($this->hour->fillable);
+       $data['user'] = $request->get('user');
+       $data['hours']['servicedate'] = $request->get('servicedate');
+       
        $data['hours'] = $this->hour->calculateHours($data['hours']);
        $data['hours']['trans_id'] = date('U').rand();
-     
-        // If more than one member has posted hours
-        //if(is_array($data['hours']['user'])){
-        
-            foreach ($data['hours']['user'] as $user_id) {
-                $data['gardener'][] = Member::where('user_id','=',$user_id)->first();
-                $data['hours']['user_id']= $user_id;
-                $hour->create($data['hours']);
-                $data['service']=$hour;
-                
+      
+            foreach ($data['user'] as $user_id) {
+                $data['gardener'][$user_id] = $this->user->with('member')->findOrFail($user_id);
+                $data['hours']['user_id'] = $user_id;
+                $data['service'] = Hours::create($data['hours']);
             }
+
             $toAddress = $this->email->getHoursNotificationEmails();
            \Mail::to($toAddress)->queue(new NotifyHours($data));
 
 
-        return redirect()->route('hours.index');
+        return redirect()->route('hours.index')->with(['success'=>'Hours recorded']);;
     }
 
     /**
@@ -121,7 +124,7 @@ class HoursController extends Controller
              $year = strlen($request->get('m')) <2  ? $year ."-0".$request->get('m') : $year."-".$request->get('m');
         }
         $hours = $this->hour->where('user_id', '=', $id)
-            ->where('servicedate', 'like', $year.'%')
+            ->where('starttime', 'like', $year.'%')
             ->with('gardener')
             ->get();
         return view('hours.show', compact('hours',  'year','id'));
@@ -135,9 +138,12 @@ class HoursController extends Controller
      */
     public function edit($id)
     {
-        $hour = $this->hour->with('gardener', 'gardener.user', 'gardener.plots')->findOrFail($id);
-        
-        return view('hours.edit', compact('hour'));
+        $hour = $this->hour->findOrFail($id);
+        if($hour->user_id != auth()->user()->id){
+          return redirect()->route('hours.index')
+          ->with(['warning'=>'You cannot edit other peoples hours']);  
+        }
+        return view('hours.edit', compact('hour','members'));
     }
 
     /**
@@ -152,7 +158,7 @@ class HoursController extends Controller
        $data['hours']=$request->all();
        $data['hours'] = $this->hour->calculateHours($data['hours']);
        $hour->update($data['hours']) ;
-      return redirect()->route('hours.index');
+      return redirect()->route('hours.index')->with(['success'=>'Hours updated']);
     }
 
     /**
@@ -332,6 +338,7 @@ class HoursController extends Controller
     private function changeHours(array $hours, $dir=1, $primary)
     {
         if (count($hours) >0) {
+            // this is deprecate 
             while (list($month, $value) = each($hours)) {
                 $serviceDate = Carbon::createFromDate(null, $month, '1');
                 $hourRecord = new Hours;

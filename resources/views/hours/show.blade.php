@@ -38,9 +38,9 @@ $dateObj   = \DateTime::createFromFormat('Y-m', $year);
 
             <tr>
             
-            <td>{{$hour->servicedate->format('d M Y')}}</td>
-            <td>{{date('h:i a',strtotime($hour->starttime))}}</td>
-            <td>{{date('h:i a',strtotime($hour->endtime))}}</td>
+            <td>{{$hour->starttime->format('d M Y')}}</td>
+            <td>{{$hour->starttime->format('h:i a')}}</td>
+             <td>{{$hour->endtime->format('h:i a')}}</td>
             <td>{{number_format($hour->hours,2)}}</td>
             <td>{{$hour->description}}</td>
             

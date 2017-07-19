@@ -24,7 +24,7 @@
 
     <p><strong>Member since:</strong>
     @if($member->membersince != '0000-00-00')
-    {{date('F Y',strtotime($member->membersince))}}</p>
+    {{$member->membersince->format->('F Y')}}</p>
     @endif
     <p><strong>Member status:</strong> {{$member->status}}</p>
     @if(count($member->plots)>0)
@@ -54,7 +54,7 @@
     <?php $total =null;?>
         @foreach ($member->user->currentYearHours as $hours)
         <tr>
-        <td>{{date('d M Y',strtotime($hours->servicedate))}}</td>
+        <td>{{$hours->starttime->format('d M Y')}}</td>
         <td align="center">{{number_format($hours->hours,1)}}</td>
         <?php $total = $total + $hours->hours;?>
         <td>{{$hours->description}}</td>

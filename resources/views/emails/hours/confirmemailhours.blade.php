@@ -14,7 +14,7 @@ This was posted as:
 |  Hours | Date   | Description  |
 | -------| -------| -------------|
 @foreach ($data['hours'] as $hour)
-|{{$hour['hours']}} hrs |{{date('M jS, Y',strtotime($hour['servicedate']) )}}  | {{$hour['description']}}|
+|{{$hour['hours']}} hrs |{{$hour['starttime']->format('M jS, Y')}}  | {{$hour['description']}}|
 @endforeach
 @endcomponent
 In case there is some problem please [log into the website]({{env('APP_URL')}}) and correct the hours there.

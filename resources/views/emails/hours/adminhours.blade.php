@@ -2,7 +2,8 @@
 ## New Hours Posted
 
 @foreach($data['gardener'] as $gardener)
-{{$gardener->fullname()}} @if(! $loop->last) and @endif
+
+{{$gardener->member()->first()->fullname()}} @if(! $loop->last) and @endif
 @endforeach
 @if(count($data['gardener'])>1)
 	have 
@@ -16,7 +17,6 @@ added some community hours.</p>
 |  Hours | Date     | Description  |
 | -------| ---------| -------------|
 | {{$data['service']->hours}} hrs | {{$data['service']->starttime->format('M jS, Y')}}  | {{$data['service']->description}} |
-
 @endcomponent
 
 

@@ -11,12 +11,9 @@ class Hours extends Model
     use PeriodTrait;
 
     public $showYear;
-       public $dates =['created_at','updated_at','servicedate','starttime','endtime'];
-    public $fillable = ['starttime','endtime','description','hours','user_id','transid'];
-    public function __construct()
-    {
-        $this->showYear = $this->getShowYear();
-    }
+    public $dates =['created_at','updated_at','starttime','endtime'];
+    public $fillable = ['starttime','endtime','description','hours','user_id','trans_id'];
+    
     // Add your validation rules here
     
 
@@ -51,18 +48,18 @@ class Hours extends Model
 
             // get users hours
             $hours = Hours::whereIn('user_id', $user_id)
-                ->where(\DB::raw('YEAR(servicedate)'), '=', $this->showYear)
+                ->where(\DB::raw('YEAR(starttime)'), '=', $this->showYear)
                 ->with('gardener')
-                ->orderBy('servicedate')
+                ->orderBy('starttime')
                 ->get();
                 
         } else {
 
             //Cant we simplify this. Probably need join?
-            //$hours = $this->hour->where(DB::raw('YEAR(servicedate)'), '=', $this->showyear)->with('gardener')->orderBy('servicedate')->get();
+            //$hours = $this->hour->where(DB::raw('YEAR(starttime)'), '=', $this->showyear)->with('gardener')->orderBy('starttime')->get();
             //$fields = ['servicedate','hours','description','gardener','plot'];
             $query = "select 
-				servicedate,
+				starttime,
 				hours ,
 				concat(members.firstname,' ',members.lastname) as gardener,
 					hours.description as description, 
@@ -73,7 +70,7 @@ class Hours extends Model
 				and users.id = members.user_id 
 				and members.id = member_plot.member_id 
 				and member_plot.plot_id = plots.id 
-				and YEAR(servicedate) = '". $this->showYear."'
+				and YEAR(starttime) = '". $this->showYear."'
 			ORDER BY plotnumber";
             
             $hours = \DB::select(\DB::raw($query));
@@ -89,8 +86,8 @@ class Hours extends Model
         $query ="SELECT 
 					users.id as id, 
 					firstname,lastname, 
-					YEAR(servicedate) as year,
-					MONTH(servicedate) as month, 
+					YEAR(starttime) as year,
+					MONTH(starttime) as month, 
 					SUM(hours) as hours 
 				
 				FROM 
@@ -101,14 +98,14 @@ class Hours extends Model
 				WHERE 
 					hours.user_id = users.id
 					and members.user_id = users.id 
-					and YEAR(servicedate) = '".$this->showyear."' 
+					and YEAR(starttime) = '".$this->showyear."' 
 				
 				GROUP BY 
 					id,
 					lastname,
 					firstname,
-					YEAR(servicedate), 
-					MONTH(servicedate) 
+					YEAR(starttime), 
+					MONTH(starttime) 
 				
 				ORDER BY 
 					lastname,

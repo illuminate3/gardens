@@ -28,8 +28,8 @@ class Plot extends Model
         $query ="SELECT 
 					plots.id as plotid, 
 					type,
-					month(servicedate) as month,
-					year(servicedate) as year,
+					month(starttime) as month,
+					year(starttime) as year,
 					sum(hours.hours) as hours,
 					plots.description as plot 
 				
@@ -41,7 +41,7 @@ class Plot extends Model
 					users
 				
 				LEFT JOIN 
-					hours on hours.user_id = users.id and (year(servicedate) IS NULL or year(servicedate) = '".$this->showyear."' )
+					hours on hours.user_id = users.id and (year(starttime) IS NULL or year(starttime) = '".$this->showyear."' )
 				
 				WHERE 
 					

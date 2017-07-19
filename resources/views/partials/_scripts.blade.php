@@ -20,7 +20,9 @@ $(document).ready(function()
 	$('#sorttable4').DataTable();
 	
 
-	$('#user').multiselect();
+	$('#user').multiselect({
+            maxHeight: 200
+        });
 
 
 

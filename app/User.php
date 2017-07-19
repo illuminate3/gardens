@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     public function member()
     {
-        return $this->hasOne(Member::class);
+        return $this->hasOne(Member::class,'user_id','id');
     }
      
      
@@ -67,8 +67,8 @@ class User extends Authenticatable
         $year = date('Y');
     
         return $this->hasMany(Hours::class)
-                ->where('servicedate', 'like', $year."%")
-                ->orderBy('servicedate');
+                ->where('starttime', 'like', $year."%")
+                ->orderBy('starttime');
         ;
     }
 
@@ -77,7 +77,7 @@ class User extends Authenticatable
         $year = date('Y');
     
         return $this->hasMany(Hours::class)
-                ->where('servicedate', 'like', $year."%")
+                ->where('starttime', 'like', $year."%")
                 ->groupBy('user_id')
             ->sum('hours')
         ;

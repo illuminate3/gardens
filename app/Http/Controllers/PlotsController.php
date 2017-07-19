@@ -144,7 +144,7 @@ class PlotsController extends Controller
 			plots.id, plots.description as description, plots.type as type, members.firstname as firstname, users.email as email,sum(hours) as total
 				FROM `plots`,`member_plot`,`members`,`users`
                 left join hours on users.id = hours.user_id 
-                    and YEAR(servicedate) = ". $showYear. "
+                    and YEAR(starttime) = ". $showYear. "
 				WHERE plots.id = member_plot.plot_id 
 				and member_plot.member_id = members.id
 				and members.user_id = users.id

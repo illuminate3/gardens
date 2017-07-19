@@ -32,7 +32,7 @@
                              	<li><a href="{{{ route('members.index') }}}"><span class="glyphicon glyphicon-camera"></span> Member List</a></li>
                                 <li><a href="{{{ route('members.waitlist') }}}"><span class="glyphicon glyphicon-time"></span> Wait List</a></li>
                                 <li><a href="{{{ route('plots.index') }}}"><span class="glyphicon glyphicon-camera"></span> Plots</a></li>
-                                <li><a href="{{{route('hours.all') }}}"><span class="glyphicon glyphicon-time"></span> Hours</a></li>
+                                <li><a href="{{{route('hours.index') }}}"><span class="glyphicon glyphicon-time"></span> Hours</a></li>
                                     
                             </ul>
                         </li>
