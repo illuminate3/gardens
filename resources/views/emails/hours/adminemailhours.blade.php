@@ -5,7 +5,7 @@
 |  Hours | Date     | Description  |
 | -------| ---------| -------------|
 
-|{{$hours->hours}} hrs |{{$hours->starttime->format('M jS, Y') )}}  | {{$hours->description}}|
+|{{$hours->hours}} hrs |{{$hours->starttime->format('M jS, Y') }}  | {{$hours->description}}|
 
 @endcomponent
 Sincerely
