@@ -153,10 +153,11 @@ class Email extends Model
 
     private function processHoursEmail($inbound, $user)
     {
+
         if ($user) {
 
             // Process based on subject
-            $allData['userinfo'] = $user;
+            $allData['gardener'] = $user;
 
             $subject = strtolower($inbound->Subject());
 
@@ -204,14 +205,16 @@ class Email extends Model
     
     private function parseEmailHours($inbound, $allData)
     {
-        $plot = $allData['userinfo']->member->plots[0]->id;
+       
+
+        $plot = $allData['gardener']->member->plots[0]->id;
         
         $this->hours->from = $inbound->FromEmail();
         
-        $data['userinfo']['email'] = $allData['userinfo']['email'];
         
-        $this->hours->membername = $allData['userinfo']->member->firstname . " " . $allData['userinfo']->member->lastname;
-        $this->hours->user_id = $allData['userinfo']->id;
+        
+        $this->hours->membername = $allData['gardener']->member->fullname();
+        $this->hours->user_id = $allData['gardener']->id;
         
         $this->hours->text = $this->getEmailContent($inbound);
         
@@ -228,7 +231,7 @@ class Email extends Model
             
             foreach ($inputdata as $input) {
 
-                $plot = $allData['userinfo']->member->plots[0]->id;
+                $plot = $allData['gardener']->member->plots[0]->id;
                
                 $input = $this->calculateHours($input);
                 
@@ -238,17 +241,14 @@ class Email extends Model
                     
                     foreach ($users as $id=>$email) {
                         $input['user_id']=$id;
-                        $hours = new Hours;
-                        $hours->fill($input);
-                        $hours->save();
+                        $allData['hours'][$id] = Hours::create($input);
+                        
                     }
                 } else {
-                    $input['user_id'] = $allData['userinfo']->id;
-                    $allData['hours'][] = $input;
-                    $hours = new Hours;
-                    $hours->fill($input);
-                    $hours->save();
-
+                    $input['user_id'] = $allData['gardener']->id;
+                    
+                    $allData['hours'][] = Hours::create($input);
+                    
                 }
                
             }
@@ -382,10 +382,11 @@ class Email extends Model
             
             case 'confirmemail':
                
-                \Mail::to($data['userinfo']->email)->queue(new ConfirmEmailHours($data));
+                \Mail::to($data['gardener']->email)->queue(new ConfirmEmailHours($data));
             break;
             
-            case 'email':    
+            case 'email':   
+
                 $toAddress = $this->getHoursNotificationEmails();
                 \Mail::to($toAddress)->queue(new NotifyEmailHours($data));
             
