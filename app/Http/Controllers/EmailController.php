@@ -43,8 +43,7 @@ class EmailController extends Controller
         
             $this->email->processEmail($inbound);
         }
-        return redirect('/');
-    }
+      }
 
     
 }
