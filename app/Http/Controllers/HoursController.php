@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use App\Http\Requests\HoursFormRequest;
 use App\Notifications\HoursAdded;
 
+
 class HoursController extends Controller
 {
    
@@ -68,11 +69,14 @@ class HoursController extends Controller
     {
      
         if (auth()->user()->can('manage_hours')) {
-            $members = User::join('members', 'members.user_id', '=', 'users.id')
-                ->select('users.id', 'members.firstname', 'members.lastname')
-                ->where('members.status', '=', 'full')
-                ->orderBy('members.lastname', 'asc')
-                ->get();
+            $members = User::with('member')
+            ->whereHas('member',function($q){
+                $q->where('status','=','full');
+            })
+            ->select('users.id', 'members.firstname', 'members.lastname')
+            ->orderBy('members.lastname', 'asc')
+            ->get();          
+                
         } else {
             $members = Member::where('user_id', '=', auth()->user()->id)->with( 'plots','plots.managedBy','plots.managedBy.user')->first();
         }
@@ -87,22 +91,19 @@ class HoursController extends Controller
      */
     public function store(HoursFormRequest $request)
     {
-       $data['hours'] = $request->only($this->hour->fillable);
-       $data['user'] = $request->get('user');
-       $data['hours']['servicedate'] = $request->get('servicedate');
-       
-       $data['hours'] = $this->hour->calculateHours($data['hours']);
+      
+       $data['hours'] = $this->hour->calculateHours($request->all());
+       // Trans id maybe used in future for plot vs member hours
        $data['hours']['trans_id'] = date('U').rand();
       
-            foreach ($data['user'] as $user_id) {
+            foreach ($data['hours']['user'] as $user_id) {
                 $data['gardener'][$user_id] = $this->user->with('member')->findOrFail($user_id);
                 $data['hours']['user_id'] = $user_id;
-                $data['service'] = Hours::create($data['hours']);
+                $data['service'][0] = Hours::create($data['hours']);
             }
 
             $toAddress = $this->email->getHoursNotificationEmails();
            \Mail::to($toAddress)->queue(new NotifyHours($data));
-
 
         return redirect()->route('hours.index')->with(['success'=>'Hours recorded']);;
     }
@@ -171,7 +172,7 @@ class HoursController extends Controller
     {
         $this->hour->destroy($id);
         
-        return redirect()->route('hours.index')->with('message','Hours deleted');
+        return redirect()->route('hours.index')->with(['success'=>'Hours deleted']);
     }
     
     
@@ -207,40 +208,29 @@ class HoursController extends Controller
     
     public function multistore(Request $request)
     {
+        
         $data = $request->all();
 
         $element['user_id'] = $data['user'][0];
-        $allData['userinfo']= User::whereId($data['user'])->with('member')->first();
-        
+        $allData['gardener']= User::whereId($data['user'])->get();
+    
         $fields = ['servicedate','hours','description'];
         for ($i = 5; $i < 10; $i++) {
             if ($data['servicedate'][$i] != '') {
                 foreach ($fields as $field) {
                     $element[$field] = $data[$field][$i];
                 }
-                $date = new \DateTime($data['servicedate'][$i]);
-                
-                $element['servicedate'] = $date->format('Y-m-d');
-                $element['startime'] = $date->format('H:i');
-                
-                
-                // replace this with a FormRequest
-                if (! $validator = \Validator::make($element, $this->hour->rules)) {
-                    return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
-                }
-                
-                
-                $posting = $this->hour->calculateHours($element);
-
-                $this->hour->create($posting);
-                $allData['hours'][] = $posting;
+                $element['starttime'] = Carbon::createFromFormat('m/d/Y g:i A',$data['servicedate'][$i]);
+                $element['endtime'] = Carbon::createFromFormat('m/d/Y g:i A',$data['servicedate'][$i])->addMinutes($element['hours']*60);
+                $element['trans_id'] = date('U').rand();  
+      
+                $hours = Hours::create($element);
+                $allData['service'][] = $hours;
             }
         }
+
         $this->email->sendEmailNotifications($allData, 'multi');
-        return redirect()->route('hours.all');
+        return redirect()->route('hours.index')->with(['success'=>'Hours added']);
     }
     public function downloadHours()
     {

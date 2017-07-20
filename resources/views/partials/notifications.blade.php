@@ -13,4 +13,3 @@
         {{Session::get('message')}}
     </div>
 @endif
-{{var_dump($errors)}}

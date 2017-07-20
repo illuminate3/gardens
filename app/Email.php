@@ -376,6 +376,7 @@ class Email extends Model
             case 'multi':
              
                 $toAddress = $this->getHoursNotificationEmails();
+            
                 \Mail::to($toAddress)->queue(new AdminHours($data));
             break;
             
