@@ -1,6 +1,6 @@
 @component('mail::message')
 
-Hi {{$data['userinfo']->member['firstname']}}.
+Hi {{$data['gardener']->member['firstname']}}.
 
 This is just to confirm that you posted the following hours on the McNear Community Garden website via email.
 
