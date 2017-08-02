@@ -24,8 +24,9 @@
 
     <p><strong>Member since:</strong>
     @if($member->membersince != '0000-00-00')
-    {{$member->membersince->format->('F Y')}}</p>
+    {{$member->membersince->format('F Y')}}
     @endif
+    </p>
     <p><strong>Member status:</strong> {{$member->status}}</p>
     @if(count($member->plots)>0)
     <p><strong>Plot Assignment:</strong>
