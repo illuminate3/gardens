@@ -11,7 +11,7 @@
             @foreach($members as $member )
 
                 <option value="{{$member->id}}" 
-                @if( old('member') == $member->id or auth()->user()->id == $member->id) selected @endif>{{$member->lastname}}, {{$member->firstname}}</option>
+                @if( old('member') == $member->user->id or auth()->user()->id == $member->user->id) selected @endif>{{$member->lastname}}, {{$member->firstname}}</option>
 
             @endforeach
             </select>
@@ -38,10 +38,11 @@ value="{{$member->id}}" > {{$member->firstname}}</li>
 
         </div>
         @if ($errors->has('user')) <p class="help-block">{{ $errors->first('user') }}</p> @endif
-    </div>
-</div>
+
 @else
 <input type='hidden' name='user[]' value ='{{auth()->user()->id}}' />
 
 
 @endif
+    </div>
+</div>

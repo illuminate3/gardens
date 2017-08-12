@@ -10,7 +10,7 @@
 @include('hours.partials.hoursform')
 <div class="col-sm-6">
 <div class="form-group">
-<input type="submit" name="submit" class='btn btn-primary' />
+<input type="submit" name="submit" class='btn btn-primary' value="Enter hours" />
 </div></div>
 </form>
 @include('partials._scripts')

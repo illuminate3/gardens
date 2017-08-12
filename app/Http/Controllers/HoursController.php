@@ -69,13 +69,19 @@ class HoursController extends Controller
     {
      
         if (auth()->user()->can('manage_hours')) {
-            $members = User::with('member')
+            $members = Member::with('user')
+            ->whereHas('user',function($q){
+                $q->where('status','=','full');
+            })
+            
+            ->get();
+
+          /*  User::with('member')
             ->whereHas('member',function($q){
                 $q->where('status','=','full');
             })
-            ->select('users.id', 'members.firstname', 'members.lastname')
-            ->orderBy('members.lastname', 'asc')
-            ->get();          
+
+            ->get(); */         
                 
         } else {
             $members = Member::where('user_id', '=', auth()->user()->id)->with( 'plots','plots.managedBy','plots.managedBy.user')->first();
@@ -91,13 +97,20 @@ class HoursController extends Controller
      */
     public function store(HoursFormRequest $request)
     {
-      
+       
        $data['hours'] = $this->hour->calculateHours($request->all());
        // Trans id maybe used in future for plot vs member hours
        $data['hours']['trans_id'] = date('U').rand();
-      
+        
             foreach ($data['hours']['user'] as $user_id) {
-                $data['gardener'][$user_id] = $this->user->with('member')->findOrFail($user_id);
+
+                $data['gardener'][$user_id] = $this->user
+                ->with('member')
+                ->whereHas('member',function($q) use($user_id){
+                    $q->where('id','=',$user_id);
+                })
+                ->firstOrFail();
+               
                 $data['hours']['user_id'] = $user_id;
                 $data['service'][0] = Hours::create($data['hours']);
             }

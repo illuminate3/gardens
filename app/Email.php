@@ -394,7 +394,7 @@ class Email extends Model
             
             case 'noparse':
                 
-                 \Mail::to($data['userinfo']->email)->queue(new NoParse($data));
+                 \Mail::to($data['gardener']->email)->queue(new NoParse($data));
             break;
 
             case 'adminnoparse':
@@ -404,14 +404,14 @@ class Email extends Model
             
             
             case 'total':
-                \Mail::to($data['userinfo']->email)->queue(new TotalHours($data));
+                \Mail::to($data['gardener']->email)->queue(new TotalHours($data));
 
             break;
             
             
             case 'instructions':
             
-                $toAddress =$data['userinfo']->email;
+                $toAddress =$data['gardener']->email;
                 \Mail::to($toAddress)->queue(new Instructions($data));
                     
             
