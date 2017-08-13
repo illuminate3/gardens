@@ -22,6 +22,9 @@ class Member extends Model
         return $this->belongsToMany(Plot::class);
     }
     
+    public function hours(){
+        return $this->hasMany(Hours::class,'user_id','user_id');
+    }
     
     public function user()
     {

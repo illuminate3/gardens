@@ -11,8 +11,8 @@ class Hours extends Model
     use PeriodTrait;
 
     public $showYear;
-    public $dates =['created_at','updated_at','starttime','endtime'];
-    public $fillable = ['starttime','endtime','description','hours','user_id','trans_id'];
+    public $dates =['created_at','updated_at','servicedate','starttime','endtime'];
+    public $fillable = ['starttime','endtime','servicedate','description','hours','user_id','trans_id'];
     
     // Add your validation rules here
     
@@ -120,7 +120,7 @@ class Hours extends Model
     public function calculateHours($inputdata)
     {
         $data=$inputdata;
-        
+
         // Must have a service date
         if ($inputdata['servicedate'] != '') {
             $data['servicedate'] = date('Y-m-d', strtotime($inputdata['servicedate']));

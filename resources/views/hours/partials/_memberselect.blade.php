@@ -10,7 +10,7 @@
           >
             @foreach($members as $member )
 
-                <option value="{{$member->id}}" 
+                <option value="{{$member->user_id}}" 
                 @if( old('member') == $member->user->id or auth()->user()->id == $member->user->id) selected @endif>{{$member->lastname}}, {{$member->firstname}}</option>
 
             @endforeach
@@ -33,7 +33,7 @@
 
 <li><input type="checkbox" name="user[]" 
 @if($member->user_id == auth()->user()->id) checked @endif 
-value="{{$member->id}}" > {{$member->firstname}}</li>   
+value="{{$member->user_id}}" > {{$member->firstname}}</li>   
 @endforeach
 
         </div>

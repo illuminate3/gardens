@@ -99,17 +99,17 @@ class HoursController extends Controller
     {
        
        $data['hours'] = $this->hour->calculateHours($request->all());
+
        // Trans id maybe used in future for plot vs member hours
        $data['hours']['trans_id'] = date('U').rand();
         
             foreach ($data['hours']['user'] as $user_id) {
+              
 
-                $data['gardener'][$user_id] = $this->user
+               $data['gardener'][$user_id] = $this->user
                 ->with('member')
-                ->whereHas('member',function($q) use($user_id){
-                    $q->where('id','=',$user_id);
-                })
-                ->firstOrFail();
+                
+                ->findOrFail($user_id);
                
                 $data['hours']['user_id'] = $user_id;
                 $data['service'][0] = Hours::create($data['hours']);
@@ -129,6 +129,7 @@ class HoursController extends Controller
      */
     public function show($id, Request $request)
     {
+       
         if($request->has('y')){
             $year = $request->get('y');
         }else{

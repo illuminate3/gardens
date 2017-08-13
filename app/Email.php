@@ -297,7 +297,7 @@ class Email extends Model
     private function calculateHours($inputdata)
     {
         $data=$inputdata;
-        
+        dd($data);
         // Must have a service date
         if ($inputdata['servicedate'] != '') {
             $data['servicedate'] = date('Y-m-d', strtotime($inputdata['servicedate']));
